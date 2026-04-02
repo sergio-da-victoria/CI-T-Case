@@ -532,6 +532,60 @@ Consultas (CQRS):
 
 ```
 
+### Business Capability Modeling (BCM)
+
+##### 1. Business Capability Modeling (BCM)
+
+##### 2. Mapeamento de Domínios Funcionais
+
+##### 3. Bounded Contexts (Contextos Delimitados)
+
+##### 4. Requisitos Funcionais Detalhados
+
+##### 5. Requisitos Não Funcionais Detalhados
+
+##### 6. Diagrama BCM + Bounded Contexts
+
+
+### 1. Business Capability Modeling (BCM)
+##### 1.1 Hierarquia de Capacidades de Negócio
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                         Nível 1: Gestão de Fluxo de Caixa                           │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
+│  │                      Nível 2: Capacidades Primárias                         │    │
+│  ├─────────────────────────────────────────────────────────────────────────────┤    │
+│  │                                                                             │    │
+│  │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐              │    │
+│  │  │  Gestão de      │  │  Consolidação   │  │  Relatórios e   │              │    │
+│  │  │  Lançamentos    │  │  de Saldos      │  │  Auditoria      │              │    │
+│  │  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘              │    │
+│  │           │                    │                    │                       │    │
+│  │           ▼                    ▼                    ▼                       │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │                      Nível 3: Capacidades de Suporte                │    │    │
+│  │  ├─────────────────────────────────────────────────────────────────────┤    │    │
+│  │  │                                                                     │    │    │
+│  │  │  ┌───────────────┐  ┌───────────────┐  ┌───────────────────┐        │    │    │
+│  │  │  │  Identidade   │  │  Notificações │  │  Infraestrutura   │        │    │    │
+│  │  │  │  e Acesso     │  │  e Alertas    │  │  e Observabilidade│        │    │    │
+│  │  │  └───────────────┘  └───────────────┘  └───────────────────┘        │    │    │
+│  │  │                                                                     │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  │                                                                             │    │
+│  └─────────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 1.2 Detalhamento das Capacidades de Negócio (Nível 1)
+|Capacidade|	Descrição|	Dono |	Maturidade|	KPIs|
+|--|--|--|--|--|
+|Gestão de Fluxo de Caixa|	Gerenciar entradas e saídas financeiras do negócio|	Diretor Financeiro|	Otimizado|	Saldo diário, fluxo mensal|
+
 
 
 
