@@ -586,6 +586,138 @@ Consultas (CQRS):
 |--|--|--|--|--|
 |Gestão de Fluxo de Caixa|	Gerenciar entradas e saídas financeiras do negócio|	Diretor Financeiro|	Otimizado|	Saldo diário, fluxo mensal|
 
+### 1.3 Detalhamento das Capacidades Primárias (Nível 2)
+|Capacidade|	Descrição|	Sub-capacidades|	Métricas de Negócio|
+|--|--|--|--|
+|Gestão de Lançamentos|	Registrar, alterar e cancelar movimentações financeiras| Registro de débitos Registro de créditos Cancelamento Categorização|Tempo médio de registro Taxa de cancelamento Volume por categoria|
+|Consolidação de Saldos|	Calcular e manter saldos diários/mensais |	Cálculo diário Cálculo mensal Projeções Histórico | Precisão do saldo Tempo de consolidação Disponibilidade do dado |
+|Relatórios e Auditoria| Gerar relatórios gerenciais e manter trilha de auditoria| Extrato periódico Relatório gerencial Trilha de auditoria Exportação de dados| Tempo de geração Conformidade Rastreabilidade|
+
+### 1.4 Detalhamento das Capacidades de Suporte (Nível 3)
+|Capacidade|	Descrição|	Sub-capacidades|Métricas|
+|--|--|--|--|
+|Identidade e Acesso|	Gerenciar autenticação e autorização de usuários| Login (Cloud Identity) Login (AD corporativo) MFA RBAC Tempo de login| Taxa de sucesso Tentativas inválidas |
+|Notificações e Alertas|Enviar alertas e notificações aos usuários| Alerta de saldo baixo Confirmação de lançamento Relatório periódico| Tempo de entrega Taxa de abertura Alertas disparados|
+|Infraestrutura e Observabilidade|Garantir disponibilidade e visibilidade do sistema|Monitoramento Logging Tracing Backup/DR| Uptime MTTR Latência P95|
+
+### 2. Mapeamento de Domínios Funcionais
+##### 2.1 Mapa de Domínios (Core, Supporting, Generic)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              Mapa de Domínios - Fluxo de Caixa                      │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
+│  │                         CORE DOMAIN (Diferencial Competitivo)               │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │                                                                     │    │    │
+│  │  │  • Gestão de Lançamentos (registro, cancelamento, categorização)    │    │    │
+│  │  │  • Consolidação de Saldos (cálculo em tempo real)                   │    │    │
+│  │  │  • Relatórios Gerenciais (análises financeiras)                     │    │    │
+│  │  │                                                                     │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  └─────────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
+│  │                       SUPPORTING DOMAIN (Apoio ao Core)                     │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │                                                                     │    │    │
+│  │  │  • Notificações e Alertas (e-mail, Slack, webhook)                  │    │    │
+│  │  │  • Exportação de Dados (PDF, Excel, CSV)                            │    │    │
+│  │  │  • Auditoria (trilha de eventos)                                    │    │    │
+│  │  │                                                                     │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  └─────────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
+│  │                        GENERIC DOMAIN (Comoditizado)                        │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │                                                                     │    │    │
+│  │  │  • Identidade e Autenticação (Cloud Identity + AD)                  │    │    │
+│  │  │  • Mensageria (Kafka)                                               │    │    │
+│  │  │  • Cache (Redis)                                                    │    │    │
+│  │  │  • Persistência (PostgreSQL, MongoDB)                               │    │    │
+│  │  │  • Observabilidade (Google Cloud Observability)                     │    │    │
+│  │  │                                                                     │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  └─────────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 3. Requisitos Funcionais Detalhados
+##### 4.1 Requisitos por Contexto Delimitado
+
+##### Contexto: Identidade
+|ID|	Requisito|	Descrição|	Prioridade	|Critério de Aceitação|
+|--|--|--|--|--|
+|RF-ID-01|Login com Cloud Identity|	Autenticar usuário via Google Cloud Identity|	Must Have|	Login bem sucedido com credenciais válidas|
+|RF-ID-02|Login com Active Directory|	Autenticar usuário via LDAP/Kerberos|	Must Have|	Login via domínio corporativo|
+|RF-ID-03|Autenticação Multifator (MFA)|	Suporte a MFA via SMS ou TOTP|	Should Have |	Usuário deve fornecer segundo fator|
+|RF-ID-04|Registro de Usuário|	Criar nova conta de comerciante|	Must Have |	Dados validados e persistidos |
+|RF-ID-05|Refresh Token|Renovar token de acesso|Must Have|	Token expirado pode ser renovado|
+|RF-ID-06|Logout|	Invalidar token de acesso|	Must Have	|Token não pode mais ser usado|
+|RF-ID-07|RBAC (Role-Based Access Control)|	Controle de acesso baseado em papéis|	Must Have|	Administrador e Comerciante com permissões distintas|
+|RF-ID-08|Recuperação de Senha|	Enviar e-mail para redefinição de senha|	Should Have|	Link válido por 1 hora|
+
+##### Contexto: Lançamentos
+|ID|	Requisito|	Descrição|	Prioridade |Critério de Aceitação|
+|--|--|--|--|--|
+|RF-LC-01|	Registrar Débito|	Criar lançamento de saída financeira|	Must Have|	Valor |subtraído do saldo|
+|RF-LC-02|	Registrar Crédito|	Criar lançamento de entrada financeira|	Must Have|	Valor |adicionado ao saldo|
+|RF-LC-03|	Listar Lançamentos|	Listar lançamentos com filtros|	Must Have|	Paginação, ordenação por data|
+|RF-LC-04|	Obter Lançamento por ID|	Buscar detalhes de um lançamento|	Must Have|	Retornar 404 se não existir|
+|RF-LC-05|	Cancelar Lançamento|	Estornar lançamento existente|	Must Have|	Status alterado para CANCELADO|
+|RF-LC-06|	Categorizar Lançamento|	Associar categoria ao lançamento|	Should Have|	Filtro por categoria|
+|RF-LC-07|	Editar Lançamento|	Alterar dados de um lançamento|	Should Have|	Apenas lançamentos não consolidados|
+|RF-LC-08|	Lançamento Recorrente|	Criar lançamentos automáticos periódicos|	Could Have|	Configuração de periodicidade|
+
+##### Contexto: Consolidação
+|ID|	Requisito|	Descrição|	Prioridade |Critério de Aceitação|
+|--|--|--|--|--|
+|RF-CS-01|	Consultar Saldo Diário|	Obter saldo consolidado por data	|Must Have|	Retorna saldo calculado|
+|RF-CS-02|	Consultar Saldo Mensal|	Obter saldo consolidado por mês	|Must Have|	Retorna saldo inicial e final|
+|RF-CS-03|	Histórico de Saldos|	Listar saldos de um período	|Should Have|	Gráfico de evolução|
+|RF-CS-04|	Projeção de Saldo|	Prever saldo futuro baseado em padrões	|Could Have|	Baseado em média histórica|
+|RF-CS-05|	Recalcular Saldo|	Forçar recálculo de um período	|Should Have|	Administrador apenas|
+|RF-CS-06|	Exportar Consolidado|	Exportar saldos para CSV	|Should Have|	Formato estruturado|
+
+
+##### Contexto: Notificação
+|ID|	Requisito|	Descrição|	Prioridade |Critério de Aceitação|
+|--|--|--|--|--|
+|RF-NT-01|	Alerta de Saldo Baixo	Notificar quando saldo < limite	|Must Have|	E-mail enviado em até 1 minuto|
+|RF-NT-02|	Confirmação de Lançamento	Notificar quando lançamento é criado	|Should Have|	E-mail opcional|
+|RF-NT-03|	Notificação por Slack	Enviar alertas via webhook do Slack	|Could Have|	Mensagem formatada|
+|RF-NT-04|	Relatório Periódico	Enviar relatório por e-mail agendado	|Could Have|	Diário, semanal ou mensal|
+|RF-NT-05|	Configurar Limite de Alerta	Usuário define limite personalizado	|Should Have|	Persistir preferência|
+
+##### Contexto: Relatórios
+|ID|	Requisito|	Descrição|	Prioridade |Critério de Aceitação|
+|--|--|--|--|--|
+|RF-RL-01|	Extrato Período|	Gerar extrato financeiro	|Must Have|	PDF ou Excel|
+|RF-RL-02|	Relatório por Categoria|	Agrupar lançamentos por categoria	|Should Have|	Gráficos e totais|
+|RF-RL-03|	Relatório Comparativo|	Comparar períodos distintos	|Could Have|	Ano anterior vs atual|
+|RF-RL-04|	Download Assíncrono|	Gerar relatório em background	|Should Have|	Notificar quando pronto|
+
+
+##### Contexto: Auditoria
+|ID|	Requisito|	Descrição|	Prioridade |Critério de Aceitação|
+|--|--|--|--|--|
+|RF-AU-01|	Registrar Eventos|	Todos os eventos de domínio são registrados	|Must Have|	Log persistido em MongoDB|
+|RF-AU-02|	Consultar Trilha|	Buscar eventos por usuário/período	|Should Have|	Filtros e paginação|
+|RF-AU-03|	Exportar Auditoria|	Exportar logs para CSV/JSON	|Could Have|	Formato estruturado|
+|RF-AU-04|	Retenção Configurável|	Configurar tempo de retenção dos logs|Should Have|	Política por tipo de evento|
+
+
+
+
+
+
+
+
+
 
 
 
