@@ -212,7 +212,7 @@ integridade dos dados.
   - Relatório pode ser cacheado por 1 hora
 
 
-<a id="negocios"></a>
+<a id="negocio"></a>
 ### 6. Políticas / Regras de Negócio
 Políticas definem comportamentos automáticos em resposta a eventos.
 
