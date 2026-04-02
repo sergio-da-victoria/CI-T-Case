@@ -55,7 +55,7 @@ O Event Storming é uma técnica de modelagem colaborativa que visa mapear todo 
 |Administrador|	Gestor do sistema|	Gerar relatórios gerenciais, configurar limites de alerta, auditar operações|
 |Sistema (Automático)|	Processos automatizados|	Disparar alertas de saldo baixo, atualizar caches, consolidar saldos|
 
-<a id="commandos"></a>
+<a id="comandos"></a>
 ###  3. Comandos
 Comandos representam ações ou intenções iniciadas por um ator.
 
