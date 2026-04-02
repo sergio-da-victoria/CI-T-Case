@@ -191,8 +191,8 @@ Verificar Limite de Alerta|	SaldoDiarioAtualizado|	Disparar alerta|	Se saldo < 0
 |Atualizar Cache (Redis)|	SaldoDiarioAtualizado|	Atualizar Redis|	Manter cache quente para consultas|
 Registrar Auditoria|	Todos os eventos|	Salvar no MongoDB|	Log de todas as operações|
 
-### Regras de Negócio Detalhadas
-#### 1. Validação de Lançamento
+#### Regras de Negócio Detalhadas
+##### 6.1 Validação de Lançamento
 
 
 
@@ -261,3 +261,4 @@ No padrão CQRS, as operações de leitura são separadas das operações de esc
 |Consultar Saldo Diário|	Obter saldo de uma data específica|	Redis (cache) ou PostgreSQL|	✅ 24h|
 Obter Extrato Período|	Listar todos lançamentos de um intervalo|	PostgreSQL|	❌|
 |Relatório Gerencial|	Relatório consolidado com análises|	PostgreSQL (views materializadas)|	✅ 1h|
+
