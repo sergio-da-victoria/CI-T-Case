@@ -5,14 +5,23 @@
 
 ## Sumário
 [1. Visão Geral do Event Storming](#visao)
+
 [2. Atores / Usuários](#atores)
+
 [3. Comandos](#comandos)
+
 [4. Eventos de Domínio](#dominios)
-[5. Agregados](#agredados)
+
+[5. Agregados](#agregados)
+
 [6. Políticas / Regras de Negócio](#negocio)
+
 [7. Leituras / Consultas (CQRS)](#cqrs)
+
 [8. Sistemas Externos](#externo)
+
 [9. Fluxo Completo do Sistema](#fluxo)
+
 [10. Glossário do Event Storming](#glossario)
 
 
