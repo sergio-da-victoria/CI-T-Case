@@ -2,19 +2,29 @@
 ####  Controle de fluxo de caixa diário com os lançamentos(débitos e créditos), também precisa de um relatório que disponibilize o saldo diário consolidado.
 
 ## Índice
-- [3. Requisitos Funcionais Detalhados](#requisitos)
-- [Desenvolvimento](#desenvolvimento)
-- [Conclusão](#conclusão)
 
+## Sumário
+[1. Visão Geral do Event Storming](#visao)
+[2. Atores / Usuários](#atores)
+[3. Comandos](#comandos)
+[4. Eventos de Domínio](#dominios)
+[5. Agregados](#agredados)
+[6. Políticas / Regras de Negócio](#negocio)
+[7. Leituras / Consultas (CQRS)](#cqrs)
+[8. Sistemas Externos](#externo)
+[9. Fluxo Completo do Sistema](#fluxo)
+[10. Glossário do Event Storming](#glossario)
+
+
+### Diagrama Domain Driven Design - Fluxo de Caixa
 ![Texto](/ddd-case.jpg)
 
 
-### Descrição do Event Storming - Fluxo de Caixa
-
+### Diagrama do Event Storming - Fluxo de Caixa
 ![Texto](/event-storming.jpg)
 
-
-#### 1. Visão Geral
+<a id="visao"></a>
+### 1. Visão Geral
 O Event Storming é uma técnica de modelagem colaborativa que visa mapear todo o fluxo de negócio do sistema de Controle de Fluxo de Caixa, identificando comandos, eventos, agregados, atores, políticas, leituras e sistemas externos envolvidos no processo de registro de lançamentos e consolidação diária de saldos.
 
 | Categoria  | Descrição |
@@ -28,15 +38,15 @@ O Event Storming é uma técnica de modelagem colaborativa que visa mapear todo 
 |Sistemas Externos|	Infraestrutura e serviços de terceiros|
 
 
-
+<a id="atores"></a>
 ### 2. Atores / Usuários
-
 | Atores  | Descrição | Responsabilidades |
 | --- | --- |---|
 | Comerciante | Usuário final do sitema| Registrar lançamentos, consultar saldos, cancelar lançamentos, exportar extratos |
 |Administrador|	Gestor do sistema|	Gerar relatórios gerenciais, configurar limites de alerta, auditar operações|
 |Sistema (Automático)|	Processos automatizados|	Disparar alertas de saldo baixo, atualizar caches, consolidar saldos|
 
+<a id="commandos"></a>
 ###  3. Comandos
 Comandos representam ações ou intenções iniciadas por um ator.
 
@@ -49,8 +59,7 @@ Comandos representam ações ou intenções iniciadas por um ator.
 |Exportar Extrato|	Gerar arquivo (PDF/Excel) com movimentações	|Comerciante|
 
 ### Detalhamento dos Comandos
-
-#### Registrar Lançamento
+##### Registrar Lançamento
 - Entrada: Valor, tipo (débito/crédito), descrição, categoria, estabelecimento
 - Pré-condições: Usuário autenticado, valor > 0
 - Pós-condições: Lançamento persistido, evento publicado
@@ -71,6 +80,7 @@ Comandos representam ações ou intenções iniciadas por um ator.
 - Pré-condições: Usuário autenticado
 - Pós-condições: Arquivo exportado
 
+<a id="dominios"></a>
 ### 4. Eventos de Domínio
 Eventos representam fatos que ocorreram no sistema e são relevantes para o negócio.
 
@@ -83,8 +93,10 @@ Eventos representam fatos que ocorreram no sistema e são relevantes para o neg�
 |RelatorioPeriodoGerado|	Um relatório foi gerado com sucesso|	Comando Gerar Relatório|
 
 ### Detalhamento dos Eventos
-##### LancamentoRegistrado
->  Json
+###### LancamentoRegistrado
+
+```
+Json
 {
   "id": "uuid",
   "valor": 150.00,
@@ -96,11 +108,11 @@ Eventos representam fatos que ocorreram no sistema e são relevantes para o neg�
   "estabelecimento": "Loja Matriz",
   "occurredAt": "2025-03-31T10:30:00Z"
 }
->
+```
 
-#### SaldoDiarioAtualizado
-
->  Json
+##### SaldoDiarioAtualizado
+```
+Json
 {
   "data": "2025-03-31",
   "totalCreditos": 5000.00,
@@ -109,10 +121,11 @@ Eventos representam fatos que ocorreram no sistema e são relevantes para o neg�
   "quantidadeTransacoes": 15,
   "atualizadoEm": "2025-03-31T10:30:05Z"
 }
->
+```
 
-#### LancamentoCancelado
-> Json
+##### LancamentoCancelado
+```
+Json
 {
   "id": "uuid",
   "usuarioId": "uuid",
@@ -120,11 +133,13 @@ Eventos representam fatos que ocorreram no sistema e são relevantes para o neg�
   "dataHora": "2025-03-31T10:30:00Z",
   "canceladoEm": "2025-03-31T11:00:00Z"
 }
+```
 
->
 
-#### SaldoBaixoAlertado
-> Json
+##### SaldoBaixoAlertado
+
+```
+Json
 {
   "usuarioId": "uuid",
   "data": "2025-03-31",
@@ -132,10 +147,11 @@ Eventos representam fatos que ocorreram no sistema e são relevantes para o neg�
   "limiteAlerta": 0,
   "emailUsuario": "comerciante@exemplo.com"
 }
->
+```
 
-#### RelatorioPeriodoGerado
-> Json
+##### RelatorioPeriodoGerado
+```
+Json
 {
   "periodoInicio": "2025-03-01",
   "periodoFim": "2025-03-31",
@@ -144,9 +160,10 @@ Eventos representam fatos que ocorreram no sistema e são relevantes para o neg�
   "geradoEm": "2025-03-31T23:59:59Z",
   "urlDownload": "/relatorios/2025-03-relatorio.pdf"
 }
->
+```
 
-### Agregados
+<a id="agregados"></a>
+### 5. Agregados
 Agregados são raízes de consistência transacional que garantem a 
 
 integridade dos dados.
@@ -159,7 +176,7 @@ integridade dos dados.
 |RelatorioPeriodo|	Periodo|	lista de lançamentos, resumoFinanceiro|	gerar(), exportar()
 
 ### Detalhamento dos Agregados
-#### Lancamento
+##### Lancamento
 - Regras de consistência:
   - Valor deve ser maior que zero
   - Tipo deve ser DEBITO ou CREDITO
@@ -176,15 +193,17 @@ integridade dos dados.
 - Eventos gerados:
    - SaldoDiarioAtualizado (a cada atualização)
    - SaldoBaixoAlertado (quando saldo < limite)
-#### SaldoMensal
+##### SaldoMensal
 - Regras de consistência:
     - Consolidado a partir dos SaldoDiario do mês
     - SaldoFinal do mês = SaldoInicial do próximo mês
-### RelatorioPeriodo
+##### RelatorioPeriodo
 - Regras de consistência:
   - Período válido (início <= fim)
   - Relatório pode ser cacheado por 1 hora
 
+
+<a id="negocios"></a>
 ### 6. Políticas / Regras de Negócio
 Políticas definem comportamentos automáticos em resposta a eventos.
 
@@ -259,8 +278,7 @@ SENÃO
 
 ```
 
-#### 6.5 Auditoria
-
+##### 6.5 Auditoria
 
 ```
 PARA CADA evento recebido:
@@ -276,7 +294,7 @@ PARA CADA evento recebido:
 ```    
 
 
-
+<a id="cqrs"></a>
 ### 7. Leituras / Consultas (CQRS)
 No padrão CQRS, as operações de leitura são separadas das operações de escrita para otimização de performance.
 
@@ -288,7 +306,7 @@ Obter Extrato Período|	Listar todos lançamentos de um intervalo|	PostgreSQL|	�
 |Relatório Gerencial|	Relatório consolidado com análises|	PostgreSQL (views materializadas)|	✅ 1h|
 
 ### Detalhamento das Leituras
-#### Consultar Saldo Diário
+##### Consultar Saldo Diário
 - Endpoint: GET /consolidado/diario?data=2025-03-31
 - Fluxo:
 
@@ -297,14 +315,14 @@ Obter Extrato Período|	Listar todos lançamentos de um intervalo|	PostgreSQL|	�
   - Se cache miss → consultar PostgreSQL (tabela saldo_diario)
   - Atualizar cache em background
   - Retornar resultado
-#### Obter Extrato Período
+##### Obter Extrato Período
 - Endpoint: GET /extrato?inicio=2025-03-01&fim=2025-03-31
 - Fluxo:
   - Consultar PostgreSQL (tabela lancamentos)
   - Aplicar filtros por data e usuário
   - Ordenar por dataHora decrescente
   - Retornar lista paginada
-#### Relatório Gerencial
+##### Relatório Gerencial
 - Endpoint: GET /relatorios/gerencial?ano=2025&mes=3
 - Fluxo:
   - Verificar cache (chave: relatorio:2025-03)
@@ -314,6 +332,7 @@ Obter Extrato Período|	Listar todos lançamentos de um intervalo|	PostgreSQL|	�
   - Retornar relatório
 
 
+<a id="externos"></a>
 ### 8. Sistemas Externos
 Sistemas externos são dependências de infraestrutura ou serviços de terceiros.
 
@@ -326,7 +345,7 @@ Sistemas externos são dependências de infraestrutura ou serviços de terceiros
 |SMTP / SendGrid|	E-mail|	Envio de alertas e notificações|	Circuit Breaker (3 falhas / 60s)|
 
 ### Integração com Sistemas Externos
-#### Cloud Identity
+##### Cloud Identity
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -344,7 +363,7 @@ Sistemas externos são dependências de infraestrutura ou serviços de terceiros
 ```
 
 
-#### Active Directory
+##### Active Directory
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                Fluxo de Autenticação Corporativa            │
@@ -361,7 +380,7 @@ Sistemas externos são dependências de infraestrutura ou serviços de terceiros
 └─────────────────────────────────────────────────────────────┘
 ```
 
-#### Apache Kafka
+##### Apache Kafka
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -382,7 +401,7 @@ Sistemas externos são dependências de infraestrutura ou serviços de terceiros
 └─────────────────────────────────────────────────────────────┘
 ```
 
-#### Redis Cache
+##### Redis Cache
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Estratégia de Cache                      │
@@ -405,9 +424,9 @@ Sistemas externos são dependências de infraestrutura ou serviços de terceiros
 
 ```
 
+<a id="fluxo"></a>
 ### 9. Fluxo Completo do Sistema
-
-#### Fluxo Principal (Registro de Lançamento)
+##### Fluxo Principal (Registro de Lançamento)
 
 ```
 1. Comerciante autentica via Cognito/AD
@@ -428,7 +447,7 @@ Sistemas externos são dependências de infraestrutura ou serviços de terceiros
 9. Comerciante consulta saldo via GET /consolidado (cache)
 ```
 
-#### Diagrama de Sequência do Fluxo Principal
+##### Diagrama de Sequência do Fluxo Principal
 
 ```
 Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker    Redis    PostgreSQL    SendGrid
@@ -460,7 +479,7 @@ Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker   
 
 ```
 
-#### Fluxo de Alerta de Saldo Baixo
+##### Fluxo de Alerta de Saldo Baixo
 
 ```
 1. LancamentoRegistrado é processado
@@ -474,7 +493,7 @@ Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker   
 
 ```
 
-
+<a id="glossario"></a>
 ### 10. Glossário do Event Storming
 |Termo|	Definição|
 |--|--|
@@ -493,7 +512,7 @@ Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker   
 |Saga|	Padrão para gerenciar consistência em transações distribuídas|
 
 
-#### Resumo do Event Storming em Texto
+##### Resumo do Event Storming em Texto
 
 
 ```
@@ -536,6 +555,8 @@ Consultas (CQRS):
     └──► GET /relatorio → View Materializada → Cache
 
 ```
+
+
 
 ### Business Capability Modeling (BCM)
 
@@ -650,8 +671,9 @@ Consultas (CQRS):
 │                                                                                     │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
+<a id="requisitos"></a>
+### 3. Requisitos Funcionais Detalhados
 
-## 3. Requisitos Funcionais Detalhados
 ##### 4.1 Requisitos por Contexto Delimitado
 
 ##### Contexto: Identidade
