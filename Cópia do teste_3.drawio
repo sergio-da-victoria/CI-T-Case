@@ -1,16 +1,11 @@
 <mxfile host="app.diagrams.net" agent="5.0">
   <diagram id="event-storming-fluxo-caixa" name="Event Storming - Fluxo de Caixa">
-    <mxGraphModel dx="1664" dy="891" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1500" math="0" shadow="0">
+    <mxGraphModel dx="1885" dy="1009" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1500" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="osHldhSnedp7OUdJPAxu-1" edge="1" parent="1" source="titulo" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="870" y="60" as="targetPoint" />
-          </mxGeometry>
-        </mxCell>
         <mxCell id="titulo" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1" value="Event Storming - Fluxo de Caixa (Controle de Lançamentos e Consolidado Diário)" vertex="1">
-          <mxGeometry height="40" width="870" x="40" y="40" as="geometry" />
+          <mxGeometry height="40" width="790" x="40" y="40" as="geometry" />
         </mxCell>
         <mxCell id="swim-commands" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="COMANDOS" vertex="1">
           <mxGeometry height="80" width="1720" x="40" y="100" as="geometry" />
