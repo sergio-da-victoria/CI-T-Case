@@ -650,7 +650,7 @@ Consultas (CQRS):
 ##### 4.1 Requisitos por Contexto Delimitado
 
 ##### Contexto: Identidade
-|ID|	Requisito|	Descrição|	Prioridade	|Critério de Aceitação|
+|ID|	Requisito|	Descrição|	Prioridade |Critério de Aceitação|
 |--|--|--|--|--|
 |RF-ID-01|Login com Cloud Identity|	Autenticar usuário via Google Cloud Identity|	Must Have|	Login bem sucedido com credenciais válidas|
 |RF-ID-02|Login com Active Directory|	Autenticar usuário via LDAP/Kerberos|	Must Have|	Login via domínio corporativo|
