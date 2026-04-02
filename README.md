@@ -1,6 +1,7 @@
 # CI&T Case - Fluxo de Caixa
 ####  Controle de fluxo de caixa diário com os lançamentos(débitos e créditos), também precisa de um relatório que disponibilize o saldo diário consolidado.
-![Texto descritivo](ddd-case.jpg)
+
+![Texto](/ddd-case.jpg)
 
 
 ### Descrição do Event Storming - Fluxo de Caixa
