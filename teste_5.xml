@@ -1,0 +1,211 @@
+<mxfile host="app.diagrams.net" agent="5.0">
+  <diagram id="fluxo-caixa-completo" name="Arquitetura Fluxo de Caixa DDD">
+    <mxGraphModel dx="1501" dy="797" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="titulo" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="Arquitetura de Microsserviços - Fluxo de Caixa (DDD + Event-Driven + CQRS)" vertex="1">
+          <mxGeometry height="40" width="800" x="400" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="usuario" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14" value="👤 Comerciante" vertex="1">
+          <mxGeometry height="60" width="160" x="40" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" value="API Gateway&#xa;(Kong / Nginx)" vertex="1">
+          <mxGeometry height="60" width="160" x="40" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-api" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" value="auth-api&#xa;(REST - Porta 8081)" vertex="1">
+          <mxGeometry height="60" width="160" x="280" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="lancamentos-api" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" value="lancamentos-api&#xa;(REST - Porta 8082)" vertex="1">
+          <mxGeometry height="60" width="180" x="520" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="consolidacao-api" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" value="consolidacao-api&#xa;(REST - Porta 8083)" vertex="1">
+          <mxGeometry height="60" width="180" x="780" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="relatorios-api" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" value="relatorios-api&#xa;(REST - Porta 8084)" vertex="1">
+          <mxGeometry height="60" width="160" x="1040" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-db" parent="1" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;" value="PostgreSQL&#xa;(Auth)" vertex="1">
+          <mxGeometry height="70" width="120" x="300" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="lancamentos-db" parent="1" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;" value="PostgreSQL&#xa;(Command DB)" vertex="1">
+          <mxGeometry height="70" width="120" x="550" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="redis-cache" parent="1" style="shape=cylinder3;fillColor=#ffe6cc;strokeColor=#d79b00;" value="Redis Cache&#xa;(Saldo Diário)" vertex="1">
+          <mxGeometry height="70" width="120" x="810" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="kafka" parent="1" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=12" value="Apache Kafka Cluster&#xa;Topics: lancamentos, consolidacao, notificacoes, auditoria" vertex="1">
+          <mxGeometry height="60" width="500" x="400" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="consolidacao-worker" parent="1" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" value="consolidacao-worker&#xa;(Consumer - Group cg1)" vertex="1">
+          <mxGeometry height="60" width="180" x="120" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="notificacoes-worker" parent="1" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" value="notificacoes-worker&#xa;(Consumer - Group cg2)" vertex="1">
+          <mxGeometry height="60" width="180" x="380" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="auditoria-worker" parent="1" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" value="auditoria-worker&#xa;(Consumer - Group cg3)" vertex="1">
+          <mxGeometry height="60" width="180" x="640" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="consolidacao-read-db" parent="1" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;" value="PostgreSQL&#xa;(Read DB - Saldo)" vertex="1">
+          <mxGeometry height="70" width="140" x="140" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="notificacoes-output" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="SMTP / Webhook&#xa;(E-mail/Slack)" vertex="1">
+          <mxGeometry height="70" width="140" x="400" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="auditoria-db" parent="1" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;" value="MongoDB&#xa;(Auditoria)" vertex="1">
+          <mxGeometry height="70" width="140" x="660" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-u-g" edge="1" parent="1" source="usuario" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="gateway" value="Requisições">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-g-auth" edge="1" parent="1" source="gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="auth-api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-g-lanc" edge="1" parent="1" source="gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="lancamentos-api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-g-cons" edge="1" parent="1" source="gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="consolidacao-api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-auth-db" edge="1" parent="1" source="auth-api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="auth-db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-lanc-db" edge="1" parent="1" source="lancamentos-api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="lancamentos-db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-cons-redis" edge="1" parent="1" source="consolidacao-api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="redis-cache">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-lanc-kafka" edge="1" parent="1" source="lancamentos-api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="kafka" value="Publica evento">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="610" y="300" />
+              <mxPoint x="650" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-kafka-consolidacao" edge="1" parent="1" source="kafka" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="consolidacao-worker" value="Consome lancamentos">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="400" y="400" />
+              <mxPoint x="210" y="400" />
+              <mxPoint x="210" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-kafka-notificacoes" edge="1" parent="1" source="kafka" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="notificacoes-worker" value="Consome consolidacao">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="400" />
+              <mxPoint x="470" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-kafka-auditoria" edge="1" parent="1" source="kafka" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="auditoria-worker" value="Consome tudo">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="730" y="400" />
+              <mxPoint x="730" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-worker-cons-read" edge="1" parent="1" source="consolidacao-worker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="consolidacao-read-db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-worker-cons-redis" edge="1" parent="1" source="consolidacao-worker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="redis-cache" value="Atualiza cache">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="210" y="560" />
+              <mxPoint x="870" y="560" />
+              <mxPoint x="870" y="280" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-worker-notif" edge="1" parent="1" source="notificacoes-worker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="notificacoes-output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-worker-audit" edge="1" parent="1" source="auditoria-worker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="auditoria-db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legenda-titulo" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1" value="Legenda" vertex="1">
+          <mxGeometry height="30" width="80" x="40" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-api" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="API Microsserviço" vertex="1">
+          <mxGeometry height="30" width="140" x="40" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-worker" parent="1" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" value="Worker (Consumer)" vertex="1">
+          <mxGeometry height="30" width="140" x="220" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-db" parent="1" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;" value="Banco de Dados" vertex="1">
+          <mxGeometry height="40" width="100" x="400" y="755" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-cache" parent="1" style="shape=cylinder3;fillColor=#ffe6cc;strokeColor=#d79b00;" value="Cache (Redis)" vertex="1">
+          <mxGeometry height="40" width="100" x="540" y="755" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-kafka" parent="1" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Kafka" vertex="1">
+          <mxGeometry height="30" width="100" x="680" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="bc-auth" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;fillColor=none;strokeColor=#6c8ebf;fontStyle=1" value="Bounded Context: Identidade" vertex="1">
+          <mxGeometry height="230" width="160" x="250" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="bc-lanc" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;fillColor=none;strokeColor=#82b366;fontStyle=1" value="Bounded Context: Lançamentos" vertex="1">
+          <mxGeometry height="230" width="210" x="490" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="bc-cons" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;fillColor=none;strokeColor=#d6b656;fontStyle=1" value="Bounded Context: Consolidação" vertex="1">
+          <mxGeometry height="230" width="250" x="740" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="bc-workers" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;fillColor=none;strokeColor=#9673a6;fontStyle=1" value="Workers &amp; Filas (Event-Driven)" vertex="1">
+          <mxGeometry height="250" width="780" x="80" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" value="Context Mapping (DDD)" vertex="1">
+          <mxGeometry height="30" width="300" x="1030" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-2" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="Identidade" vertex="1">
+          <mxGeometry height="40" width="120" x="1060" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-3" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Lançamentos" vertex="1">
+          <mxGeometry height="40" width="120" x="1060" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-4" edge="1" parent="1" source="Fv5tPyIfRpadu9y-lG9D-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="Fv5tPyIfRpadu9y-lG9D-16" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-5" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Consolidação" vertex="1">
+          <mxGeometry height="40" width="120" x="1060" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-6" parent="1" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Notificação" vertex="1">
+          <mxGeometry height="40" width="120" x="1060" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-7" parent="1" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" value="Auditoria" vertex="1">
+          <mxGeometry height="40" width="120" x="1060" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-8" edge="1" parent="1" source="Fv5tPyIfRpadu9y-lG9D-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1" target="Fv5tPyIfRpadu9y-lG9D-3" value="SKL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-9" edge="1" parent="1" source="Fv5tPyIfRpadu9y-lG9D-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1" target="Fv5tPyIfRpadu9y-lG9D-5" value="OHS/PL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-10" edge="1" parent="1" source="Fv5tPyIfRpadu9y-lG9D-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1" target="Fv5tPyIfRpadu9y-lG9D-6" value="ACL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-11" edge="1" parent="1" source="Fv5tPyIfRpadu9y-lG9D-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1" target="Fv5tPyIfRpadu9y-lG9D-7" value="ACL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-12" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1" value="SKL = Shared Kernel" vertex="1">
+          <mxGeometry height="20" width="150" x="1240" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-13" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1" value="OHS = Open Host Service" vertex="1">
+          <mxGeometry height="20" width="150" x="1240" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-14" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1" value="PL = Published Language" vertex="1">
+          <mxGeometry height="20" width="150" x="1240" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-15" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1" value="ACL = Anti-Corruption Layer" vertex="1">
+          <mxGeometry height="20" width="160" x="1240" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="Fv5tPyIfRpadu9y-lG9D-16" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="Consolidação" vertex="1">
+          <mxGeometry height="40" width="120" x="1060" y="530" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
