@@ -195,6 +195,7 @@ Registrar Auditoria|	Todos os eventos|	Salvar no MongoDB|	Log de todas as opera�
 ##### 6.1 Validação de Lançamento
 
 
+```
 
 SE valor <= 0 ENTÃO
     REJEITAR com erro "Valor deve ser maior que zero"
@@ -209,7 +210,12 @@ SE descricao VAZIA ENTÃO
     REJEITAR com erro "Descrição obrigatória"
 
 
+```    
+
+
 ##### 6.2 Cálculo de Saldo Diário
+
+```
 RECUPERAR SaldoDiario da data
 SE NÃO EXISTE ENTÃO
     CRIAR SaldoDiario com saldo = 0
@@ -224,13 +230,21 @@ SENÃO
 quantidadeTransacoes = quantidadeTransacoes + 1
 ultimaAtualizacao = DataHoraAtual
 
+```
+
 ##### 6.3 Alerta de Saldo Baixo
+
+```
 RECUPERAR limiteAlerta do usuário (padrão = 0)
 SE saldo < limiteAlerta ENTÃO
     DISPARAR evento SaldoBaixoAlertado
     ENVIAR e-mail/Slack para comerciante
 
+```    
+
 ##### 6.4 Atualização de Cache (Redis)
+
+```
 CHAVE = "saldo:{data:yyyy-MM-dd}"
 TTL = 24 horas
 SE cache EXISTE ENTÃO
@@ -238,8 +252,12 @@ SE cache EXISTE ENTÃO
 SENÃO
     CRIAR cache a partir do Read Database
 
+```
+
 #### 6.5 Auditoria
 
+
+```
 PARA CADA evento recebido:
     CRIAR registro com:
         - id = UUID
@@ -249,6 +267,8 @@ PARA CADA evento recebido:
         - ocorridoEm = timestamp
         - origem = tópico/fonte
     SALVAR no MongoDB
+
+```    
 
 
 
@@ -408,27 +428,27 @@ Sistemas externos são dependências de infraestrutura ou serviços de terceiros
 ```
 Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker    Redis    PostgreSQL    SendGrid
     │               │               │              │              │               │           │            │
-    │──POST /lancamentos──────────►│              │              │               │           │            │
+    │──POST /lancamentos───────────►│              │              │               │           │            │
     │               │               │              │              │               │           │            │
     │               │               │──Salva──────►│              │               │           │            │
     │               │               │              │              │               │           │            │
     │               │               │──Publica evento────────────►│               │           │            │
     │               │               │              │              │               │           │            │
-    │               │               │              │              │──Consome──────►│           │            │
+    │               │               │              │              │──Consome─────►│           │            │
     │               │               │              │              │               │           │            │
     │               │               │              │              │──Atualiza─────────────────►            │
     │               │               │              │              │               │           │            │
-    │               │               │              │              │──Atualiza────────────────────────────►│
+    │               │               │              │              │──Atualiza─────────────────────────────►│
     │               │               │              │              │               │           │            │
     │               │               │              │              │               │           │──Salva────►│
     │               │               │              │              │               │           │            │
-    │               │               │              │              │               │──Cache────►│            │
+    │               │               │              │              │               │──Cache───►│            │
     │               │               │              │              │               │           │            │
     │──GET /consolidado────────────►│              │              │               │           │            │
     │               │               │              │              │               │           │            │
-    │               │               │──────────────Busca cache────────────────────►│           │            │
+    │               │               │──────────────Busca cache───────────────────►│           │            │
     │               │               │              │              │               │           │            │
-    │               │               │◄─────────────Retorna saldo───────────────────│           │            │
+    │               │               │◄─────────────Retorna saldo──────────────────│           │            │
     │               │               │              │              │               │           │            │
     │◄──Saldo───────────────────────│              │              │               │           │            │
     │               │               │              │              │               │           │            │
