@@ -1,0 +1,458 @@
+<mxfile host="app.diagrams.net" agent="5.0">
+  <diagram name="BPMN - Fluxo de Caixa" id="bpmn-fluxo-caixa">
+    <mxGraphModel dx="983" dy="522" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3800" pageHeight="3000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="BPMN - Processo de Fluxo de Caixa: Lançamentos, Consolidação e Notificações" vertex="1">
+          <mxGeometry height="40" width="1000" x="1000" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-operador" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;" value="Operador de Caixa (Carlos)" vertex="1">
+          <mxGeometry height="200" width="3640" x="80" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="start-operador" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=10;" value="Início do Turno" vertex="1">
+          <mxGeometry height="40" width="40" x="120" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="task-registrar-lancamento" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" value="Registrar Lançamento&#xa;(Crédito/Débito)" vertex="1">
+          <mxGeometry height="70" width="140" x="200" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway-tipo" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=9;" value="Tipo de&#xa;Lançamento?" vertex="1">
+          <mxGeometry height="60" width="60" x="380" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="task-credito" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" value="Processar Crédito&#xa;(Entrada)" vertex="1">
+          <mxGeometry height="50" width="110" x="480" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="task-debito" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" value="Processar Débito&#xa;(Saída)" vertex="1">
+          <mxGeometry height="50" width="110" x="480" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="send-comando" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" value="Enviar Comando&#xa;para API" vertex="1">
+          <mxGeometry height="70" width="120" x="630" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="end-operador-sucesso" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" value="Lançamento&#xa;Registrado" vertex="1">
+          <mxGeometry height="40" width="40" x="790" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="event-falha" parent="1" style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;shape=event;fontSize=9;" value="Erro no&#xa;Registro" vertex="1">
+          <mxGeometry height="40" width="40" x="790" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-api-lancamentos" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" value="API Lancamentos (Command Side)" vertex="1">
+          <mxGeometry height="250" width="3640" x="80" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="msg-receber-comando" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=event;fontSize=9;" value="Receber Comando&#xa;HTTP" vertex="1">
+          <mxGeometry height="40" width="40" x="120" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="task-validar" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" value="Validar Comando&#xa;(FluentValidation)" vertex="1">
+          <mxGeometry height="70" width="120" x="200" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway-valido" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=9;" value="Válido?" vertex="1">
+          <mxGeometry height="60" width="60" x="360" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="task-cb" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" value="Circuit Breaker&#xa;(Polly)" vertex="1">
+          <mxGeometry height="70" width="100" x="460" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="task-persistir" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#4285f4;fontSize=9;" value="Persistir no&#xa;PostgreSQL" vertex="1">
+          <mxGeometry height="70" width="100" x="600" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="task-publicar" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" value="Publicar Evento&#xa;no Kafka" vertex="1">
+          <mxGeometry height="70" width="100" x="740" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="end-api-sucesso" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" value="Comando&#xa;Processado" vertex="1">
+          <mxGeometry height="40" width="40" x="880" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="task-erro" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" value="Retornar Erro&#xa;(400 Bad Request)" vertex="1">
+          <mxGeometry height="60" width="110" x="460" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="end-api-erro" parent="1" style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;shape=event;fontSize=9;" value="Erro" vertex="1">
+          <mxGeometry height="30" width="30" x="610" y="495" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-kafka" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=12;" value="Apache Kafka (Event Bus)" vertex="1">
+          <mxGeometry height="200" width="3640" x="80" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="topic-lancamentos" parent="1" style="shape=process;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" value="Topic: lancamentos.events&#xa;LancamentoCriadoEvent" vertex="1">
+          <mxGeometry height="60" width="200" x="200" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="topic-consolidados" parent="1" style="shape=process;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" value="Topic: consolidados.events&#xa;ConsolidadoGeradoEvent" vertex="1">
+          <mxGeometry height="60" width="200" x="1200" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="topic-notificacoes" parent="1" style="shape=process;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" value="Topic: notificacoes.events&#xa;NotificacaoEnviadaEvent" vertex="1">
+          <mxGeometry height="60" width="200" x="2200" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="topic-dlq" parent="1" style="shape=process;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" value="Topic: deadletter.queue&#xa;Eventos com Falha" vertex="1">
+          <mxGeometry height="60" width="200" x="3200" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-worker-consolidacao" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" value="Worker Consolidação (Assíncrono)" vertex="1">
+          <mxGeometry height="280" width="3640" x="80" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="msg-consumir" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=event;fontSize=9;" value="Consumir Evento&#xa;do Kafka" vertex="1">
+          <mxGeometry height="40" width="40" x="120" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="task-cb-worker" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;" value="Circuit Breaker&#xa;(Polly - 5 failures/60s)" vertex="1">
+          <mxGeometry height="70" width="120" x="200" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="task-calcular" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" value="Calcular Consolidado&#xa;Diário (Domain Service)" vertex="1">
+          <mxGeometry height="70" width="130" x="360" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="task-update-write" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#4285f4;fontSize=9;" value="Atualizar Write Model&#xa;(PostgreSQL)" vertex="1">
+          <mxGeometry height="70" width="120" x="530" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="task-update-read" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#4285f4;fontSize=9;" value="Atualizar Read Model&#xa;(MongoDB Atlas)" vertex="1">
+          <mxGeometry height="70" width="120" x="690" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="task-update-cache" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" value="Atualizar Cache&#xa;(Redis)" vertex="1">
+          <mxGeometry height="70" width="100" x="850" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="task-pub-consolidado" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;" value="Publicar Evento&#xa;ConsolidadoGeradoEvent" vertex="1">
+          <mxGeometry height="70" width="120" x="990" y="825" as="geometry" />
+        </mxCell>
+        <mxCell id="end-worker" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" value="Evento&#xa;Processado" vertex="1">
+          <mxGeometry height="40" width="40" x="1150" y="840" as="geometry" />
+        </mxCell>
+        <mxCell id="subprocess-dlq" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;shape=subprocess;" value="Dead Letter Queue" vertex="1">
+          <mxGeometry height="70" width="200" x="360" y="920" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-api-consolidacao" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=12;" value="API Consolidação (Query Side)" vertex="1">
+          <mxGeometry height="260" width="3640" x="80" y="1030" as="geometry" />
+        </mxCell>
+        <mxCell id="start-consulta" parent="1" style="whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;shape=event;fontSize=9;" value="Usuário Solicita&#xa;Consulta" vertex="1">
+          <mxGeometry height="40" width="40" x="120" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="task-check-cache" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" value="Verificar Cache&#xa;(Redis - Cache-First)" vertex="1">
+          <mxGeometry height="70" width="130" x="200" y="1115" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway-cache" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=9;" value="Cache Hit?" vertex="1">
+          <mxGeometry height="60" width="60" x="370" y="1120" as="geometry" />
+        </mxCell>
+        <mxCell id="task-cache-hit" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" value="Retornar Dados&#xa;do Cache" vertex="1">
+          <mxGeometry height="50" width="100" x="470" y="1095" as="geometry" />
+        </mxCell>
+        <mxCell id="task-query-mongo" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#4285f4;fontSize=9;" value="Consultar Read Model&#xa;(MongoDB Atlas)" vertex="1">
+          <mxGeometry height="60" width="130" x="470" y="1165" as="geometry" />
+        </mxCell>
+        <mxCell id="task-update-cache-query" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" value="Atualizar Cache&#xa;(Redis)" vertex="1">
+          <mxGeometry height="60" width="100" x="640" y="1165" as="geometry" />
+        </mxCell>
+        <mxCell id="end-consulta" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" value="Dados&#xa;Retornados" vertex="1">
+          <mxGeometry height="40" width="40" x="780" y="1145" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-worker-notificacoes" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;" value="Worker Notificações (Assíncrono)" vertex="1">
+          <mxGeometry height="260" width="3640" x="80" y="1290" as="geometry" />
+        </mxCell>
+        <mxCell id="start-notif" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=event;fontSize=9;" value="Consumir Evento&#xa;de Consolidação" vertex="1">
+          <mxGeometry height="40" width="40" x="120" y="1390" as="geometry" />
+        </mxCell>
+        <mxCell id="task-cb-notif" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;" value="Circuit Breaker&#xa;(Polly - 3 failures/60s)" vertex="1">
+          <mxGeometry height="70" width="120" x="200" y="1375" as="geometry" />
+        </mxCell>
+        <mxCell id="task-preparar" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" value="Preparar Notificação&#xa;(Template + Dados)" vertex="1">
+          <mxGeometry height="70" width="120" x="360" y="1375" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway-canal" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=9;" value="Canal?" vertex="1">
+          <mxGeometry height="60" width="60" x="520" y="1380" as="geometry" />
+        </mxCell>
+        <mxCell id="task-email" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" value="Enviar Email&#xa;(SendGrid)" vertex="1">
+          <mxGeometry height="50" width="100" x="620" y="1345" as="geometry" />
+        </mxCell>
+        <mxCell id="task-sms" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" value="Enviar SMS&#xa;(Twilio)" vertex="1">
+          <mxGeometry height="50" width="100" x="620" y="1420" as="geometry" />
+        </mxCell>
+        <mxCell id="task-registrar" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#4285f4;fontSize=9;" value="Registrar Envio&#xa;no Banco" vertex="1">
+          <mxGeometry height="70" width="100" x="760" y="1375" as="geometry" />
+        </mxCell>
+        <mxCell id="end-notif" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" value="Notificação&#xa;Enviada" vertex="1">
+          <mxGeometry height="40" width="40" x="900" y="1390" as="geometry" />
+        </mxCell>
+        <mxCell id="task-dlq-handler" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;" value="DLQ Handler&#xa;(Retry Policy)" vertex="1">
+          <mxGeometry height="50" width="100" x="620" y="1500" as="geometry" />
+        </mxCell>
+        <mxCell id="lane-monitoring" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;fontStyle=1;fontSize=12;" value="Google Cloud Observability (Monitoramento)" vertex="1">
+          <mxGeometry height="260" width="3640" x="80" y="1550" as="geometry" />
+        </mxCell>
+        <mxCell id="timer-monitoring" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=event;fontSize=9;" value="Timer:&#xa;A cada 1 minuto" vertex="1">
+          <mxGeometry height="40" width="40" x="120" y="1650" as="geometry" />
+        </mxCell>
+        <mxCell id="task-coletar" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" value="Coletar Métricas&#xa;(Prometheus/OTel)" vertex="1">
+          <mxGeometry height="70" width="120" x="200" y="1635" as="geometry" />
+        </mxCell>
+        <mxCell id="task-slos" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" value="Verificar SLOs&#xa;(99.95% Availability)" vertex="1">
+          <mxGeometry height="70" width="120" x="360" y="1635" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway-alerta" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=9;" value="Alerta&#xa;Necessário?" vertex="1">
+          <mxGeometry height="60" width="60" x="520" y="1640" as="geometry" />
+        </mxCell>
+        <mxCell id="task-alerta" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" value="Enviar Alerta&#xa;(PagerDuty/Slack)" vertex="1">
+          <mxGeometry height="50" width="100" x="620" y="1645" as="geometry" />
+        </mxCell>
+        <mxCell id="task-dashboard" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" value="Atualizar Dashboard&#xa;(Grafana)" vertex="1">
+          <mxGeometry height="70" width="100" x="760" y="1635" as="geometry" />
+        </mxCell>
+        <mxCell id="end-monitoring" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" value="Ciclo&#xa;Concluído" vertex="1">
+          <mxGeometry height="40" width="40" x="900" y="1650" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-start-task" edge="1" parent="1" source="start-operador" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-registrar-lancamento">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-task-gateway" edge="1" parent="1" source="task-registrar-lancamento" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="gateway-tipo">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-gateway-credito" edge="1" parent="1" source="gateway-tipo" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-credito">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-gateway-debito" edge="1" parent="1" source="gateway-tipo" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-debito">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-credito-send" edge="1" parent="1" source="task-credito" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="send-comando">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-debito-send" edge="1" parent="1" source="task-debito" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="send-comando">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-send-end" edge="1" parent="1" source="send-comando" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="end-operador-sucesso">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-send-falha" edge="1" parent="1" source="send-comando" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" target="event-falha">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-send-msg" edge="1" parent="1" source="send-comando" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" target="msg-receber-comando">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="220" />
+              <mxPoint x="140" y="220" />
+              <mxPoint x="140" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-msg-validar" edge="1" parent="1" source="msg-receber-comando" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-validar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-validar-gateway" edge="1" parent="1" source="task-validar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="gateway-valido">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-gateway-cb" edge="1" parent="1" source="gateway-valido" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-cb">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-cb-persist" edge="1" parent="1" source="task-cb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-persistir">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-persist-publicar" edge="1" parent="1" source="task-persistir" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-publicar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-publicar-end" edge="1" parent="1" source="task-publicar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="end-api-sucesso">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-gateway-erro" edge="1" parent="1" source="gateway-valido" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" target="task-erro">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-erro-end" edge="1" parent="1" source="task-erro" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" target="end-api-erro">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-pub-kafka" edge="1" parent="1" source="task-publicar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" target="topic-lancamentos">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="790" y="445" />
+              <mxPoint x="300" y="445" />
+              <mxPoint x="300" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-kafka-worker" edge="1" parent="1" source="topic-lancamentos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" target="msg-consumir">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="680" />
+              <mxPoint x="140" y="680" />
+              <mxPoint x="140" y="840" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-worker-kafka" edge="1" parent="1" source="task-pub-consolidado" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" target="topic-consolidados">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1050" y="895" />
+              <mxPoint x="1300" y="895" />
+              <mxPoint x="1300" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-kafka-notif" edge="1" parent="1" source="topic-consolidados" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" target="start-notif">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1300" y="680" />
+              <mxPoint x="140" y="680" />
+              <mxPoint x="140" y="1390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-dlq" edge="1" parent="1" source="subprocess-dlq" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" target="topic-dlq">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="990" />
+              <mxPoint x="3300" y="990" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-msg-cb" edge="1" parent="1" source="msg-consumir" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-cb-worker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-cb-calcular" edge="1" parent="1" source="task-cb-worker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-calcular">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-calcular-write" edge="1" parent="1" source="task-calcular" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-update-write">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-write-read" edge="1" parent="1" source="task-update-write" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-update-read">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-read-cache" edge="1" parent="1" source="task-update-read" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-update-cache">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-cache-pub" edge="1" parent="1" source="task-update-cache" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-pub-consolidado">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-pub-end" edge="1" parent="1" source="task-pub-consolidado" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="end-worker">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-cb-falha" edge="1" parent="1" source="task-cb-worker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" target="subprocess-dlq">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-start-consulta" edge="1" parent="1" source="start-consulta" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" target="task-check-cache">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-check-cache" edge="1" parent="1" source="task-check-cache" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="gateway-cache">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-cache-hit" edge="1" parent="1" source="gateway-cache" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-cache-hit">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1150" as="sourcePoint" />
+            <mxPoint x="470" y="1120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-cache-miss" edge="1" parent="1" source="gateway-cache" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-query-mongo">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1150" as="sourcePoint" />
+            <mxPoint x="470" y="1195" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-query-update" edge="1" parent="1" source="task-query-mongo" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-update-cache-query">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-update-end" edge="1" parent="1" source="task-update-cache-query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="end-consulta">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-cache-hit-end" edge="1" parent="1" source="task-cache-hit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="end-consulta">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-start-cb" edge="1" parent="1" source="start-notif" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-cb-notif">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-cb-preparar" edge="1" parent="1" source="task-cb-notif" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-preparar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-preparar-gateway" edge="1" parent="1" source="task-preparar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="gateway-canal">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-gateway-email" edge="1" parent="1" source="gateway-canal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-email">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="1410" as="sourcePoint" />
+            <mxPoint x="620" y="1370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-gateway-sms" edge="1" parent="1" source="gateway-canal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-sms">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="1410" as="sourcePoint" />
+            <mxPoint x="620" y="1445" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-email-registrar" edge="1" parent="1" source="task-email" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-registrar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-sms-registrar" edge="1" parent="1" source="task-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="task-registrar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-registrar-end" edge="1" parent="1" source="task-registrar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" target="end-notif">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-cb-falha-notif" edge="1" parent="1" source="task-cb-notif" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" target="task-dlq-handler">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-dlq-topic" edge="1" parent="1" source="task-dlq-handler" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" target="topic-dlq">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="1550" />
+              <mxPoint x="3300" y="1550" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-timer-coletar" edge="1" parent="1" source="timer-monitoring" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" target="task-coletar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-coletar-slos" edge="1" parent="1" source="task-coletar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" target="task-slos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-slos-gateway" edge="1" parent="1" source="task-slos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" target="gateway-alerta">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-alerta-sim" edge="1" parent="1" source="gateway-alerta" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" target="task-alerta">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="1670" as="sourcePoint" />
+            <mxPoint x="620" y="1670" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-alerta-dash" edge="1" parent="1" source="task-alerta" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" target="task-dashboard">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-gateway-nao" edge="1" parent="1" source="gateway-alerta" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" target="task-dashboard">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="1670" as="sourcePoint" />
+            <mxPoint x="760" y="1670" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-dash-end" edge="1" parent="1" source="task-dashboard" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" target="end-monitoring">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-bpmn" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="200" width="500" x="1000" y="1850" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1" value="📌 Legenda BPMN" vertex="1">
+          <mxGeometry height="20" width="120" x="1010" y="1855" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-event-start" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=8;" value="Start Event" vertex="1">
+          <mxGeometry height="30" width="30" x="1020" y="1885" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-event-end" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=8;" value="End Event" vertex="1">
+          <mxGeometry height="30" width="30" x="1070" y="1885" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-task" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=8;" value="Task" vertex="1">
+          <mxGeometry height="30" width="50" x="1120" y="1885" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-gateway" parent="1" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=8;" value="Gateway" vertex="1">
+          <mxGeometry height="30" width="30" x="1190" y="1885" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-swimlane" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;fontSize=8;" value="Swimlane (Pool/Lane)" vertex="1">
+          <mxGeometry height="30" width="80" x="1240" y="1885" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-message" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" value="Message Flow">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1020" y="1945" as="sourcePoint" />
+            <mxPoint x="1100" y="1945" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-sequence" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" value="Sequence Flow">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1020" y="1975" as="sourcePoint" />
+            <mxPoint x="1100" y="1975" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-error" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" value="Error Flow">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1020" y="2005" as="sourcePoint" />
+            <mxPoint x="1100" y="2005" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend-kafka" parent="1" style="shape=process;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;" value="Kafka Topic" vertex="1">
+          <mxGeometry height="30" width="80" x="1120" y="1940" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-circuit" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;" value="Circuit Breaker" vertex="1">
+          <mxGeometry height="30" width="80" x="1220" y="1940" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

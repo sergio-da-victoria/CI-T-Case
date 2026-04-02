@@ -1,0 +1,247 @@
+<mxfile host="app.diagrams.net" agent="5.0">
+  <diagram name="Arquitetura DDD com CQRS" id="ddd-cqrs-arquitetura-pt">
+    <mxGraphModel dx="2826" dy="757" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="titulo" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1" value="Sistema de Controle de Fluxo de Caixa - Arquitetura DDD com Event-Driven e CQRS" vertex="1">
+          <mxGeometry height="40" width="700" x="350" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="dominios-container" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f0f0f0;strokeColor=#666666;fontSize=14;fontStyle=1" value="DOMÍNIOS E SUBDOMÍNIOS" vertex="1">
+          <mxGeometry height="280" width="320" x="40" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="dominio-core" parent="dominios-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;align=left;fontSize=12;" value="🎯 DOMÍNIO CORE: Gestão de Fluxo de Caixa" vertex="1">
+          <mxGeometry height="35" width="300" x="10" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="subdominio-core" parent="dominios-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;fontSize=11;" value="📌 SUBDOMÍNIOS CORE (Críticos):&#xa;• Registro de Transações (Débitos/Créditos)&#xa;• Cálculo de Saldo Diário" vertex="1">
+          <mxGeometry height="60" width="300" x="10" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="subdominio-suporte" parent="dominios-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;fontSize=11;" value="⚙️ SUBDOMÍNIOS DE SUPORTE:&#xa;• Validação de Transações&#xa;• Relatórios e Análises Financeiras" vertex="1">
+          <mxGeometry height="55" width="300" x="10" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="subdominio-generico" parent="dominios-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;fontSize=11;" value="🔧 SUBDOMÍNIOS GENÉRICOS:&#xa;• Autenticação/Autorização&#xa;• Auditoria • Notificações • Logging" vertex="1">
+          <mxGeometry height="55" width="300" x="10" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="ms-transacao-cmd" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="MICROSSERVIÇO DE TRANSAÇÃO&#xa;(CQRS - Lado de Escrita)" vertex="1">
+          <mxGeometry height="220" width="300" x="40" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="comandos" parent="ms-transacao-cmd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;fontSize=11;" value="📝 COMANDOS:&#xa;• Criar Transação&#xa;• Atualizar Transação&#xa;• Cancelar Transação&#xa;• Validar Transação" vertex="1">
+          <mxGeometry height="70" width="280" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="agregado" parent="ms-transacao-cmd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="📦 AGREGADO: Raiz de Transação" vertex="1">
+          <mxGeometry height="30" width="280" x="10" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="eventos-tx" parent="ms-transacao-cmd" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;fontSize=11;" value="📢 EVENTOS PUBLICADOS:&#xa;TransaçãoCriada, TransaçãoAtualizada" vertex="1">
+          <mxGeometry height="40" width="280" x="10" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="ms-saldo-query" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="MICROSSERVIÇO DE SALDO&#xa;(CQRS - Lado de Leitura)" vertex="1">
+          <mxGeometry height="220" width="300" x="380" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="consultas" parent="ms-saldo-query" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=left;fontSize=11;" value="🔍 CONSULTAS:&#xa;• Obter Saldo Diário&#xa;• Obter Histórico de Saldo&#xa;• Obter Saldo Atual" vertex="1">
+          <mxGeometry height="60" width="280" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="modelo-leitura" parent="ms-saldo-query" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;fontSize=11;" value="📖 MODELO DE LEITURA:&#xa;SaldoDiarioReadModel (Desnormalizado)" vertex="1">
+          <mxGeometry height="40" width="280" x="10" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="cache-redis" parent="ms-saldo-query" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="⚡ CAMADA DE CACHE (Redis)" vertex="1">
+          <mxGeometry height="30" width="280" x="10" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="ms-consolidacao" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="PROCESSADOR DE CONSOLIDAÇÃO DIÁRIA" vertex="1">
+          <mxGeometry height="220" width="300" x="720" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="consome-eventos" parent="ms-consolidacao" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;fontSize=11;" value="📥 CONSUME EVENTOS:&#xa;• TransaçãoCriada&#xa;• Trigger Agendado (23:00)" vertex="1">
+          <mxGeometry height="50" width="280" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="processo" parent="ms-consolidacao" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;fontSize=11;" value="⚙️ PROCESSO:&#xa;Calcular Saldo Diário&#xa;Atualizar Visão Materializada" vertex="1">
+          <mxGeometry height="50" width="280" x="10" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="eventos-consolidacao" parent="ms-consolidacao" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;fontSize=11;" value="📢 EVENTOS PUBLICADOS:&#xa;SaldoDiarioConsolidado, AlertaGerado" vertex="1">
+          <mxGeometry height="40" width="280" x="10" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="ms-relatorios" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="MICROSSERVIÇO DE RELATÓRIOS" vertex="1">
+          <mxGeometry height="220" width="300" x="1060" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="consome-relatorios" parent="ms-relatorios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;fontSize=11;" value="📥 CONSUME EVENTOS:&#xa;• SaldoDiarioConsolidado&#xa;• RelatórioSolicitado" vertex="1">
+          <mxGeometry height="50" width="280" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="geracao" parent="ms-relatorios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;fontSize=11;" value="📊 GERAÇÃO DE RELATÓRIOS:&#xa;• Relatório Diário&#xa;• Resumo Mensal&#xa;• Relatório Personalizado" vertex="1">
+          <mxGeometry height="60" width="280" x="10" y="115" as="geometry" />
+        </mxCell>
+        <mxCell id="cache-relatorios" parent="ms-relatorios" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="⚡ CACHE Redis (Resultados de Relatórios)" vertex="1">
+          <mxGeometry height="30" width="280" x="10" y="185" as="geometry" />
+        </mxCell>
+        <mxCell id="mongo-escrita" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;" value="MongoDB&#xa;(Modelo de Escrita)" vertex="1">
+          <mxGeometry height="80" width="140" x="130" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="mongo-leitura" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;" value="MongoDB&#xa;(Modelo de Leitura)" vertex="1">
+          <mxGeometry height="80" width="140" x="450" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;" value="Redis&#xa;(Cache Distribuído)" vertex="1">
+          <mxGeometry height="80" width="140" x="790" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="event-store" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=11;" value="Event Store&#xa;(MongoDB - Eventos)" vertex="1">
+          <mxGeometry height="80" width="140" x="1130" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="barramento" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=13;align=center;" value="BARRAMENTO DE EVENTOS - Apache Kafka" vertex="1">
+          <mxGeometry height="60" width="320" x="470" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="topico-transacoes" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="📨 topic: transacoes" vertex="1">
+          <mxGeometry height="30" width="120" x="460" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="topico-saldos" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="📨 topic: saldos" vertex="1">
+          <mxGeometry height="30" width="120" x="600" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="topico-alertas" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" value="📨 topic: alertas" vertex="1">
+          <mxGeometry height="30" width="120" x="740" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-tx-barramento" edge="1" parent="1" source="ms-transacao-cmd" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" target="barramento">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-tx-barramento-label" connectable="0" parent="conn-tx-barramento" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="Publica Eventos" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="1" as="geometry">
+            <mxPoint x="10" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-barramento-saldo" edge="1" parent="1" source="barramento" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" target="ms-saldo-query">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="540" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-barramento-saldo-label" connectable="0" parent="conn-barramento-saldo" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="Atualiza Modelo de Leitura" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="1" as="geometry">
+            <mxPoint x="-30" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-barramento-consolidacao" edge="1" parent="1" source="barramento" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" target="ms-consolidacao">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="860" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-consolidacao-barramento" edge="1" parent="1" source="ms-consolidacao" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" target="barramento">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="860" y="380" />
+              <mxPoint x="700" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-barramento-relatorios" edge="1" parent="1" source="barramento" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" target="ms-relatorios">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1200" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-tx-mongo" edge="1" parent="1" source="ms-transacao-cmd" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=1;dashed=1;" target="mongo-escrita">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="190" y="650" />
+              <mxPoint x="180" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-saldo-mongo" edge="1" parent="1" source="ms-saldo-query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=1;dashed=1;" target="mongo-leitura">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-saldo-redis" edge="1" parent="1" source="ms-saldo-query" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=1;dashed=1;" target="redis">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-consolidacao-mongo" edge="1" parent="1" source="ms-consolidacao" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=1;dashed=1;" target="mongo-leitura">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-relatorios-redis" edge="1" parent="1" source="ms-relatorios" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=1;dashed=1;" target="redis">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-relatorios-mongo" edge="1" parent="1" source="ms-relatorios" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=1;dashed=1;" target="mongo-leitura">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-barramento-eventstore" edge="1" parent="1" source="barramento" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=1;dashed=1;" target="event-store">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1380" y="110" />
+              <mxPoint x="1380" y="720" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="usuario" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="👤 Usuário / Comerciante" vertex="1">
+          <mxGeometry height="80" width="50" x="40" y="820" as="geometry" />
+        </mxCell>
+        <mxCell id="conn-usuario-transacao" edge="1" parent="1" source="usuario" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-20" y="810" as="sourcePoint" />
+            <mxPoint x="105" y="610" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-usuario-transacao-label" connectable="0" parent="conn-usuario-transacao" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="Comandos (Escrita)" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="1" as="geometry">
+            <mxPoint x="-14" y="-70" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-usuario-saldo" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="80" y="860" />
+              <mxPoint x="545" y="860" />
+              <mxPoint x="545" y="620" />
+            </Array>
+            <mxPoint x="95" y="860" as="sourcePoint" />
+            <mxPoint x="545" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-usuario-saldo-label" connectable="0" parent="conn-usuario-saldo" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" value="Consultas (Leitura)" vertex="1">
+          <mxGeometry relative="1" x="-0.2" y="1" as="geometry">
+            <mxPoint x="30" y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="conn-usuario-relatorios" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=classic;endFill=1;strokeWidth=1;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1120" y="880" />
+            </Array>
+            <mxPoint y="880" as="sourcePoint" />
+            <mxPoint x="1120" y="620" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legenda" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#000000;fontSize=12;" value="LEGENDA" vertex="1">
+          <mxGeometry height="220" width="160" x="530" y="900" as="geometry">
+            <mxRectangle height="35" width="100" x="720" y="900" as="alternateBounds" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legenda-ms" parent="legenda" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;align=left;fontStyle=1" value="🏢 Microsserviço" vertex="1">
+          <mxGeometry height="30" width="160" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="legenda-comando" parent="legenda" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;fontStyle=1" value="📝 Comando/Consulta" vertex="1">
+          <mxGeometry height="30" width="160" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="legenda-evento" parent="legenda" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;align=left;fontStyle=1" value="📢 Evento" vertex="1">
+          <mxGeometry height="30" width="160" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="legenda-db" parent="legenda" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=8;fontSize=10;fontStyle=1" value="🗄️ Banco de Dados" vertex="1">
+          <mxGeometry height="40" width="160" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="legenda-barramento" parent="legenda" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fontSize=10;fontStyle=1" value="📨 Barramento de Eventos" vertex="1">
+          <mxGeometry height="55" width="160" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="bounded-contexts" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="CONTEXTOS DELIMITADOS (Bounded Contexts)" vertex="1">
+          <mxGeometry height="215" width="310" x="190" y="900" as="geometry" />
+        </mxCell>
+        <mxCell id="bc1" parent="bounded-contexts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1" value="Contexto de Transações" vertex="1">
+          <mxGeometry height="30" width="310" y="35" as="geometry" />
+        </mxCell>
+        <mxCell id="bc2" parent="bounded-contexts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1" value="Contexto de Saldo Diário" vertex="1">
+          <mxGeometry height="30" width="310" y="65" as="geometry" />
+        </mxCell>
+        <mxCell id="bc3" parent="bounded-contexts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1" value="Contexto de Consolidação" vertex="1">
+          <mxGeometry height="30" width="310" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="bc4" parent="bounded-contexts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1" value="Contexto de Relatórios" vertex="1">
+          <mxGeometry height="30" width="310" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="bc5" parent="bounded-contexts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1" value="Contexto de Notificações" vertex="1">
+          <mxGeometry height="30" width="310" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="bc6" parent="bounded-contexts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="Contexto de Auditoria" vertex="1">
+          <mxGeometry height="30" width="310" y="185" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

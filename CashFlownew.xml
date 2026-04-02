@@ -1,0 +1,665 @@
+<mxfile host="app.diagrams.net" modified="2024-01-01T00:00:00.000Z" agent="5.0" etag="xxx" version="21.0.0">
+  <diagram name="BPMN - Fluxo de Caixa" id="bpmn-fluxo-caixa">
+    <mxGraphModel dx="3200" dy="2400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3800" pageHeight="3000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        
+        <!-- Título Principal -->
+        <mxCell id="title" value="BPMN - Processo de Fluxo de Caixa: Lançamentos, Consolidação e Notificações" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1000" y="20" width="1000" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== LANE 1: USUÁRIO OPERADOR ==================== -->
+        
+        <mxCell id="lane-operador" value="Operador de Caixa (Carlos)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="100" width="3640" height="200" as="geometry"/>
+        </mxCell>
+        
+        <!-- Start Event -->
+        <mxCell id="start-operador" value="Início do Turno" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="120" y="170" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Registrar Lançamento -->
+        <mxCell id="task-registrar-lancamento" value="Registrar Lançamento&#xa;(Crédito/Débito)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="200" y="155" width="140" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Gateway: Tipo de Lançamento -->
+        <mxCell id="gateway-tipo" value="Tipo de&#xa;Lançamento?" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="380" y="160" width="60" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Crédito -->
+        <mxCell id="task-credito" value="Processar Crédito&#xa;(Entrada)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="480" y="125" width="110" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Débito -->
+        <mxCell id="task-debito" value="Processar Débito&#xa;(Saída)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="480" y="205" width="110" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- Send Task: Enviar Comando -->
+        <mxCell id="send-comando" value="Enviar Comando&#xa;para API" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="630" y="155" width="120" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- End Event: Sucesso -->
+        <mxCell id="end-operador-sucesso" value="Lançamento&#xa;Registrado" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="790" y="170" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Event: Falha -->
+        <mxCell id="event-falha" value="Erro no&#xa;Registro" style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="790" y="230" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== LANE 2: API LANÇAMENTOS ==================== -->
+        
+        <mxCell id="lane-api-lancamentos" value="API Lancamentos (Command Side)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="300" width="3640" height="250" as="geometry"/>
+        </mxCell>
+        
+        <!-- Start Message Event -->
+        <mxCell id="msg-receber-comando" value="Receber Comando&#xa;HTTP" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="120" y="390" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Validar Comando -->
+        <mxCell id="task-validar" value="Validar Comando&#xa;(FluentValidation)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="200" y="375" width="120" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Gateway: Válido? -->
+        <mxCell id="gateway-valido" value="Válido?" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="360" y="380" width="60" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Processar com Circuit Breaker -->
+        <mxCell id="task-cb" value="Circuit Breaker&#xa;(Polly)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="460" y="375" width="100" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Persistir PostgreSQL -->
+        <mxCell id="task-persistir" value="Persistir no&#xa;PostgreSQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#4285f4;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="600" y="375" width="100" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Send Task: Publicar Evento -->
+        <mxCell id="task-publicar" value="Publicar Evento&#xa;no Kafka" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="740" y="375" width="100" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- End Event: Sucesso -->
+        <mxCell id="end-api-sucesso" value="Comando&#xa;Processado" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="880" y="390" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Retornar Erro -->
+        <mxCell id="task-erro" value="Retornar Erro&#xa;(400 Bad Request)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="460" y="480" width="110" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- End Error Event -->
+        <mxCell id="end-api-erro" value="Erro" style="whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="610" y="495" width="30" height="30" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== LANE 3: KAFKA EVENT BUS ==================== -->
+        
+        <mxCell id="lane-kafka" value="Apache Kafka (Event Bus)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="550" width="3640" height="200" as="geometry"/>
+        </mxCell>
+        
+        <!-- Topic: Lancamentos Events -->
+        <mxCell id="topic-lancamentos" value="Topic: lancamentos.events&#xa;LancamentoCriadoEvent" style="shape=process;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="200" y="620" width="200" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Topic: Consolidados Events -->
+        <mxCell id="topic-consolidados" value="Topic: consolidados.events&#xa;ConsolidadoGeradoEvent" style="shape=process;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1200" y="620" width="200" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Topic: Notificacoes Events -->
+        <mxCell id="topic-notificacoes" value="Topic: notificacoes.events&#xa;NotificacaoEnviadaEvent" style="shape=process;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="2200" y="620" width="200" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Topic: Dead Letter Queue -->
+        <mxCell id="topic-dlq" value="Topic: deadletter.queue&#xa;Eventos com Falha" style="shape=process;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="3200" y="620" width="200" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== LANE 4: WORKER CONSOLIDAÇÃO ==================== -->
+        
+        <mxCell id="lane-worker-consolidacao" value="Worker Consolidação (Assíncrono)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="750" width="3640" height="280" as="geometry"/>
+        </mxCell>
+        
+        <!-- Start Message Event -->
+        <mxCell id="msg-consumir" value="Consumir Evento&#xa;do Kafka" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="120" y="840" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Circuit Breaker Worker -->
+        <mxCell id="task-cb-worker" value="Circuit Breaker&#xa;(Polly - 5 failures/60s)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="200" y="825" width="120" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Calcular Consolidado -->
+        <mxCell id="task-calcular" value="Calcular Consolidado&#xa;Diário (Domain Service)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="360" y="825" width="130" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Atualizar Write Model -->
+        <mxCell id="task-update-write" value="Atualizar Write Model&#xa;(PostgreSQL)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#4285f4;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="530" y="825" width="120" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Atualizar Read Model -->
+        <mxCell id="task-update-read" value="Atualizar Read Model&#xa;(MongoDB Atlas)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#4285f4;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="690" y="825" width="120" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Atualizar Cache -->
+        <mxCell id="task-update-cache" value="Atualizar Cache&#xa;(Redis)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="850" y="825" width="100" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Send Task: Publicar Consolidado -->
+        <mxCell id="task-pub-consolidado" value="Publicar Evento&#xa;ConsolidadoGeradoEvent" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="990" y="825" width="120" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- End Event -->
+        <mxCell id="end-worker" value="Evento&#xa;Processado" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="840" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Subprocess: DLQ -->
+        <mxCell id="subprocess-dlq" value="Dead Letter Queue" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;shape=subprocess;" vertex="1" parent="1">
+          <mxGeometry x="360" y="920" width="200" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== LANE 5: API CONSOLIDAÇÃO ==================== -->
+        
+        <mxCell id="lane-api-consolidacao" value="API Consolidação (Query Side)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1030" width="3640" height="260" as="geometry"/>
+        </mxCell>
+        
+        <!-- Start: Usuário Consulta -->
+        <mxCell id="start-consulta" value="Usuário Solicita&#xa;Consulta" style="whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1130" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Verificar Cache -->
+        <mxCell id="task-check-cache" value="Verificar Cache&#xa;(Redis - Cache-First)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1115" width="130" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Gateway: Cache Hit? -->
+        <mxCell id="gateway-cache" value="Cache Hit?" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="370" y="1120" width="60" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Retornar do Cache -->
+        <mxCell id="task-cache-hit" value="Retornar Dados&#xa;do Cache" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="470" y="1095" width="100" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Consultar MongoDB -->
+        <mxCell id="task-query-mongo" value="Consultar Read Model&#xa;(MongoDB Atlas)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#4285f4;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="470" y="1165" width="130" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Atualizar Cache -->
+        <mxCell id="task-update-cache-query" value="Atualizar Cache&#xa;(Redis)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="640" y="1165" width="100" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- End Event -->
+        <mxCell id="end-consulta" value="Dados&#xa;Retornados" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="780" y="1145" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== LANE 6: WORKER NOTIFICAÇÕES ==================== -->
+        
+        <mxCell id="lane-worker-notificacoes" value="Worker Notificações (Assíncrono)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1290" width="3640" height="260" as="geometry"/>
+        </mxCell>
+        
+        <!-- Start: Consumir Evento -->
+        <mxCell id="start-notif" value="Consumir Evento&#xa;de Consolidação" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1390" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Circuit Breaker Notificação -->
+        <mxCell id="task-cb-notif" value="Circuit Breaker&#xa;(Polly - 3 failures/60s)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1375" width="120" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Preparar Notificação -->
+        <mxCell id="task-preparar" value="Preparar Notificação&#xa;(Template + Dados)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1375" width="120" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Gateway: Canal -->
+        <mxCell id="gateway-canal" value="Canal?" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1380" width="60" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Enviar Email -->
+        <mxCell id="task-email" value="Enviar Email&#xa;(SendGrid)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="620" y="1345" width="100" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Enviar SMS -->
+        <mxCell id="task-sms" value="Enviar SMS&#xa;(Twilio)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="620" y="1420" width="100" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Registrar Envio -->
+        <mxCell id="task-registrar" value="Registrar Envio&#xa;no Banco" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f0fe;strokeColor=#4285f4;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="760" y="1375" width="100" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- End Event -->
+        <mxCell id="end-notif" value="Notificação&#xa;Enviada" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="900" y="1390" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- DLQ Handler -->
+        <mxCell id="task-dlq-handler" value="DLQ Handler&#xa;(Retry Policy)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="620" y="1500" width="100" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== LANE 7: MONITORAMENTO ==================== -->
+        
+        <mxCell id="lane-monitoring" value="Google Cloud Observability (Monitoramento)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1550" width="3640" height="260" as="geometry"/>
+        </mxCell>
+        
+        <!-- Start Timer -->
+        <mxCell id="timer-monitoring" value="Timer:&#xa;A cada 1 minuto" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="120" y="1650" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Coletar Métricas -->
+        <mxCell id="task-coletar" value="Coletar Métricas&#xa;(Prometheus/OTel)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1635" width="120" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Verificar SLOs -->
+        <mxCell id="task-slos" value="Verificar SLOs&#xa;(99.95% Availability)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1635" width="120" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- Gateway: Alerta? -->
+        <mxCell id="gateway-alerta" value="Alerta&#xa;Necessário?" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="520" y="1640" width="60" height="60" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Enviar Alerta -->
+        <mxCell id="task-alerta" value="Enviar Alerta&#xa;(PagerDuty/Slack)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="620" y="1645" width="100" height="50" as="geometry"/>
+        </mxCell>
+        
+        <!-- Task: Atualizar Dashboard -->
+        <mxCell id="task-dashboard" value="Atualizar Dashboard&#xa;(Grafana)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="760" y="1635" width="100" height="70" as="geometry"/>
+        </mxCell>
+        
+        <!-- End Event -->
+        <mxCell id="end-monitoring" value="Ciclo&#xa;Concluído" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=9;" vertex="1" parent="1">
+          <mxGeometry x="900" y="1650" width="40" height="40" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== CONEXÕES ==================== -->
+        
+        <!-- Lane 1 Connections -->
+        <mxCell id="conn-start-task" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="start-operador" target="task-registrar-lancamento">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-task-gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-registrar-lancamento" target="gateway-tipo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-gateway-credito" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="gateway-tipo" target="task-credito">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-gateway-debito" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="gateway-tipo" target="task-debito">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-credito-send" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-credito" target="send-comando">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-debito-send" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-debito" target="send-comando">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-send-end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="send-comando" target="end-operador-sucesso">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-send-falha" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" edge="1" parent="1" source="send-comando" target="event-falha">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Lane 2 Connections (API) -->
+        <mxCell id="conn-send-msg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" edge="1" parent="1" source="send-comando" target="msg-receber-comando">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="220"/>
+              <mxPoint x="140" y="220"/>
+              <mxPoint x="140" y="390"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-msg-validar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="msg-receber-comando" target="task-validar">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-validar-gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-validar" target="gateway-valido">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-gateway-cb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="gateway-valido" target="task-cb">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-cb-persist" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-cb" target="task-persistir">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-persist-publicar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-persistir" target="task-publicar">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-publicar-end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-publicar" target="end-api-sucesso">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-gateway-erro" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="gateway-valido" target="task-erro">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-erro-end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="task-erro" target="end-api-erro">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Kafka Connections -->
+        <mxCell id="conn-pub-kafka" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1" source="task-publicar" target="topic-lancamentos">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="790" y="445"/>
+              <mxPoint x="300" y="445"/>
+              <mxPoint x="300" y="650"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-kafka-worker" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" edge="1" parent="1" source="topic-lancamentos" target="msg-consumir">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="680"/>
+              <mxPoint x="140" y="680"/>
+              <mxPoint x="140" y="840"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-worker-kafka" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;" edge="1" parent="1" source="task-pub-consolidado" target="topic-consolidados">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1050" y="895"/>
+              <mxPoint x="1300" y="895"/>
+              <mxPoint x="1300" y="650"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-kafka-notif" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" edge="1" parent="1" source="topic-consolidados" target="start-notif">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1300" y="680"/>
+              <mxPoint x="140" y="680"/>
+              <mxPoint x="140" y="1390"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-dlq" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" edge="1" parent="1" source="subprocess-dlq" target="topic-dlq">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="990"/>
+              <mxPoint x="3300" y="990"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Worker Consolidacao Flow -->
+        <mxCell id="conn-msg-cb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="msg-consumir" target="task-cb-worker">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-cb-calcular" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-cb-worker" target="task-calcular">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-calcular-write" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-calcular" target="task-update-write">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-write-read" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-update-write" target="task-update-read">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-read-cache" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-update-read" target="task-update-cache">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-cache-pub" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-update-cache" target="task-pub-consolidado">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-pub-end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-pub-consolidado" target="end-worker">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-cb-falha" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" edge="1" parent="1" source="task-cb-worker" target="subprocess-dlq">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Query API Flow -->
+        <mxCell id="conn-start-consulta" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;" edge="1" parent="1" source="start-consulta" target="task-check-cache">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-check-cache" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-check-cache" target="gateway-cache">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-cache-hit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="gateway-cache" target="task-cache-hit">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1150" as="sourcePoint"/>
+            <mxPoint x="470" y="1120" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-cache-miss" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="gateway-cache" target="task-query-mongo">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="400" y="1150" as="sourcePoint"/>
+            <mxPoint x="470" y="1195" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-query-update" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-query-mongo" target="task-update-cache-query">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-update-end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-update-cache-query" target="end-consulta">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-cache-hit-end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-cache-hit" target="end-consulta">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- Notifications Flow -->
+        <mxCell id="conn-start-cb" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="start-notif" target="task-cb-notif">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-cb-preparar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-cb-notif" target="task-preparar">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-preparar-gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-preparar" target="gateway-canal">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-gateway-email" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="gateway-canal" target="task-email">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="1410" as="sourcePoint"/>
+            <mxPoint x="620" y="1370" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-gateway-sms" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="gateway-canal" target="task-sms">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="1410" as="sourcePoint"/>
+            <mxPoint x="620" y="1445" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-email-registrar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-email" target="task-registrar">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-sms-registrar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-sms" target="task-registrar">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-registrar-end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1" source="task-registrar" target="end-notif">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-cb-falha-notif" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" edge="1" parent="1" source="task-cb-notif" target="task-dlq-handler">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-dlq-topic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" edge="1" parent="1" source="task-dlq-handler" target="topic-dlq">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="670" y="1550"/>
+              <mxPoint x="3300" y="1550"/>
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Monitoring Flow -->
+        <mxCell id="conn-timer-coletar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" edge="1" parent="1" source="timer-monitoring" target="task-coletar">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-coletar-slos" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" edge="1" parent="1" source="task-coletar" target="task-slos">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-slos-gateway" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" edge="1" parent="1" source="task-slos" target="gateway-alerta">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-alerta-sim" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;" edge="1" parent="1" source="gateway-alerta" target="task-alerta">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="1670" as="sourcePoint"/>
+            <mxPoint x="620" y="1670" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-alerta-dash" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" edge="1" parent="1" source="task-alerta" target="task-dashboard">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="conn-gateway-nao" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" edge="1" parent="1" source="gateway-alerta" target="task-dashboard">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="550" y="1670" as="sourcePoint"/>
+            <mxPoint x="760" y="1670" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="conn-dash-end" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#7b1fa2;" edge="1" parent="1" source="task-dashboard" target="end-monitoring">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        
+        <!-- ==================== LEGENDA BPMN ==================== -->
+        
+        <mxCell id="legend-bpmn" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="1850" width="500" height="200" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend-title" value="📌 Legenda BPMN" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1010" y="1855" width="120" height="20" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend-event-start" value="Start Event" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="1885" width="30" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend-event-end" value="End Event" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;shape=event;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1070" y="1885" width="30" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend-task" value="Task" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="1885" width="50" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend-gateway" value="Gateway" style="whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;shape=rhombus;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="1885" width="30" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend-swimlane" value="Swimlane (Pool/Lane)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="1885" width="80" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend-message" value="Message Flow" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1020" y="1945" as="sourcePoint"/>
+            <mxPoint x="1100" y="1945" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="legend-sequence" value="Sequence Flow" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#82b366;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1020" y="1975" as="sourcePoint"/>
+            <mxPoint x="1100" y="1975" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="legend-error" value="Error Flow" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#b85450;dashed=1;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1020" y="2005" as="sourcePoint"/>
+            <mxPoint x="1100" y="2005" as="targetPoint"/>
+          </mxGeometry>
+        </mxCell>
+        
+        <mxCell id="legend-kafka" value="Kafka Topic" style="shape=process;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1120" y="1940" width="80" height="30" as="geometry"/>
+        </mxCell>
+        
+        <mxCell id="legend-circuit" value="Circuit Breaker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=8;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="1940" width="80" height="30" as="geometry"/>
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
