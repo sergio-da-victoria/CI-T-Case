@@ -13,8 +13,8 @@
         <mxCell id="yQ7JtxndztwSu07hya46-43" parent="1" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;fillColor=none;strokeColor=#d6b656;fontStyle=1;movable=1;resizable=1;rotatable=1;deletable=1;editable=1;locked=0;connectable=1;" value="Bounded Context: Consolidação" vertex="1">
           <mxGeometry height="230" width="250" x="870" y="70" as="geometry" />
         </mxCell>
-        <mxCell id="yQ7JtxndztwSu07hya46-3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="Arquitetura de Microsserviços - Fluxo de Caixa (DDD + Event-Driven + CQRS)" vertex="1">
-          <mxGeometry height="40" width="740" x="140" y="20" as="geometry" />
+        <mxCell id="yQ7JtxndztwSu07hya46-3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="&amp;nbsp;Fluxo de Caixa (DDD + Event-Driven + CQRS)" vertex="1">
+          <mxGeometry height="40" width="440" x="40" y="20" as="geometry" />
         </mxCell>
         <mxCell id="-zuOesloJLIlN1hfB6Br-3" edge="1" parent="1" source="yQ7JtxndztwSu07hya46-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="-zuOesloJLIlN1hfB6Br-1" value="">
           <mxGeometry relative="1" as="geometry" />

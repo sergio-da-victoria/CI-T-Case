@@ -1,322 +1,330 @@
-<mxfile host="app.diagrams.net" modified="2025-01-01T00:00:00.000Z" agent="5.0" etag="cognito-ad-waf" version="22.1.0">
-  <diagram id="fluxo-caixa-completo" name="Arquitetura Fluxo de Caixa DDD com Cognito+AD e WAF">
-    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+<mxfile host="app.diagrams.net" modified="2025-01-01T00:00:00.000Z" agent="5.0" etag="event-storming" version="22.1.0">
+  <diagram id="event-storming-fluxo-caixa" name="Event Storming - Fluxo de Caixa">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1500" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
         <!-- Título -->
-        <mxCell id="titulo" value="Arquitetura de Microsserviços - Fluxo de Caixa (DDD + Event-Driven + CQRS + Cognito/AD + WAF)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=18;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="300" y="20" width="1000" height="40" as="geometry"/>
+        <mxCell id="titulo" value="Event Storming - Fluxo de Caixa (Controle de Lançamentos e Consolidado Diário)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=22;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="500" y="20" width="800" height="40" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== USUÁRIO ==================== -->
-        <mxCell id="usuario" value="👤 Comerciante" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14" vertex="1" parent="1">
-          <mxGeometry x="40" y="100" width="160" height="60" as="geometry"/>
+        <!-- Linha do Tempo (Swimlanes) -->
+        <!-- Linha: Comandos -->
+        <mxCell id="swim-commands" value="COMANDOS" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="100" width="1720" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== WAF FIREWALL ==================== -->
-        <mxCell id="waf" value="🛡️ WAF Firewall&#xa;(AWS WAF / CloudFlare / Azure WAF)&#xa;Regras: OWASP Top 10, Rate Limiting, IP Reputation" style="rounded=1;fillColor=#ffcccc;strokeColor=#cc0000;fontStyle=1;fontSize=11" vertex="1" parent="1">
-          <mxGeometry x="40" y="220" width="280" height="70" as="geometry"/>
+        <!-- Linha: Eventos -->
+        <mxCell id="swim-events" value="EVENTOS DE DOMÍNIO" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="40" y="200" width="1720" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== API GATEWAY ==================== -->
-        <mxCell id="gateway" value="API Gateway&#xa;(Kong / Yarp / Ocelot)" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="40" y="340" width="160" height="60" as="geometry"/>
+        <!-- Linha: Agregados -->
+        <mxCell id="swim-aggregates" value="AGREGADOS" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="1720" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== BOUNDED CONTEXT: IDENTIDADE (Cognito + AD) ==================== -->
-        <mxCell id="bc-auth" value="Bounded Context: Identidade (Cognito + Active Directory)" style="rounded=0;whiteSpace=wrap;html=1;dashed=1;dashPattern=8 8;fillColor=none;strokeColor=#6c8ebf;fontStyle=1;fontSize=13" vertex="1" parent="1">
-          <mxGeometry x="280" y="80" width="520" height="280" as="geometry"/>
+        <!-- Linha: Atores -->
+        <mxCell id="swim-actors" value="ATORES / USUÁRIOS" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="40" y="400" width="1720" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- Cognito -->
-        <mxCell id="cognito" value="🔐 AWS Cognito&#xa;(User Pool + Identity Pool)&#xa;• MFA (SMS/TOTP)&#xa;• Social Login (Google, Apple)&#xa;• Federated Identities" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11" vertex="1" parent="1">
-          <mxGeometry x="300" y="110" width="220" height="80" as="geometry"/>
+        <!-- Linha: Políticas / Regras de Negócio -->
+        <mxCell id="swim-policies" value="POLÍTICAS / REGRAS DE NEGÓCIO" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="1720" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- Active Directory -->
-        <mxCell id="ad" value="🏢 Active Directory (AD)&#xa;• LDAP / Kerberos&#xa;• Sincronização Cognito&#xa;• On-Premises ou Azure AD" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11" vertex="1" parent="1">
-          <mxGeometry x="560" y="110" width="220" height="80" as="geometry"/>
+        <!-- Linha: Leituras / Consultas -->
+        <mxCell id="swim-reads" value="LEITURAS / CONSULTAS (CQRS)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="40" y="600" width="1720" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- Auth API -->
-        <mxCell id="auth-api" value="auth-api&#xa;(ASP.NET Core - Porta 8081)&#xa;Integração Cognito + AD" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11" vertex="1" parent="1">
-          <mxGeometry x="380" y="230" width="220" height="60" as="geometry"/>
+        <!-- Linha: Sistemas Externos -->
+        <mxCell id="swim-external" value="SISTEMAS EXTERNOS" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="700" width="1720" height="80" as="geometry"/>
         </mxCell>
 
-        <!-- Seta Cognito -> Auth API -->
-        <mxCell id="edge-cognito-auth" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="cognito" target="auth-api">
+        <!-- ==================== COMANDOS ==================== -->
+        <mxCell id="cmd-registrar-lancamento" value="Registrar Lançamento" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12" vertex="1" parent="swim-commands">
+          <mxGeometry x="100" y="35" width="160" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cmd-consultar-saldo" value="Consultar Saldo Diário" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12" vertex="1" parent="swim-commands">
+          <mxGeometry x="400" y="35" width="180" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cmd-cancelar-lancamento" value="Cancelar Lançamento" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12" vertex="1" parent="swim-commands">
+          <mxGeometry x="720" y="35" width="170" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cmd-gerar-relatorio" value="Gerar Relatório Período" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12" vertex="1" parent="swim-commands">
+          <mxGeometry x="1030" y="35" width="180" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="cmd-exportar-extrato" value="Exportar Extrato" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12" vertex="1" parent="swim-commands">
+          <mxGeometry x="1350" y="35" width="150" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== EVENTOS ==================== -->
+        <mxCell id="evt-lancamento-registrado" value="LancamentoRegistrado" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12" vertex="1" parent="swim-events">
+          <mxGeometry x="100" y="35" width="180" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="evt-saldo-atualizado" value="SaldoDiarioAtualizado" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12" vertex="1" parent="swim-events">
+          <mxGeometry x="420" y="35" width="190" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="evt-lancamento-cancelado" value="LancamentoCancelado" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12" vertex="1" parent="swim-events">
+          <mxGeometry x="740" y="35" width="180" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="evt-saldo-baixo" value="SaldoBaixoAlertado" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12" vertex="1" parent="swim-events">
+          <mxGeometry x="1050" y="35" width="170" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="evt-relatorio-gerado" value="RelatorioPeriodoGerado" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12" vertex="1" parent="swim-events">
+          <mxGeometry x="1360" y="35" width="190" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== AGREGADOS ==================== -->
+        <mxCell id="agg-lancamento" value="Lancamento" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=14" vertex="1" parent="swim-aggregates">
+          <mxGeometry x="100" y="30" width="160" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="agg-saldo-diario" value="SaldoDiario" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=14" vertex="1" parent="swim-aggregates">
+          <mxGeometry x="420" y="30" width="160" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="agg-saldo-mensal" value="SaldoMensal" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=14" vertex="1" parent="swim-aggregates">
+          <mxGeometry x="740" y="30" width="160" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="agg-relatorio" value="RelatorioPeriodo" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=14" vertex="1" parent="swim-aggregates">
+          <mxGeometry x="1060" y="30" width="160" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== ATORES ==================== -->
+        <mxCell id="actor-comerciante" value="👤 Comerciante" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=13" vertex="1" parent="swim-actors">
+          <mxGeometry x="100" y="30" width="150" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor-admin" value="👨‍💼 Administrador" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=13" vertex="1" parent="swim-actors">
+          <mxGeometry x="400" y="30" width="150" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actor-sistema" value="🤖 Sistema (Automático)" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=13" vertex="1" parent="swim-actors">
+          <mxGeometry x="700" y="30" width="170" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== POLÍTICAS ==================== -->
+        <mxCell id="policy-validacao" value="Validar Lançamento" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11" vertex="1" parent="swim-policies">
+          <mxGeometry x="100" y="35" width="160" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="policy-calculo-saldo" value="Calcular Saldo Diário" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11" vertex="1" parent="swim-policies">
+          <mxGeometry x="380" y="35" width="170" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="policy-alerta-saldo" value="Verificar Limite de Alerta" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11" vertex="1" parent="swim-policies">
+          <mxGeometry x="680" y="35" width="180" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="policy-atualizacao-cache" value="Atualizar Cache (Redis)" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11" vertex="1" parent="swim-policies">
+          <mxGeometry x="1000" y="35" width="180" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="policy-auditoria" value="Registrar Auditoria" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11" vertex="1" parent="swim-policies">
+          <mxGeometry x="1320" y="35" width="160" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== LEITURAS (CQRS) ==================== -->
+        <mxCell id="read-saldo-diario" value="📊 Consultar Saldo Diário" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11" vertex="1" parent="swim-reads">
+          <mxGeometry x="100" y="35" width="190" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="read-extrato" value="📄 Obter Extrato Período" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11" vertex="1" parent="swim-reads">
+          <mxGeometry x="420" y="35" width="190" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="read-relatorio" value="📈 Relatório Gerencial" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11" vertex="1" parent="swim-reads">
+          <mxGeometry x="750" y="35" width="190" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== SISTEMAS EXTERNOS ==================== -->
+        <mxCell id="ext-cognito" value="🔐 AWS Cognito" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" vertex="1" parent="swim-external">
+          <mxGeometry x="100" y="35" width="150" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext-ad" value="🏢 Active Directory" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" vertex="1" parent="swim-external">
+          <mxGeometry x="380" y="35" width="150" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext-kafka" value="📨 Apache Kafka" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" vertex="1" parent="swim-external">
+          <mxGeometry x="660" y="35" width="150" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext-redis" value="⚡ Redis Cache" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" vertex="1" parent="swim-external">
+          <mxGeometry x="940" y="35" width="150" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="ext-smtp" value="📧 SMTP / SendGrid" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" vertex="1" parent="swim-external">
+          <mxGeometry x="1220" y="35" width="160" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== CONEXÕES (FLUXO) ==================== -->
+        
+        <!-- Comandos -> Eventos -->
+        <mxCell id="flow-cmd1-ev1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0066CC;" edge="1" parent="1" source="cmd-registrar-lancamento" target="evt-lancamento-registrado">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- Seta AD -> Auth API -->
-        <mxCell id="edge-ad-auth" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ad" target="auth-api">
+        <mxCell id="flow-cmd2-ev2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0066CC;" edge="1" parent="1" source="cmd-cancelar-lancamento" target="evt-lancamento-cancelado">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- ==================== MICROSSERVIÇOS API ==================== -->
-        <mxCell id="lancamentos-api" value="lancamentos-api&#xa;(REST - Porta 8082)" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="540" y="420" width="180" height="60" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="consolidacao-api" value="consolidacao-api&#xa;(REST - Porta 8083)" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="800" y="420" width="180" height="60" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="relatorios-api" value="relatorios-api&#xa;(REST - Porta 8084)" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="1060" y="420" width="180" height="60" as="geometry"/>
-        </mxCell>
-
-        <!-- ==================== BANCOS DE DADOS (API) ==================== -->
-        <mxCell id="auth-db" value="PostgreSQL&#xa;(Auth - Usuários Locais)" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="420" y="340" width="140" height="70" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="lancamentos-db" value="PostgreSQL&#xa;(Command DB)" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="570" y="540" width="120" height="70" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="redis-cache" value="Redis Cache&#xa;(Saldo Diário)" style="shape=cylinder3;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
-          <mxGeometry x="830" y="540" width="120" height="70" as="geometry"/>
-        </mxCell>
-
-        <!-- ==================== KAFKA ==================== -->
-        <mxCell id="kafka" value="Apache Kafka Cluster&#xa;Topics: lancamentos, consolidacao, notificacoes, auditoria, dlq" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11" vertex="1" parent="1">
-          <mxGeometry x="520" y="660" width="480" height="60" as="geometry"/>
-        </mxCell>
-
-        <!-- ==================== WORKERS ==================== -->
-        <mxCell id="consolidacao-worker" value="consolidacao-worker&#xa;(Consumer - Group cg1)" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" vertex="1" parent="1">
-          <mxGeometry x="120" y="780" width="180" height="60" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="notificacoes-worker" value="notificacoes-worker&#xa;(Consumer - Group cg2)" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" vertex="1" parent="1">
-          <mxGeometry x="380" y="780" width="180" height="60" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="auditoria-worker" value="auditoria-worker&#xa;(Consumer - Group cg3)" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=11" vertex="1" parent="1">
-          <mxGeometry x="640" y="780" width="180" height="60" as="geometry"/>
-        </mxCell>
-
-        <!-- ==================== BANCOS WORKERS ==================== -->
-        <mxCell id="consolidacao-read-db" value="PostgreSQL&#xa;(Read DB - Saldo)" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="140" y="900" width="140" height="70" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="notificacoes-output" value="SMTP / Webhook&#xa;(E-mail/Slack)" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
-          <mxGeometry x="400" y="900" width="140" height="70" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="auditoria-db" value="MongoDB&#xa;(Auditoria)" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="660" y="900" width="140" height="70" as="geometry"/>
-        </mxCell>
-
-        <!-- ==================== CONEXÕES ==================== -->
-        <!-- Usuário -> WAF -->
-        <mxCell id="edge-u-waf" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="usuario" target="waf">
+        <!-- Eventos -> Agregados -->
+        <mxCell id="flow-ev1-agg1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#009900;" edge="1" parent="1" source="evt-lancamento-registrado" target="agg-lancamento">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- WAF -> Gateway -->
-        <mxCell id="edge-waf-gateway" value="Filtra tráfego" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="waf" target="gateway">
+        <mxCell id="flow-ev2-agg2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#009900;" edge="1" parent="1" source="evt-saldo-atualizado" target="agg-saldo-diario">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <!-- Gateway -> APIs -->
-        <mxCell id="edge-g-auth" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="gateway" target="auth-api">
+        <mxCell id="flow-ev3-agg1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#009900;" edge="1" parent="1" source="evt-lancamento-cancelado" target="agg-lancamento">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Eventos -> Políticas -->
+        <mxCell id="flow-ev1-pol1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#FF6600;dashed=1;" edge="1" parent="1" source="evt-lancamento-registrado" target="policy-validacao">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-ev1-pol2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#FF6600;dashed=1;" edge="1" parent="1" source="evt-lancamento-registrado" target="policy-calculo-saldo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-ev2-pol3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#FF6600;dashed=1;" edge="1" parent="1" source="evt-saldo-atualizado" target="policy-alerta-saldo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-ev2-pol4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#FF6600;dashed=1;" edge="1" parent="1" source="evt-saldo-atualizado" target="policy-atualizacao-cache">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-ev1-pol5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#FF6600;dashed=1;" edge="1" parent="1" source="evt-lancamento-registrado" target="policy-auditoria">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Atores -> Comandos -->
+        <mxCell id="flow-actor1-cmd1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#CC0000;" edge="1" parent="1" source="actor-comerciante" target="cmd-registrar-lancamento">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-actor1-cmd2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#CC0000;" edge="1" parent="1" source="actor-comerciante" target="cmd-consultar-saldo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-actor1-cmd3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#CC0000;" edge="1" parent="1" source="actor-comerciante" target="cmd-cancelar-lancamento">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-actor2-cmd4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#CC0000;" edge="1" parent="1" source="actor-admin" target="cmd-gerar-relatorio">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-actor3-cmd5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#CC0000;" edge="1" parent="1" source="actor-sistema" target="policy-alerta-saldo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Leituras -> Comandos (CQRS) -->
+        <mxCell id="flow-read1-cmd2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;dashed=1;" edge="1" parent="1" source="read-saldo-diario" target="cmd-consultar-saldo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Políticas -> Eventos -->
+        <mxCell id="flow-pol2-ev2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#FF6600;dashed=1;" edge="1" parent="1" source="policy-calculo-saldo" target="evt-saldo-atualizado">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-pol3-ev4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#FF6600;dashed=1;" edge="1" parent="1" source="policy-alerta-saldo" target="evt-saldo-baixo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Sistemas Externos -->
+        <mxCell id="flow-ext1-cognito" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#999999;dashed=1;" edge="1" parent="1" source="ext-cognito" target="actor-comerciante">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-ext2-ad" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#999999;dashed=1;" edge="1" parent="1" source="ext-ad" target="actor-comerciante">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-ext3-kafka" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#999999;dashed=1;" edge="1" parent="1" source="ext-kafka" target="evt-lancamento-registrado">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-ext4-redis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#999999;dashed=1;" edge="1" parent="1" source="ext-redis" target="read-saldo-diario">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="flow-ext5-smtp" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#999999;dashed=1;" edge="1" parent="1" source="ext-smtp" target="evt-saldo-baixo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- ==================== LEGENDA ==================== -->
+        <mxCell id="legenda-box" value="LEGENDA" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontStyle=1;fontSize=14;align=center;" vertex="1" parent="1">
+          <mxGeometry x="40" y="820" width="200" height="30" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="leg-cmd" value="Comando" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="860" width="100" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg-ev" value="Evento" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="180" y="860" width="100" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg-agg" value="Agregado" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="300" y="860" width="100" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg-actor" value="Ator" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="420" y="860" width="100" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg-policy" value="Política" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="540" y="860" width="100" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg-read" value="Leitura (CQRS)" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="660" y="860" width="120" height="25" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg-ext" value="Sistema Externo" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="800" y="860" width="120" height="25" as="geometry"/>
+        </mxCell>
+
+        <!-- Legendas das Setas -->
+        <mxCell id="leg-flow1" value="Comando → Evento" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0066CC;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="200" y="370"/>
-              <mxPoint x="490" y="370"/>
-              <mxPoint x="490" y="260"/>
-            </Array>
+            <mxPoint x="60" y="920" as="sourcePoint"/>
+            <mxPoint x="200" y="920" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-
-        <mxCell id="edge-g-lanc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="gateway" target="lancamentos-api">
+        <mxCell id="leg-flow2" value="Evento → Agregado" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#009900;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="200" y="370"/>
-              <mxPoint x="630" y="370"/>
-              <mxPoint x="630" y="420"/>
-            </Array>
+            <mxPoint x="60" y="950" as="sourcePoint"/>
+            <mxPoint x="200" y="950" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-
-        <mxCell id="edge-g-cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="gateway" target="consolidacao-api">
+        <mxCell id="leg-flow3" value="Evento → Política (gatilho)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#FF6600;dashed=1;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="200" y="370"/>
-              <mxPoint x="890" y="370"/>
-              <mxPoint x="890" y="420"/>
-            </Array>
+            <mxPoint x="60" y="980" as="sourcePoint"/>
+            <mxPoint x="200" y="980" as="targetPoint"/>
           </mxGeometry>
         </mxCell>
-
-        <!-- Auth API -> Auth DB -->
-        <mxCell id="edge-auth-db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="auth-api" target="auth-db">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Lancamentos API -> DB -->
-        <mxCell id="edge-lanc-db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="lancamentos-api" target="lancamentos-db">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Consolidacao API -> Redis -->
-        <mxCell id="edge-cons-redis" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="consolidacao-api" target="redis-cache">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Lancamentos API -> Kafka -->
-        <mxCell id="edge-lanc-kafka" value="Publica evento" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="lancamentos-api" target="kafka">
+        <mxCell id="leg-flow4" value="Ator → Comando" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#CC0000;" edge="1" parent="1">
           <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="630" y="600"/>
-              <mxPoint x="760" y="600"/>
-            </Array>
+            <mxPoint x="60" y="1010" as="sourcePoint"/>
+            <mxPoint x="200" y="1010" as="targetPoint"/>
           </mxGeometry>
-        </mxCell>
-
-        <!-- Kafka -> Workers -->
-        <mxCell id="edge-kafka-cons" value="Consome" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="kafka" target="consolidacao-worker">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="520" y="720"/>
-              <mxPoint x="210" y="720"/>
-              <mxPoint x="210" y="780"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <mxCell id="edge-kafka-notif" value="Consome" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="kafka" target="notificacoes-worker">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="760" y="720"/>
-              <mxPoint x="470" y="720"/>
-              <mxPoint x="470" y="780"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <mxCell id="edge-kafka-audit" value="Consome" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="kafka" target="auditoria-worker">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1000" y="720"/>
-              <mxPoint x="730" y="720"/>
-              <mxPoint x="730" y="780"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <!-- Workers -> Bancos -->
-        <mxCell id="edge-worker-cons-db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="consolidacao-worker" target="consolidacao-read-db">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="edge-worker-cons-redis" value="Atualiza" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="consolidacao-worker" target="redis-cache">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="210" y="860"/>
-              <mxPoint x="890" y="860"/>
-              <mxPoint x="890" y="610"/>
-            </Array>
-          </mxGeometry>
-        </mxCell>
-
-        <mxCell id="edge-worker-notif-out" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="notificacoes-worker" target="notificacoes-output">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="edge-worker-audit-db" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="auditoria-worker" target="auditoria-db">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- ==================== CONTEXT MAPPING ==================== -->
-        <mxCell id="context-mapping-title" value="Context Mapping (DDD)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="1050" y="660" width="300" height="30" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="cm-identidade" value="Identidade&#xa;(Cognito+AD)" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="1080" y="700" width="140" height="50" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="cm-lancamentos" value="Lançamentos" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
-          <mxGeometry x="1080" y="770" width="140" height="40" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="cm-consolidacao" value="Consolidação" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
-          <mxGeometry x="1080" y="830" width="140" height="40" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="cm-notificacao" value="Notificação" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
-          <mxGeometry x="1080" y="890" width="140" height="40" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="cm-auditoria" value="Auditoria" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="1080" y="950" width="140" height="40" as="geometry"/>
-        </mxCell>
-
-        <!-- Relações Context Mapping -->
-        <mxCell id="cm-edge1" value="SKL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1" edge="1" parent="1" source="cm-identidade" target="cm-lancamentos">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="cm-edge2" value="OHS/PL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1" edge="1" parent="1" source="cm-lancamentos" target="cm-consolidacao">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="cm-edge3" value="ACL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1" edge="1" parent="1" source="cm-consolidacao" target="cm-notificacao">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-        <mxCell id="cm-edge4" value="ACL" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1" edge="1" parent="1" source="cm-lancamentos" target="cm-auditoria">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <!-- Legenda Context Mapping -->
-        <mxCell id="leg-skl" value="SKL = Shared Kernel" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10" vertex="1" parent="1">
-          <mxGeometry x="1260" y="705" width="150" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg-ohs" value="OHS = Open Host Service" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10" vertex="1" parent="1">
-          <mxGeometry x="1260" y="775" width="150" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg-pl" value="PL = Published Language" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10" vertex="1" parent="1">
-          <mxGeometry x="1260" y="795" width="150" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="leg-acl" value="ACL = Anti-Corruption Layer" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=10" vertex="1" parent="1">
-          <mxGeometry x="1260" y="835" width="160" height="20" as="geometry"/>
-        </mxCell>
-
-        <!-- ==================== LEGENDAS GERAIS ==================== -->
-        <mxCell id="leg-titulo" value="Legenda" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=14;fontStyle=1" vertex="1" parent="1">
-          <mxGeometry x="40" y="1020" width="80" height="30" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="leg-waf" value="WAF Firewall" style="rounded=1;fillColor=#ffcccc;strokeColor=#cc0000;" vertex="1" parent="1">
-          <mxGeometry x="40" y="1060" width="100" height="30" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="leg-api" value="API Microsserviço" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
-          <mxGeometry x="160" y="1060" width="120" height="30" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="leg-worker" value="Worker" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
-          <mxGeometry x="300" y="1060" width="100" height="30" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="leg-db" value="Database" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
-          <mxGeometry x="420" y="1055" width="80" height="40" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="leg-cache" value="Redis Cache" style="shape=cylinder3;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
-          <mxGeometry x="520" y="1055" width="80" height="40" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="leg-kafka" value="Kafka" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
-          <mxGeometry x="620" y="1060" width="100" height="30" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="leg-cognito" value="Cognito/AD" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
-          <mxGeometry x="740" y="1060" width="100" height="30" as="geometry"/>
         </mxCell>
 
       </root>
