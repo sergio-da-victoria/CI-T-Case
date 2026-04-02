@@ -191,7 +191,7 @@ Verificar Limite de Alerta|	SaldoDiarioAtualizado|	Disparar alerta|	Se saldo < 0
 |Atualizar Cache (Redis)|	SaldoDiarioAtualizado|	Atualizar Redis|	Manter cache quente para consultas|
 Registrar Auditoria|	Todos os eventos|	Salvar no MongoDB|	Log de todas as operações|
 
-#### Regras de Negócio Detalhadas
+### Regras de Negócio Detalhadas
 ##### 6.1 Validação de Lançamento
 
 
@@ -209,7 +209,7 @@ SE descricao VAZIA ENTÃO
     REJEITAR com erro "Descrição obrigatória"
 
 
-#### 2. Cálculo de Saldo Diário
+##### 6.2 Cálculo de Saldo Diário
 RECUPERAR SaldoDiario da data
 SE NÃO EXISTE ENTÃO
     CRIAR SaldoDiario com saldo = 0
@@ -224,13 +224,13 @@ SENÃO
 quantidadeTransacoes = quantidadeTransacoes + 1
 ultimaAtualizacao = DataHoraAtual
 
-#### 3. Alerta de Saldo Baixo
+##### 6.3 Alerta de Saldo Baixo
 RECUPERAR limiteAlerta do usuário (padrão = 0)
 SE saldo < limiteAlerta ENTÃO
     DISPARAR evento SaldoBaixoAlertado
     ENVIAR e-mail/Slack para comerciante
 
-#### 4. Atualização de Cache (Redis)
+##### 6.4 Atualização de Cache (Redis)
 CHAVE = "saldo:{data:yyyy-MM-dd}"
 TTL = 24 horas
 SE cache EXISTE ENTÃO
@@ -238,7 +238,7 @@ SE cache EXISTE ENTÃO
 SENÃO
     CRIAR cache a partir do Read Database
 
-#### Auditoria
+#### 6.5 Auditoria
 
 PARA CADA evento recebido:
     CRIAR registro com:
@@ -261,4 +261,258 @@ No padrão CQRS, as operações de leitura são separadas das operações de esc
 |Consultar Saldo Diário|	Obter saldo de uma data específica|	Redis (cache) ou PostgreSQL|	✅ 24h|
 Obter Extrato Período|	Listar todos lançamentos de um intervalo|	PostgreSQL|	❌|
 |Relatório Gerencial|	Relatório consolidado com análises|	PostgreSQL (views materializadas)|	✅ 1h|
+
+### Detalhamento das Leituras
+#### Consultar Saldo Diário
+- Endpoint: GET /consolidado/diario?data=2025-03-31
+- Fluxo:
+
+  - Verificar Redis (chave: saldo:2025-03-31)
+  - Se cache hit → retornar (tempo < 10ms)
+  - Se cache miss → consultar PostgreSQL (tabela saldo_diario)
+  - Atualizar cache em background
+  - Retornar resultado
+#### Obter Extrato Período
+- Endpoint: GET /extrato?inicio=2025-03-01&fim=2025-03-31
+- Fluxo:
+  - Consultar PostgreSQL (tabela lancamentos)
+  - Aplicar filtros por data e usuário
+  - Ordenar por dataHora decrescente
+  - Retornar lista paginada
+#### Relatório Gerencial
+- Endpoint: GET /relatorios/gerencial?ano=2025&mes=3
+- Fluxo:
+  - Verificar cache (chave: relatorio:2025-03)
+  - Se cache miss → consultar views materializadas
+  - Calcular totais, médias, projeções
+  - Atualizar cache
+  - Retornar relatório
+
+
+### 8. Sistemas Externos
+Sistemas externos são dependências de infraestrutura ou serviços de terceiros.
+
+|Sistema|	Tipo|	Finalidade|	Padrão de Resiliência|
+|--|--|--|--|
+|Cloud Identity|	Gerenciamento de usuários, Access Tokens (para chamar APIs) e ID Tokens| Autenticação| 	Circuit Breaker (3 falhas / 60s)
+|Active Directory (AD)|	Autenticação|	Login corporativo LDAP/Kerberos|	Circuit Breaker (3 falhas / 45s)|
+|Apache Kafka|	Mensageria|	Publicação/consumo de eventos|	Circuit Breaker (3 falhas / 30s)|
+|Redis Cache|	Cache|	Armazenamento temporário de saldos|	Circuit Breaker (3 falhas / 30s)|
+|SMTP / SendGrid|	E-mail|	Envio de alertas e notificações|	Circuit Breaker (3 falhas / 60s)|
+
+### Integração com Sistemas Externos
+#### Cloud Identity
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Fluxo de Autenticação                   │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  Comerciante → auth-api → Cloud Identity User Pool          │
+│                  │                                          │
+│                  ├── Valida credenciais                     │
+│                  ├── Verifica MFA (opcional)                │
+│                  ├── Retorna tokens (Access, Refresh, ID)   │
+│                  └── Sincroniza com AD (se configurado)     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+
+#### Active Directory
+```
+┌─────────────────────────────────────────────────────────────┐
+│                Fluxo de Autenticação Corporativa            │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  Comerciante → auth-api → LDAP/Kerberos → AD Server         │
+│                  │                                          │
+│                  ├── Bind com domínio/usuário/senha         │
+│                  ├── Busca sAMAccountName                   │
+│                  ├── Extrai email e nome                    │
+│                  ├── Mapeia SID para usuário interno        │
+│                  └── Retorna JWT com claims do AD group     │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### Apache Kafka
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Fluxo de Mensageria                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  Producer (lancamentos-api)                                 │
+│       │                                                     │
+│       ▼                                                     │
+│  Topic: lancamentos (3 partições, retenção 7 dias)          │
+│       │                                                     │
+│       ├──► Consumer Group cg1 (consolidacao-worker)         │
+│       ├──► Consumer Group cg2 (auditoria-worker)            │
+│       │                                                     │
+│       ▼                                                     │
+│  DLQ (dead letter queue) para eventos com falha             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+#### Redis Cache
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Estratégia de Cache                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  Padrão: Cache-Aside                                        │
+│                                                             │
+│  Leitura:                                                   │
+│    1. Verificar Redis (GET key)                             │
+│    2. Se cache hit → retornar                               │
+│    3. Se cache miss → buscar no PostgreSQL                  │
+│    4. Atualizar Redis (SET key, TTL 24h)                    │
+│                                                             │
+│  Escrita:                                                   │
+│    1. Atualizar PostgreSQL                                  │
+│    2. Invalidar ou atualizar Redis                          │
+│    3. TTL = 24 horas                                        │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+```
+
+### 9. Fluxo Completo do Sistema
+
+#### Fluxo Principal (Registro de Lançamento)
+
+```
+1. Comerciante autentica via Cognito/AD
+2. Envia comando Registrar Lançamento
+3. Sistema valida os dados (Política de Validação)
+4. Persiste o agregado Lancamento
+5. Dispara evento LancamentoRegistrado
+6. Evento é publicado no Kafka (topic: lancamentos)
+7. Consumidores processam o evento:
+   a. Consolidacao-worker:
+      - Atualiza SaldoDiario
+      - Dispara SaldoDiarioAtualizado
+      - Verifica limite de alerta
+      - Atualiza Redis cache
+   b. Auditoria-worker:
+      - Registra evento no MongoDB
+8. Se saldo < 0, envia e-mail via SendGrid
+9. Comerciante consulta saldo via GET /consolidado (cache)
+```
+
+#### Diagrama de Sequência do Fluxo Principal
+
+```
+Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker    Redis    PostgreSQL    SendGrid
+    │               │               │              │              │               │           │            │
+    │──POST /lancamentos──────────►│              │              │               │           │            │
+    │               │               │              │              │               │           │            │
+    │               │               │──Salva──────►│              │               │           │            │
+    │               │               │              │              │               │           │            │
+    │               │               │──Publica evento────────────►│               │           │            │
+    │               │               │              │              │               │           │            │
+    │               │               │              │              │──Consome──────►│           │            │
+    │               │               │              │              │               │           │            │
+    │               │               │              │              │──Atualiza─────────────────►            │
+    │               │               │              │              │               │           │            │
+    │               │               │              │              │──Atualiza────────────────────────────►│
+    │               │               │              │              │               │           │            │
+    │               │               │              │              │               │           │──Salva────►│
+    │               │               │              │              │               │           │            │
+    │               │               │              │              │               │──Cache────►│            │
+    │               │               │              │              │               │           │            │
+    │──GET /consolidado────────────►│              │              │               │           │            │
+    │               │               │              │              │               │           │            │
+    │               │               │──────────────Busca cache────────────────────►│           │            │
+    │               │               │              │              │               │           │            │
+    │               │               │◄─────────────Retorna saldo───────────────────│           │            │
+    │               │               │              │              │               │           │            │
+    │◄──Saldo───────────────────────│              │              │               │           │            │
+    │               │               │              │              │               │           │            │
+
+```
+
+#### Fluxo de Alerta de Saldo Baixo
+
+```
+1. LancamentoRegistrado é processado
+2. Consolidacao-worker calcula novo saldo
+3. Política de Verificação de Limite é acionada
+4. Se saldo < limite (ex: 0):
+   a. Dispara evento SaldoBaixoAlertado
+   b. Notificacoes-worker consome o evento
+   c. Envia e-mail via SendGrid/SMTP
+   d. (Opcional) Envia mensagem no Slack/Teams
+
+```
+
+
+### 10. Glossário do Event Storming
+|Termo|	Definição|
+|--|--|
+|Comando|	Intenção de realizar uma ação no sistema|
+|Evento de Domínio|	Algo que ocorreu e é relevante para o negócio|
+|Agregado|	Conjunto de objetos que são tratados como uma unidade|
+|Agregado Raiz|	A entidade principal que garante consistência do agregado|
+|Política|	Regra de negócio que reage a eventos|
+|Ator|	Entidade externa (usuário ou sistema) que interage com o sistema|
+|CQRS|	Command Query Responsibility Segregation - separação entre escrita e leitura
+|Cache-Aside|	Padrão onde o cache é populado sob demanda|
+|Circuit Breaker|	Padrão de resiliência que previne falhas em cascata|
+|DLQ (Dead Letter Queue)|	Fila para mensagens que falharam após múltiplas tentativas|
+|TTL (Time To Live)|	Tempo de vida de um item no cache|
+|View Materializada|	Tabela derivada de consultas para otimização de leitura|
+|Saga|	Padrão para gerenciar consistência em transações distribuídas|
+
+
+#### Resumo do Event Storming em Texto
+
+
+```
+FLUXO COMPLETO:
+
+Comerciante
+    │
+    ▼
+Registrar Lançamento (Comando)
+    │
+    ▼
+LancamentoRegistrado (Evento)
+    │
+    ├──► Validar Lançamento (Política)
+    │       └──► Rejeitar se dados inválidos
+    │
+    ├──► Calcular Saldo Diário (Política)
+    │       │
+    │       ▼
+    │   SaldoDiarioAtualizado (Evento)
+    │       │
+    │       ├──► Verificar Limite de Alerta (Política)
+    │       │       │
+    │       │       └──► SaldoBaixoAlertado (Evento)
+    │       │               │
+    │       │               └──► Enviar E-mail (SendGrid)
+    │       │
+    │       └──► Atualizar Cache Redis (Política)
+    │
+    └──► Registrar Auditoria (Política)
+            │
+            └──► Salvar no MongoDB
+
+Consultas (CQRS):
+    │
+    ├──► GET /consolidado → Redis → PostgreSQL
+    │
+    ├──► GET /extrato → PostgreSQL
+    │
+    └──► GET /relatorio → View Materializada → Cache
+
+```
+
+
+
+
 
