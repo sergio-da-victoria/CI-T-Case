@@ -1,6 +1,11 @@
 # CI&T Case - Fluxo de Caixa
 ####  Controle de fluxo de caixa diário com os lançamentos(débitos e créditos), também precisa de um relatório que disponibilize o saldo diário consolidado.
 
+## Índice
+- [3. Requisitos Funcionais Detalhados](#requisitos)
+- [Desenvolvimento](#desenvolvimento)
+- [Conclusão](#conclusão)
+
 ![Texto](/ddd-case.jpg)
 
 
@@ -646,7 +651,7 @@ Consultas (CQRS):
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 3. Requisitos Funcionais Detalhados
+## 3. Requisitos Funcionais Detalhados
 ##### 4.1 Requisitos por Contexto Delimitado
 
 ##### Contexto: Identidade
