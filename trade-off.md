@@ -18,6 +18,8 @@
 Trade-off analysis é o processo de avaliar sistematicamente as compensações entre diferentes opções arquiteturais, identificando os benefícios (vantagens) e custos (desvantagens) de cada decisão para o ecossistema.
 
 
+
+
 ### 1.2 Metodologia Utilizada
 |Dimensão|	Critérios Avaliados|	Peso|
 |--|--|--|
@@ -41,7 +43,7 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 │  Orquestração                │ Google Kubernetes Engine (GKE)                       │
 │  Banco de Dados              │ Cloud SQL (PostgreSQL)                               │
 │  Cache                       │ Memorystore (Redis)                                  │
-│  Mensageria                  │ Cloud Pub/Sub                                        │
+│  Mensageria                  │ Cloud Kafka                                          │
 │  Autenticação                │ Cloud Identity + Active Directory                    │
 │  WAF/Segurança               │ Cloud Armor                                          │
 │  Observabilidade             │ Cloud Monitoring + Logging + Trace                   │
@@ -124,7 +126,6 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 
 
 ### 3.2 Heatmap de Decisão
-
 |Componente|	Custo|	Performance|	Confiabilidade|	Segurança|	Manutenibilidade|	Escalabilidade	|Vendor Lock-in	|Média
 |--|--|--|--|--|--|--|--|--|
 |GKE|	🟡 Médio|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🟡 Médio|	🟢 Alto|	🟡 Médio|	🟢 Alto
@@ -142,3 +143,117 @@ __Legenda do Heatmap__
 |🟡 Médio|	Bom / Satisfatório|	5-7
 |🔴 Baixo|	Regular / Ruim|	1-4
 
+
+### Análise do Heatmap
+|Componente|	Pontos Fortes|	Pontos Fracos|	Recomendação|
+|--|--|--|--|
+|GKE|	Performance, Confiabilidade, Escalabilidade| Custo, Vendor Lock-in|	✅ Recomendado
+|Cloud SQL|	Confiabilidade, Manutenibilidade|	Escalabilidade vertical| ✅ Recomendado
+|Cloud Identity|	Segurança, Escalabilidade|	Custo, Vendor Lock-in|	⚠️ Avaliar custo-benefício
+|Confluent Kafka|	Confiabilidade, Performance, Escalabilidade| Custo| ✅ Recomendado
+|Memorystore|	Performance, Manutenibilidade|	Segurança (cache)	| ✅ Recomendado
+|Cloud Armor|	Segurança, Performance| Custo| ✅ Recomendado
+|Observabilidade|	Funcionalidades| Custo, Vendor Lock-in	| ⚠️ Otimizar uso
+
+
+### Componentes com Alta Pontuação (Recomendados)
+- ✅ GKE - 8.15
+- ✅ Confluent Kafka - 8.20
+- ✅ Memorystore - 8.15
+- ✅ Cloud SQL - 7.50
+- ✅ Cloud Armor - 7.45
+
+### Componentes que Requerem Atenção
+- ⚠️ Cloud Identity - Alto custo, considerar licenciamento misto
+- ⚠️ Observabilidade - Custo elevado em escala, implementar amostragem
+
+
+### 3.3 Ranking Final dos Componentes
+|Ranking|	Componente|	Pontuação|	Risco Principal
+|--|--|--|--|
+|1º|	Confluent Kafka|	8.20|	Custo mais elevado que alternativas
+|2º|	GKE|	8.15|	Curva de aprendizado
+|3º|	Memorystore|	8.15|	Sem persistência de dados
+|4º|	Cloud SQL|	7.50|	Escala vertical limitada
+|5º|	Cloud Armor|	7.45|	Falsos positivos
+|6º|	Cloud Identity|	7.35|	Custo alto por usuário
+|7º|	Observabilidade|	7.10|	Custo exponencial em escala
+
+<a id="vantagem"></a>
+### 4. Vantagens e Desvantagens por Categori
+### 4.1 Vantagens Gerais do Ecossistema
+|Categoria|	Vantagem|	Impacto|	Evidência
+|--|--|--|--|
+|Integração|	Stack unificada Google Cloud|	🔴 Alto|	Todos serviços compartilham IAM, logging, monitoring
+|Produtividade|	SDKs maduros e documentação|	🟠 Médio|	C# Sharp Core tem suporte oficial Google
+|Escalabilidade|	Escala horizontal automática|	🔴 Alto|	GKE + Kafka escalam para milhões de mensagens
+|Segurança|	Segurança enterprise por padrão|	🔴 Alto|	Cloud Armor + Cloud Identity + IAM granular
+|Confiabilidade|	SLAs fortes (99.9%+)|	🔴 Alto|	Cloud SQL: 99.95%, GKE: 99.9%, Kafka: 99.95%
+|Mensageria|	Garantia de ordem e replay completo|	🔴 Alto|	Kafka oferece ordem por partição e retenção ilimitada
+|Suporte|	Suporte 24/7 enterprise|	🟡 Baixo|	Planos de suporte pagos
+
+
+### 4.2 Desvantagens Gerais do Ecossistema
+|Categoria|	Desvantagem|	Impacto|	Mitigação|
+|--|--|--|--|
+|Custo|	Custo elevado em escala|	🔴 Alto|	CUD + Right sizing + Spot VMs
+|Vendor Lock-in|	Dependência forte do Google|	🟠 Médio|	Multi-cloud strategy, penTelemetry
+|Complexidade|	Curva de aprendizado íngreme|	🟠 Médio|	Treinamento, documentação, consultoria
+|Latência|	Cross-region latency|	🟡 Baixo|	Estratégia de multi-região
+|Limites de Quota|	Quotas por projeto|	🟡 Baixo|	Solicitar aumento, múltiplos projetos
+
+
+### 4.3 Trade-offs Específicos por Decisão
+
+### Trade-off 1: GKE vs. Cloud Run (Serverless)
+|Critério|	GKE|	Cloud Run|	Vencedor
+|--|--|--|--|
+|Custo|	Médio (paga por recurso)|	Baixo (paga por requisição)| Cloud Run
+|Controle|	Alto (configuração total)|	Baixo (abstrações)|	GKE
+|Cold Start|	Nenhum|	Significativo|	GKE
+|Portabilidade|	Alta (Kubernetes standard)|	Média (container)|	GKE
+|Decisão|	GKE| __scolhido por controle e cold start__
+
+
+### Trade-off 2: Cloud SQL vs. AlloyDB vs. Self-Managed
+|Critério|	Cloud SQL|	AlloyDB|	Self-Managed (VM)
+|--|--|--|--|
+|Custo|	Médio|	Alto (2-3x)|	Baixo (apenas VM)
+|Performance|	Bom|	Excelente (4x)|	Variável
+|Manutenção|	Zero|	Zero|	Alto (DBA)
+|Escala|	Vertical (limitada)|	Horizontal|	Vertical
+|Decisão|	__Cloud SQL por custo-benefício__
+
+### Trade-off 3: Cloud Identity vs. Auth0 vs. Keycloak
+|Critério|	Cloud Identity|	Auth0|	Keycloak (Self)
+|--|--|--|--|
+|Custo|	Alto ($5k/10k users)|	Médio ($2.3k/10k)|	Baixo (infra)
+|Integração| Nativa GCP|	API|	Custom
+|Manutenção|	Zero|	Zero|	Alto
+|Funcionalidades|	Completa|	Completa|	Limitada
+|Decisão|	__Cloud Identity por integração nativa e suporte AD__
+
+### Trade-off 4: Cloud Pub/Sub vs. Kafka (Confluent)
+|Critério|	Cloud Pub/Sub|	Confluent Kafka
+|--|--|--|
+|Custo|	Pay-per-use|	Fixo + variável
+|Ordem|	Não garantida|	Garantida
+|Retenção|	7 dias|	Ilimitada
+|Gerenciamento|	Zero|	Médio
+|Decisão|	___Cloud Pub/Sub por simplicidade (ordem não é crítica)__
+
+
+<a id="comparativo"></a>
+### 5. Comparativo com Alternativas
+
+### 5.1 AWS vs. Azure vs. Google Cloud
+|Critério (Peso)|	Google Cloud|	AWS|	Azure
+|--|--|--|--|
+|Custo (25%)|	7	|8	|7
+C# Suporte (20%)|	8	|9	|10
+Kubernetes (15%)|	10	|8	|8
+Observabilidade (15%)|	8|	9|	8
+Serverless (10%)|	9|	10|	8
+Suporte AD (10%)|	9|	7|	10
+Lock-in (5%)|	6|	5|	5
+PONTUAÇÃO FINAL|	8.15|	8.05|	8.15
