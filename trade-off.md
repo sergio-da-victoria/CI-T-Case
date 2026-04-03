@@ -13,7 +13,7 @@
 
 <a id="visao"></a>
 ### 1. Visão Geral do Trade-off Analysis
-##### 1.1 O que é Trade-off Analysis?
+### 1.1 O que é Trade-off Analysis?
 
 Trade-off analysis é o processo de avaliar sistematicamente as compensações entre diferentes opções arquiteturais, identificando os benefícios (vantagens) e custos (desvantagens) de cada decisão para o ecossistema.
 
@@ -52,9 +52,8 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 ```
 
 ### 2. Análise por Componente
+
 ### 2.1 Google Kubernetes Engine (GKE)
-
-
 |Aspecto|	Vantagens|	Desvantagens|	Trade-off
 |--|--|--|--|
 |Custo|	 Autopilot reduz overhead operacional  Paga apenas por recursos usados  CUD reduz custo em 20-57%| Custo base mais alto que VMs simples  Mínimo de recursos por pod  Custo de controle plane (master)| Alta flexibilidade vs. Custo premium
