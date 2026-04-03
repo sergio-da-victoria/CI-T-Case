@@ -4,18 +4,11 @@
 [1. Visão Geral do FinOps](#visao)\
 [2. Arquitetura do Ecossistema](#arquitetura)\
 [3. Detalhamento de Custos por Serviço](#custo)\
-[4. Estimativa de Custo Total Mensal](#visao)\
+[4. Estimativa de Custo Total Mensal](#mes)\
 [5. Estratégias de Otimização de Custos](#visao)\
 [6. Ferramentas FinOps do Google Cloud](#visao)\
 [7. Monitoramento e Alertas Financeiros](#visao)\
 [8. Recomendações e Melhores Práticas](#visao)
-
-
-
-
-<a id="visao"></a>
-###  3. Comandos
-Comandos representam ações ou intenções iniciadas por um ator.
 
 
 
@@ -105,8 +98,8 @@ __Otimização: Utilizar Cloud SQL Insights para monitorar queries pesadas e oti
 
 ### 3.3 Memorystore (Redis Cache)
 
-|Especificação|	Capacidade|	Preço	Custo Mensal|
-|--|--|--|
+|Especificação|	Capacidade|	Preço|	Custo Mensal|
+|--|--|--|--|
 |Standard Tier (HA)|	10 GB|	$0.007/GB/h + $0.015/GB/h (HA)|	~$160|
 
 __Subtotal Memorystore: ~$160/mês__
@@ -153,7 +146,7 @@ __Subtotal Cloud Armor: ~$720/mês__
 ### 3.7 Cloud Identity
 |Componente|	Especificação|	Custo Mensal|
 |--|--|--|
-|Cloud Identity Premium|	10.000 usuários|	$6/usuario/ano (~$0.50/mês)|	~$5.000|
+|Cloud Identity Premium|	10.000 usuários|	$6/usuario/ano (~$0.50/mês)	~$5.000|
 
 __Subtotal Cloud Identity: ~$5.000/mês__
 __Nota: Este é um dos maiores custos do projeto. Para 10.000 usuários ativos, Cloud Identity Premium inclui MFA, SSO e recursos avançados de segurança.__
@@ -218,11 +211,44 @@ __Subtotal Cloud DNS: ~$5/mês__
 
 __Subtotal Secret Manager: ~$2/mês__
 
-3.12 Cloud CDN (Opcional)
-Componente	Especificação	Custo Mensal
-Cache Hit	1 TB	$0.075/GB (Américas)	~$75
-Cache Miss/Fill	100 GB	$0.075/GB	~$7.50
-Subtotal Cloud CDN: ~$83/mês (opcional)
+### 3.12 Cloud CDN (Opcional)
+|Componente|	Especificação|	Custo Mensal|
+|--|--|--|
+|Cache Hit|	1 TB|	$0.075/GB (Américas)|	~$75|
+|Cache Miss/Fill|	100 GB|	$0.075/GB|	~$7.50|
+
+__Subtotal Cloud CDN: ~$83/mês (opcional)__
+
+
+### 3.13 Confluent Cloud Connectors (Opcional - Integração com GCP)
+|Componente|	Especificação|	Custo Mensal|
+|--|--|--|
+|BigQuery Sink| Connector	5 TB processados|	$0.50/GB|	~$2.500|
+|Cloud Storage Sink Connector|	1 TB|	$0.25/GB|	~$250|
+
+
+<a id="visao"></a>
+### 4. Estimativa de Custo Total Mensal
+#####4.1 Resumo por Categoria
+
+|Categoria|	Serviço|	Custo Mensal (USD)|	% do Total|
+|--|--|--|--|
+|Identidade|	Cloud Identity Premium|	$5.000|	28,8%|
+|Observabilidade|	Logging + Monitoring + Trace|	$3.500|	20,2%|
+|Computação|	GKE Autopilot|	$3.030|	17,5%|
+|Banco de Dados|	Cloud SQL (HA)|	$2.345|	13,5%|
+|Mensageria|	Confluent Cloud (Kafka)|	$1.352|	7,8%|
+|Segurança|	Cloud Armor (WAF)|	$720|	4,2%|
+|Rede|	Cloud NAT + Load Balancing + DNS|	$323|	1,9%|
+|Cache|	Memorystore (Redis)	|$160|	0,9%|
+|Armazenamento|	Cloud Storage|	$14|	0,1%|
+|Secrets|	Secret Manager|	$2|	0,0%|
+|CDN (Opcional)|	Cloud CDN|	$83|	0,5%|
+|Connectors (Opcional)|	Confluent Connectors|	$2.750|	15,8%|
+
+__TOTAL (sem connectors)		$17.366	100%__
+__TOTAL (com connectors)		$20.116	100%__
+
 
 
 
