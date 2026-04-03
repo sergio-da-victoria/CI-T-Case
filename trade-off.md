@@ -1,5 +1,5 @@
-### Trade-off Analysis: Ecossistema Fluxo de Caixa em Google Cloud
-##### Sumário
+## Trade-off Analysis: Ecossistema Fluxo de Caixa em Google Cloud
+### Sumário
 
 [1. Visão Geral do Trade-off Analysis](#visao)\
 [2. Análise por Componente](#analise)\
@@ -85,4 +85,60 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 |Integração|Conectores nativos para Google Cloud (BigQuery, Pub/Sub, Storage)Kafka REST ProxySchema Registry integradoClientes para C# (Confluent.Kafka) madurosSuporte a múltiplos protocolos (Kafka, REST, gRPC)|	Não é nativo do GCP (terceiro) com IAM do GCP requer configuração adicionalConectores gerenciados têm custo extraDependência de rede externa ou VPC peering|Ecossistema rico vs. Não nativo do GCP
 |Escalabilidade| Escala horizontal infinita (mais brokers) Aumento de partições sem downtime Throughput escalável linearmente Suporte a clusters multi-região MirrorMaker para replicação| Repartição de dados requer planejamento Limite de partições por broker Aumento de partições não pode ser revertido Custos crescem com escala| Escala infinita vs. Planejamento necessário
 |Manutenibilidade| Confluent Cloud elimina manutenção de infra CLI e API completas para automação Metrics API para observabilidade Audit logs integrados| Auto-gerenciado exige equipe dedicada (2-3 SREs) Upgrades de versão Kafka complexos Backup e recovery de tópicos não trivial Monitoramento de disk usage e retention crítico|Zero manutenção (Cloud) vs. Alto esforço (self-managed)
+
+
+### 2.5 Memorystore (Redis)
+|Aspecto|	Vantagens|	Desvantagens|	Trade-off
+|--|--|--|--|
+|Custo|	Preço competitivo Standard tier com HA Pay-as-you-go| Custo por GB mais alto que self-managed Premium para VPC SC Mínimo de 5GB| (standard) Gerenciado vs. Custo premium de 20-30% 
+|Performance| <1ms latência Throughput alto Redis 7.0+|	Sem persistência em cache-only Backup limitado Rede como gargalo| Excelente performance vs. Persistência limitada
+|Operações| Zero admin Failover automático Monitoramento integrado| Configuração limitada Sem Lua scripts em alguns tiers Debugging complexo| Baixo esforço vs. Controle limitado
+
+### 2.6 Cloud Armor (WAF)
+|Aspecto|	Vantagens|	Desvantagens|	Trade-off
+|--|--|--|--|
+|Custo|	Standard tier acessível Regras predefinidas OWASP Pay-per-policy| Custo por política ($0.75/h) Managed rules custam extra Custo escala com regras |Proteção nativa vs.Custo incremental
+|Eficácia| Proteção OWASP Top 10 Rate limiting IP reputation| Não substitui WAF dedicado Falsos positivos comuns Aprendizado limitado| Boa proteção vs. Menos sofisticado que AWS WAF
+|Integração| Nativo com Cloud Load Balancer Logging integrado Regras adaptativas| Apenas para HTTP/S Sem integração com API Gateway Configuração complexa |Integração nativa vs. Escopo limitado
+
+### 2.7 Observabilidade (Cloud Monitoring + Logging + Trace)
+|Aspecto|	Vantagens|	Desvantagens|	Trade-off
+|--|--|--|--|
+|Custo|	Tier gratuito generoso Pay-as-you-go Dados de métricas comprimidos|	Custo explode em escala ($2.8k/mês) Custo por ingestão de logs Retenção longa cara|	Visibilidade total vs. Custo exponencial
+|Funcionalidade| Stack unificada OpenTelemetry compatible Dashboards customizáveis| Logs Query Language limitada Trace sampling fixo Sem APM profundo| Completa vs. Menos profundo que Datadog 
+|Integração| Nativo com todos serviços GCP SDKs para C# Alertas por webhook|	Migração de outro provider difícil Vendor lock-in forte Exportação limitada|Integração profunda vs. Lock-in
+
+
+### 3. Matriz de Decisão Multicritério
+### 3.1 Pontuação por Componente (1-10)
+|Componente|Custo (25%)|Perf (20%)|Conf (15%)|Seg (15%)|Manut (10%)|Esc (10%)|Lock (5%)|PESO TOTAL
+|--|--|--|--|--|--|--|--|--|
+|GKE|	7|	9|	9|	8|	7|	10|	6|	8.15
+|Cloud SQL|	6|	8|	9|	8|	9|	6|	7|	7.50
+|Cloud Identity|	4|	8|	9|	10|	8|	9|	4|	7.35
+|Confluent Kafka|	6|	9|	10|	9|	8|	10|	5|	8.20
+|Memorystore|	7|	10|	8|	7|	9|	9|	7|	8.15
+|Cloud Armor|	6|	8|	8|	9|	7|	8|	6|	7.45
+|Observabilidade|	5|	8|	8|	8|	9|	8|	4|	7.10
+|MÉDIA TOTAL|	5.9|	8.6|	8.7|	8.4|	8.1|	8.6|	5.6|	7.70
+
+
+### 3.2 Heatmap de Decisão
+
+|Componente|	Custo|	Performance|	Confiabilidade|	Segurança|	Manutenibilidade|	Escalabilidade	|Vendor Lock-in	|Média
+|--|--|--|--|--|--|--|--|--|
+|GKE|	🟡 Médio|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🟡 Médio|	🟢 Alto|	🟡 Médio|	🟢 Alto
+|Cloud SQL|	🟡 Médio|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🟡 Médio|	🟡 Médio|	🟢 Alto
+|Cloud Identity|	🔴 Baixo|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🔴 Baixo|	🟡 Médio|
+|Confluent Kafka|	🟡 Médio|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🟢 Alto|🟢 Alto|	🟡 Médio|	🟢 Alto
+|Memorystore|	🟡 Médio|	🟢 Alto|	🟢 Alto|	🟡 Médio|	🟢 Alto	|🟢 Alto	|🟡 Médio	|🟢 Alto
+|Cloud Armor|	🟡 Médio|	🟢 Alto|	🟢 Alto|	🟢 Alto	|🟡 Médio|	🟢 Alto	|🟡 Médio	|🟢 Alto
+|Observabilidade|	🔴 Baixo|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🟢 Alto|	🔴 Baixo|	🟡 Médio
+
+__Legenda do Heatmap__
+|Símbolo|	Classificação|	Pontuação
+|--|--|--|
+|🟢 Alto|	Excelente / Muito Bom|	8-10
+|🟡 Médio|	Bom / Satisfatório|	5-7
+|🔴 Baixo|	Regular / Ruim|	1-4
 
