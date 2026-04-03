@@ -30,8 +30,6 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 |Vendor Lock-in|	Portabilidade, dependência de fornecedor|	5%
 
 ### 1.3 Visão Geral do Ecossistema Avaliado
-
-
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
 │                    Ecossistema Avaliado - Resumo                                    │
@@ -54,7 +52,7 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 ```
 
 ### 2. Análise por Componente
-##### 2.1 Google Kubernetes Engine (GKE)
+### 2.1 Google Kubernetes Engine (GKE)
 
 
 |Aspecto|	Vantagens|	Desvantagens|	Trade-off
@@ -63,8 +61,7 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 |Performance|	 Escala automática horizontal  Isolamento de recursos  Affinity/anti-affinity rules|	 Overhead de container runtime  Latência de rede entre pods  Cold start em escala|Performance consistente vs. Overhead
 |Operações|	 Gerenciamento automatizado de nodes  Auto-healing   com Cloud Monitoring|	 Curva de aprendizado íngreme  Debugging complexo  Complexidade de rede|	Baixo esforço operacional vs. Complexidade inicial
 
-##### 2.2 Cloud SQL (PostgreSQL)
-
+### 2.2 Cloud SQL (PostgreSQL)
 |Aspecto|	Vantagens|	Desvantagens|	Trade-off
 |--|--|--|--|
 |Custo|	 Gerenciado (sem overhead DBA) Backup automático incluído CUD disponível| Mais caro que PostgreSQL auto-hospedado Premium por HA (2x) Custo de egress elevado| Zero administração vs. Premium de 2-3x
@@ -79,7 +76,7 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 || Nativo GCP AD sincronização via GCDS API completa| Migração de usuários complexa Lock-in com Google  com AD requer tooling| nativa vs. Vendor lock-in
 
 
-##### 2.4 Confluent Kafka (Mensageria)
+### 2.4 Confluent Kafka (Mensageria)
 |Aspecto|	Vantagens|	Desvantagens|	Trade-off
 |--|--|--|--|
 |Custo| Pay-per-use no modelo Confluent Cloud Cluster Basic a partir de $0.15/hora Primeiros 10 GB/mês gratuitos (dependendo do plano) Escala horizontal com custo linear| Custo mais alto que Kafka auto-gerenciado (+170%) Cluster Standard custa ~$0.35/hora Custo por dados ingress/egress ($0.11/GB) Custo mínimo por cluster (mesmo com baixo uso)| Baixo esforço operacional vs. Premium de 2-3x
@@ -89,3 +86,4 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 |Integração|Conectores nativos para Google Cloud (BigQuery, Pub/Sub, Storage)Kafka REST ProxySchema Registry integradoClientes para C# (Confluent.Kafka) madurosSuporte a múltiplos protocolos (Kafka, REST, gRPC)|	Não é nativo do GCP (terceiro) com IAM do GCP requer configuração adicionalConectores gerenciados têm custo extraDependência de rede externa ou VPC peering|Ecossistema rico vs. Não nativo do GCP
 |Escalabilidade| Escala horizontal infinita (mais brokers) Aumento de partições sem downtime Throughput escalável linearmente Suporte a clusters multi-região MirrorMaker para replicação| Repartição de dados requer planejamento Limite de partições por broker Aumento de partições não pode ser revertido Custos crescem com escala| Escala infinita vs. Planejamento necessário
 |Manutenibilidade| Confluent Cloud elimina manutenção de infra CLI e API completas para automação Metrics API para observabilidade Audit logs integrados| Auto-gerenciado exige equipe dedicada (2-3 SREs) Upgrades de versão Kafka complexos Backup e recovery de tópicos não trivial Monitoramento de disk usage e retention crítico|Zero manutenção (Cloud) vs. Alto esforço (self-managed)
+
