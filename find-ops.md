@@ -75,9 +75,9 @@ Comandos representam ações ou intenções iniciadas por um ator.
 
 Configuração: GKE Autopilot (recomendado para redução de overhead operacional)
 
-|Recurso| Especificação| Quantidade| Preço| Unitário| Custo Mensal|
-|--|--|--|--|--|-|
-|auth-api|	2 vCPU, 4 GB RAM	3 pods	$0.08/vCPU/h + $0.011/GB/h	~$380
+|Recurso| Especificação| Quantidade| Preço Unitário| Custo Mensal|
+|--|--|--|--|--|
+|auth-api|	2 vCPU, 4 GB RAM|	3 pods|	$0.08/vCPU/h + $0.011/GB/h|	~$380
 lancamentos-api|	4 vCPU, 8 GB RAM|	3 pods|	$0.08/vCPU/h + $0.011/GB/h|	~$760|
 consolidacao-api|	4 vCPU, 8 GB RAM|	3 pods|	$0.08/vCPU/h + $0.011/GB/h|	~$760|
 relatorios-api|	2 vCPU, 4 GB RAM|	2 pods|	$0.08/vCPU/h + $0.011/GB/h|	~$250|
