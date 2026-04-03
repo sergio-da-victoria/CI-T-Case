@@ -5,15 +5,14 @@
 [2. Arquitetura do Ecossistema](#arquitetura)\
 [3. Detalhamento de Custos por Serviço](#custo)\
 [4. Estimativa de Custo Total Mensal](#mes)\
-[5. Estratégias de Otimização de Custos](#visao)\
-[6. Ferramentas FinOps do Google Cloud](#visao)\
-[7. Monitoramento e Alertas Financeiros](#visao)\
-[8. Recomendações e Melhores Práticas](#visao)
+[5. Estratégias de Otimização de Custos](#estrategia)\
+[6. Ferramentas FinOps do Google Cloud](#ferramenta)\
+[7. Monitoramento e Alertas Financeiros](#monitoramento)\
+[8. Recomendações e Melhores Práticas](#melhores)
 
 
 
-
-<a id="visao"></a>
+<a id="arquitetura"></a>
 ### 2. Arquitetura do Ecossistema
 ##### 2.1 Componentes do Ecossistema
 
@@ -227,9 +226,9 @@ __Subtotal Cloud CDN: ~$83/mês (opcional)__
 |Cloud Storage Sink Connector|	1 TB|	$0.25/GB|	~$250|
 
 
-<a id="visao"></a>
+<a id="mes"></a>
 ### 4. Estimativa de Custo Total Mensal
-#####4.1 Resumo por Categoria
+##### 4.1 Resumo por Categoria
 
 |Categoria|	Serviço|	Custo Mensal (USD)|	% do Total|
 |--|--|--|--|
@@ -250,6 +249,195 @@ __Subtotal Cloud CDN: ~$83/mês (opcional)__
 **TOTAL (com connectors)		$20.116	100%**
 
 
+### 4.2 Custo Total Mensal por Ambiente
+|Ambiente|	Descrição|	Custo Mensal (sem connectors)|
+|--|--|--|
+|Desenvolvimento|	Ambiente reduzido (20% da produção)|	~$3.473
+|Homologação|	Ambiente médio (40% da produção)	|~$6.946
+|Produção|	Ambiente completo	| ~$17.366
+
+__TOTAL (3 ambientes)		~$27.785__
+
+### 4.3 Custo Anual Estimado
+|Cenário|	Custo Mensal|	Custo Anual|
+|--|--|--|
+|Apenas Produção|	$17.366|	~$208.392
+|Produção + Suporte (3 ambientes)|	$27.785|	~$333.420
+|Com Compromisso de 1 ano (CUD)|	$13.893 (20% desconto)|	~$166.714
+
+__Nota: Compromissos de uso (Committed Use Discounts) podem reduzir custos de computação em até 57%.__
+
+
+### 4.4 Comparativo: Cloud Pub/Sub vs Confluent Kafka
+|Critério|	Cloud Pub/Sub|	Confluent Kafka (GCP)|	Diferença
+|--|--|--|--|
+|Custo Mensal (Produção)|	$500|	$1.352|	+$852 (+170%)
+|Garantia de Ordem|	❌ Não|	✅ Sim|	Kafka vence
+|Retenção de Mensagens|	7 dias|	Ilimitada (configurável)|	Kafka vence
+|Replay de Mensagens|	Limitado|	Completo|	Kafka vence
+|Ecossistema|	Nativo GCP|	Multi-cloud|	Pub/Sub| vence
+|Operação|	Zero|	Zero (Confluent)|	Empate
+
+__Decisão: Kafka escolhido pela garantia de ordem e capacidade de replay, essenciais para consistência financeira.__
+
+
+<a id="estrategia"></a>
+### 5. Estratégias de Otimização de Custos
+
+##### 5.1 Compute Engine / GKE
+|Estratégia|	Impacto|	Implementação|
+|--|--|--|
+|Committed Use Discounts (CUD)|	20-57%|	Adquirir compromisso de 1 ou 3 anos
+|Right Sizing|	20-40%|	Usar Recommender API para ajustar recursos
+|Spot VMs para Workers|	60-90%|	Workers não críticos podem usar Spot VMs
+|Apagar recursos ociosos|	10-15%|	Automatizar desligamento em horários de baixa
+
+##### 5.2 Cloud SQL
+|Estratégia|	Impacto|	Implementação|
+|--|--|--|
+|CUD para Cloud SQL|	20-50%|	Compromisso de uso para instâncias
+|Read Replicas sob demanda|	30%|	Ativar apenas quando necessário
+|Otimização de queries|	20-40%|	Cloud SQL Insights para identificar queries lenta
+
+
+##### 5.3 Confluent Kafka
+|Estratégia|	Impacto|	Implementação|
+|--|--|--|
+|Compromisso anual Confluent|	15-25%|	Contrato enterprise
+|Cluster Basic vs Standard|	40-60%|	Se ordem não for crítica, usar Basic
+|Retenção reduzida|	20-30%|	Reduzir retenção de 7 para 3 dias
+|Compressão de mensagens|	30-50%|	Habilitar compressão Snappy ou LZ4
+
+### 5.4 Observabilidade
+|Estratégia|	Impacto|	Implementação|
+|--|--|--|
+|Amostragem de logs|	50-70%|	Coletar apenas 10-20% dos logs de debug
+|Retenção reduzida|	30%|	Reduzir retenção para 15 dias em não críticos
+|Exclusão de logs desnecessários|	20-40%|	Filtrar health checks e requests de monitoring
+
+##### 5.5 Cloud Identity
+|Estratégia|	Impacto|	Implementação|
+|--|--|--|
+|Cloud Identity Free|	100%|	Para usuários básicos (sem MFA)
+|Licenciamento misto|	40-60%|	Premium apenas para admins e power users
+
+##### 5.6 Networking
+|Estratégia|	Impacto|	Implementação|
+|--|--|--|
+|Standard Tier vs Premium Tier|	20-30%|	Usar Standard Tier para tráfego interno
+|Cloud CDN|	40-60%|	Reduz egress para conteúdo estático
+|Data Transfer otimizado|	20%|	Manter dados na mesma região
+
+##### 5.7 Resumo de Economia Potencial
+|Categoria|	Custo Original|	Otimização|	Custo Otimizado|	Economia
+|--|--|--|--|--|
+|GKE|	$3.030|	CUD 1 ano (40%) + Right Sizing|	$1.818|	$1.212
+|Cloud SQL|	$2.345|	CUD + Read Replicas otimizados|	$1.640|	$705
+|Confluent Kafka|	$1.352|	Compromisso + Compressão|	$1.014|	$338
+|Observabilidade|	$3.500|	Amostragem + Retenção reduzida|	$1.750|	$1.750
+|Cloud Identity|	$5.000|	Licenciamento misto|	$3.000|	$2.000
+|Cloud Armor|	$720|	Políticas consolidadas|	$540|	$180
+|Cloud NAT|	$230|	Otimização de egress|	$160|	$70
+
+___TOTAL	$17.366		$9.922	$7.444 (43%)__
+
+<a id="ferramenta"></a>
+### 6. Ferramentas FinOps do Google Cloud
+##### 6.1 Ferramentas Nativas
+
+|Ferramenta	|Função|	Link|	Uso no Projeto|
+|--|--|--|--|
+|Pricing Calculator|	Estimativa de custos|	cloud.google.com/products/calculator|	Pré-projeto e planejamento
+|Cloud Billing Reports|	Análise detalhada de gastos|	Console do GCP|	Monitoramento diário
+|FinOps Hub|	Painel unificado de FinOps|	Cloud Console|	Governança centralizada
+|Cost Management|	Recomendações de otimização|	Recommender API|	Rightsizing contínuo
+|Cloud Asset Inventory|	Inventário de recursos|	Cloud Asset API|	Rastreamento de ativos
+|AI-Powered Cost Anomaly Detection|	Detecção de anomalias|	Cloud Billing|	Alertas proativos
+
+
+### 6.2 FinOps Hub - Funcionalidades
+##### O Google Cloud FinOps Hub oferece:
+
+|Funcionalidade|	Benefício|
+|--|--|
+|Painéis unificados|	Visibilidade centralizada de custos com gráficos interativos
+|Sugestões otimizadas|	Recomendações baseadas em padrões de uso
+|FinOps Maturity Score|	Métrica de maturidade em práticas FinOps
+|Colaboração interdepartamental|	Alinhamento entre times financeiros e técnicos
+
+
+### 6.3 Configuração de Orçamentos e Alertas
+
+
+__Exemplo: Criar orçamento via gcloud CLI__
+```
+gcloud billing budgets create \
+    --billing-account=XXXXXX-XXXXXX-XXXXXX \
+    --display-name="fluxo-caixa-producao" \
+    --budget-amount=17000 \
+    --threshold-rule=percent=0.5 \
+    --threshold-rule=percent=0.75 \
+    --threshold-rule=percent=0.9 \
+    --threshold-rule=percent=1.0
+```
+
+### 6.4 Tags e Labeling Strategy
+|Tag|	Exemplo|	Uso|
+|--|--|--|
+|environment|	production, staging, dev|	Separar custos por ambiente
+|team|	backend, frontend, infra|	Responsabilidade financeira
+|cost-center|	financeiro, comercial|	Alocação de custos
+|project|	fluxo-caixa, auth, lancamentos|	Custo por microsserviço
+|data-classification|	critical, sensitive, public|	Governança de dados
+|messaging|	kafka, confluent|	Rastreamento de custos de mensageria
+
+
+<a id="monitoramento"></a>
+### 7. Monitoramento e Alertas Financeiros
+##### 7.1 Cloud Functions para Alertas Personalizados
+
+
+# Cloud Function para monitoramento de gastos
+
+```
+python
+
+from google.cloud import billing_v1
+
+def check_billing_cost(event, context):
+    """Verifica custos e envia alerta se exceder limite"""
+    
+    billing_client = billing_v1.CloudBillingClient()
+    
+    # Configurar limites por ambiente
+    limits = {
+        'production': 17000,
+        'staging': 6800,
+        'development': 3400
+    }
+    
+    # Obter custo atual
+    current_cost = get_current_month_cost()
+    environment = get_environment_tag()
+    
+    if current_cost > limits.get(environment, 0):
+        send_alert(
+            subject=f"Alerta de Custo - {environment}",
+            message=f"Custo atual: ${current_cost} / Limite: ${limits[environment]}"
+        )
+
+```
+
+### 7.2 Dashboards de Custo no Looker Studio
+##### Conecte o BigQuery (exportação de billing) ao Looker Studio para criar dashboards personalizados:
+
+|Métrica|	Visualização|	Frequência
+|--|--|--|
+|Custo por serviço|	Gráfico de barras|	Diário
+|Custo Kafka vs outros|	Gráfico de rosca|	Diário
+|Tendência mensal|	Gráfico de linha|	Semanal
+|Top 10 recursos mais caros|	Tabela classificada|	Diário
+|Projeção de fim de mês|	Gauge/Medidor|	Diário
 
 
 
