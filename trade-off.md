@@ -50,7 +50,7 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 └─────────────────────────────────────────────────────────────────────────────────────┘
 
 ```
-
+<a id="analise"></a>
 ### 2. Análise por Componente
 
 ### 2.1 Google Kubernetes Engine (GKE)
@@ -108,7 +108,7 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 |Funcionalidade| Stack unificada OpenTelemetry compatible Dashboards customizáveis| Logs Query Language limitada Trace sampling fixo Sem APM profundo| Completa vs. Menos profundo que Datadog 
 |Integração| Nativo com todos serviços GCP SDKs para C# Alertas por webhook|	Migração de outro provider difícil Vendor lock-in forte Exportação limitada|Integração profunda vs. Lock-in
 
-
+<a id="matriz"></a>
 ### 3. Matriz de Decisão Multicritério
 ### 3.1 Pontuação por Componente (1-10)
 |Componente|Custo (25%)|Perf (20%)|Conf (15%)|Seg (15%)|Manut (10%)|Esc (10%)|Lock (5%)|PESO TOTAL
