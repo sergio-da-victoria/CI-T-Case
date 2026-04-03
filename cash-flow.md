@@ -12,7 +12,7 @@
 [7. Leituras / Consultas (CQRS)](#cqrs)\
 [8. Sistemas Externos](#externo)\
 [9. Fluxo Completo do Sistema](#fluxo)\
-[10. Glossário do Event Storming](#glossario)
+[10. Glossário do Event Storming](#glossario)\
 [11. Business Capability Modeling](/business-capability.md)
 
 
