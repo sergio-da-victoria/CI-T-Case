@@ -341,7 +341,7 @@ Obter Extrato Período|	Listar todos lançamentos de um intervalo|	PostgreSQL|	�
   - Retornar relatório
 
 
-<a id="externos"></a>
+<a id="externo"></a>
 ### 8. Sistemas Externos
 Sistemas externos são dependências de infraestrutura ou serviços de terceiros.
 
@@ -582,6 +582,7 @@ Consultas (CQRS):
 ##### 6. Diagrama BCM + Bounded Contexts
 
 
+
 ### 1. Business Capability Modeling (BCM)
 ##### 1.1 Hierarquia de Capacidades de Negócio
 
@@ -680,9 +681,136 @@ Consultas (CQRS):
 │                                                                                     │
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
-<a id="requisitos"></a>
-### 3. Requisitos Funcionais Detalhados
 
+### 2.2 Matriz de Domínios x Capacidades
+
+|Capacidade de Negócio|	Domínio Lançamentos|	Domínio Consolidação|	Domínio Relatórios|	Domínio Notificações|	Domínio Auditoria|	Domínio Identidade|
+|--|--|--|--|--|--|--|
+|Gestão de Lançamentos|	✅| Core|	❌|	❌|	⚪ Apoio|	⚪ Apoio|	❌|
+Consolidação de Saldos|	❌|	✅| Core|	❌|	⚪ Apoio|	⚪ Apoio|	❌|
+Relatórios e Análises|	❌|	⚪ Apoio|	✅| Core|	❌|	⚪ Apoio|	❌|
+Identidade e Acesso|	⚪ Apoio	|⚪ Apoio	|⚪ Apoio	|⚪ Apoio	|⚪ Apoio|	✅ |Core|
+Notificações|	⚪ Apoio|	⚪ Apoio|	❌|	✅ |Core	|❌	|❌|
+Auditoria|	⚪ Apoio|	⚪ Apoio|	⚪ Apoio|	✅| Core|	❌|
+###### Legenda: ✅ Core = Responsabilidade principal | ⚪ Apoio = Suporta a capacidade | ❌ = Não relacionado
+
+
+### 3. Bounded Contexts (Contextos Delimitados)
+##### 3.1 Mapa de Contextos Delimitados
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                         Bounded Contexts - Fluxo de Caixa                           │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
+│  │                                                                             │    │
+│  │  ┌─────────────────────┐          ┌─────────────────────┐                   │    │
+│  │  │   Contexto:         │          │   Contexto:         │                   │    │
+│  │  │   Identidade        │◄──────── │   Lançametos        │                   │    │
+│  │  │                     │  (SKL)   │                     │                   │    │
+│  │  │  • Cloud Identity   │          │  • Registro         │                   │    │
+│  │  │  • Active Directory │          │  • Cancelamento     │                   │    │
+│  │  │  • Autenticação     │          │  • Categorização    │                   │    │
+│  │  │  • Autorização      │          │                     │                   │    │
+│  │  └─────────────────────┘          └──────────┬──────────┘                   │    │
+│  │                                              │                              │    │
+│  │                                              │ (OHS/PL)                     │    │
+│  │                                              ▼                              │    │
+│  │                               ┌─────────────────────┐                       │    │
+│  │                               │   Contexto:         │                       │    │
+│  │                               │   Consolidação      │                       │    │
+│  │                               │                     │                       │    │
+│  │                               │  • Cálculo diário   │                       │    │
+│  │                               │  • Cálculo mensal   │                       │    │
+│  │                               │  • Projeções        │                       │    │
+│  │                               └──────────┬──────────┘                       │    │
+│  │                                          │                                  │    │
+│  │                    ┌─────────────────────┼─────────────────────┐            │    │
+│  │                    │ (ACL)               │ (OHS)               │ (ACL)      │    │
+│  │                    ▼                     ▼                     ▼            │    │
+│  │  ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐  │    │
+│  │  │   Contexto:         │  │   Contexto:         │  │   Contexto:         │  │    │
+│  │  │   Notificações      │  │   Relatórios        │  │   Auditoria         │  │    │
+│  │  │                     │  │                     │  │                     │  │    │
+│  │  │  • Alertas          │  │  • Extratos         │  │  • Eventos          │  │    │
+│  │  │  • E-mails          │  │  • Relatórios       │  │  • Logs             │  │    │
+│  │  │  • Webhooks         │  │  • Exportação       │  │  • Compliance       │  │    │
+│  │  └─────────────────────┘  └─────────────────────┘  └─────────────────────┘  │    │
+│  │                                                                             │    │
+│  └─────────────────────────────────────────────────────────────────────────────┘    │ 
+│                                                                                     │
+│  Legenda:                                                                           │
+│  • SKL = Shared Kernel (Kernel Compartilhado)                                       │
+│  • OHS = Open Host Service (Serviço Aberto)                                         │
+│  • PL = Published Language (Linguagem Publicada)                                    │
+│  • ACL = Anti-Corruption Layer (Camada Anti-Corrupção)                              │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+### 3.2 Priorização por Domínio
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                              HEATMAP DE PRIORIZAÇÃO                                 │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                     │
+│  Domínio            │ Impacto Negócio │ Complexidade │ Risco │ Prioridade Final     │
+│─────────────────────┼─────────────────┼──────────────┼───────┼──────────────────────┤
+│  Lançamentos        │ 🔴 Muito Alto   │ 🟡 Médio     │ 🟡 M  │ 🔴 PRIORIDADE 1     │
+│  Consolidação       │ 🔴 Muito Alto   │ 🟡 Médio     │ 🟡 M  │ 🔴 PRIORIDADE 1     │
+│  Relatórios         │ 🟠 Alto         │ 🟢 Baixo     │ 🟢 B  │ 🟠 PRIORIDADE 2     │
+│  Identidade         │ 🔴 Muito Alto   │ 🟡 Médio     │ 🔴 A  │ 🔴 PRIORIDADE 1     │
+│  Notificações       │ 🟡 Médio        │ 🟢 Baixo     │ 🟢 B  │ 🟢 PRIORIDADE 3     │
+│  Auditoria          │ 🟠 Alto         │ 🟢 Baixo     │ 🟡 M  │ 🟠 PRIORIDADE 2     │
+│                                                                                    │
+└────────────────────────────────────────────────────────────────────────────────────┘
+
+Legenda:
+🔴 = Alta / Muito Alto
+🟠 = Médio-Alto
+🟡 = Médio
+🟢 = Baixo
+
+
+```
+
+### 3.3 Detalhamento dos Bounded Contexts
+
+|Bounded Context|	Responsabilidade|	Aggregate Root|	Eventos|	API|
+|--|--|--|--|--|
+|Identidade|	Autenticação e autorização|	Usuário|	UsuarioAutenticado, UsuarioRegistrado	|auth-api|
+|Lançamentos|	CRUD de movimentações|	Lancamento|	LancamentoRegistrado, LancamentoCancelado|	lancamentos-api|
+|Consolidação|	Cálculo de saldos|	SaldoDiario|	SaldoDiarioAtualizado, SaldoBaixoAlertado|	consolidacao-api|
+|Notificações|	Envio de alertas|	Notificacao|	AlertaEnviado, EmailEnviado|	notificacoes-worker|
+|Relatórios|	Geração de documentos|	RelatorioPeriodo|	RelatorioGerado|	relatorios-api|
+|Auditoria|	Trilha de eventos|	EventoAuditoria|	EventoRegistrado|	auditoria-worker|
+
+
+### 3.4 Context Mapping (Tabela de Relacionamentos)
+
+|Contexto Origem|	Contexto Destino|	Tipo de Relacionamento|Justificativa|
+|--|--|--|--|
+|Identidade|	Lançamentos|	Shared Kernel (SKL)|	Compartilham modelo de Usuário|
+|Lançamentos|	Consolidação|	Open Host Service (OHS) + Published Language (PL)|	Eventos públicos via Kafka|
+|Consolidação|	Notificações|	Anti-Corruption Layer (ACL)|	Traduz eventos para formato de notificação|
+|Consolidação|	Relatórios|	Open Host Service (OHS)|	Fornece dados consolidados|
+|Lançamentos|	Auditoria|	Anti-Corruption Layer (ACL)|	Registra todos os eventos|
+
+### 3.5 Linguagem Ubíqua por Contexto
+
+|Contexto|	Termos Ubíquos|
+|--|--|
+|Identidade|	Usuário, Comerciante, Autenticação, Autorização, Role, Permissão, Login, Logout, MFA|
+|Lançamentos|	Lançamento, Débito, Crédito, Valor, DataHora, Descrição, Categoria, Estabelecimento, Status, Cancelamento|
+|Consolidação|	SaldoDiário, SaldoMensal, TotalCréditos, TotalDébitos, QuantidadeTransações, Data, Consolidado|
+|Notificações|	Alerta, E-mail, Slack, Webhook, Destinatário, Mensagem, Template, Disparo|
+|Relatórios|	Extrato, Período, RelatórioGerencial, PDF, Excel, Exportação, Filtro|
+|Auditoria|	Evento, Log, Trilha, Origem, Dados, Timestamp, Usuário, Ação|
+
+
+<a id="requisitos"></a>
+### 4. Requisitos Funcionais Detalhados
 ##### 4.1 Requisitos por Contexto Delimitado
 
 ##### Contexto: Identidade
@@ -745,6 +873,96 @@ Consultas (CQRS):
 |RF-AU-02|	Consultar Trilha|	Buscar eventos por usuário/período	|Should Have|	Filtros e paginação|
 |RF-AU-03|	Exportar Auditoria|	Exportar logs para CSV/JSON	|Could Have|	Formato estruturado|
 |RF-AU-04|	Retenção Configurável|	Configurar tempo de retenção dos logs|Should Have|	Política por tipo de evento|
+
+
+
+### 5. Requisitos Não Funcionais Detalhados
+##### Requisitos de Performance
+
+|ID|	Requisito|	Descrição|	Métrica|	Alvo|
+|--|--|--|--|--|
+|RNF-PF-01|	Latência de API|	Tempo de resposta das APIs|	P95|	< 500ms|
+|RNF-PF-02|	Throughput|	Requisições simultâneas	|Requests/segundo|	10.000|
+|RNF-PF-03|	Tempo de Consolidação|	Tempo para atualizar saldo|	Segundos|	< 5s|
+|RNF-PF-04|	Tempo de Cache|	Tempo de leitura do Redis|	P95|	< 10ms|
+|RNF-PF-05|	Tempo de Relatório|	Geração de relatório PDF|	Máximo|	< 10s|
+|RNF-PF-06|	Tempo de Login|	Autenticação completa|	P95|	< 2s|
+
+### 5.2 Requisitos de Disponibilidade
+
+|ID|	Requisito|	Descrição|	Métrica|	Alvo|
+|--|--|--|--|--|
+|RNF-DP-01|	Uptime API|	Disponibilidade das APIs|	Percentual|	99.9%|
+|RNF-DP-02|	Uptime Workers|	Disponibilidade dos workers|	Percentual|	99.5%|
+|RNF-DP-03|	Uptime Banco de Dados|	Disponibilidade PostgreSQL|	Percentual|	99.95%|
+|RNF-DP-04|	Manutenção Programada|	Janela para manutenção|	Horário|	Domingo 2h-4h|
+|RNF-DP-05|	Failover Automático|	Recuperação de falhas|	Tempo	|< 5 minutos|
+
+### 5.3 Requisitos de Escalabilidade
+|ID|	Requisito|	Descrição|	Métrica|	Alvo|
+|--|--|--|--|--|
+|RNF-ES-01|	Escala Horizontal|	Adicionar réplicas automaticamente|	Auto-scaling|	Baseado em CPU/memória|
+|RNF-ES-02|	Limite de Conexões|	Máximo de conexões simultâneas|	Conexões|	50.000|
+|RNF-ES-03|	Tamanho do Banco|	Capacidade de armazenamento|	GB|	Ilimitado (escalável)|
+|RNF-ES-04|	Partição de Dados|	Sharding por usuário	|Estratégia	|Por tenant|
+
+### 5.4 Requisitos de Segurança
+|ID|	Requisito|	Descrição|	Implementação|
+|--|--|--|--|
+|RNF-SG-01|	Autenticação|	Verificação de identidade	|Cloud Identity + AD + MFA|
+|RNF-SG-02|	Autorização|	Controle de acesso baseado em papéis	|JWT com claims|
+|RNF-SG-03|	Criptografia em Trânsito|	Dados trafegados criptografados|	TLS 1.3|
+|RNF-SG-04|	Criptografia em Repouso|	Dados armazenados criptografados|	AES-256|
+|RNF-SG-05|	Proteção WAF|	Proteção contra ataques web	|Google Cloud |Armor|
+|RNF-SG-06|	Rate Limiting|	Limitar requisições por IP/usuário|	100 req/minuto|
+|RNF-SG-07|	Auditabilidade|	Todas as ações rastreáveis|	MongoDB + Cloud Logging|
+|RNF-SG-08|	Isolamento de Dados|	Dados isolados por tenant|	Tenant ID nas queries|
+
+### 5.5 Requisitos de Resiliência
+|ID|	Requisito|	Descrição|	Estratégia|
+|--|--|--|--|
+|RNF-RS-01|	Circuit Breaker|	Prevenir falhas em cascata|	Polly (3 falhas / 30-60s)|
+|RNF-RS-02|	Retry com Backoff|	Tentar novamente em caso de falha|	Exponential backoff|
+|RNF-RS-03|	Timeout|	Limite de tempo para operações|	10s (APIs), 30s (workers)|
+|RNF-RS-04|	Bulkhead|	Isolar recursos críticos|	Pool de conexões|
+|RNF-RS-05|	Fallback|	Resposta alternativa em caso de falha|	Dados cacheados|
+
+
+### 5.6 Requisitos de Recuperação de Desastres (DR)
+|ID|	Requisito|	Descrição|	Métrica|	Alvo|
+|--|--|--|--|--|
+|RNF-DR-01|	RPO (Recovery Point Objective)|	Perda máxima de dados|	Tempo	< 15 minutos|
+|RNF-DR-02|	RTO (Recovery Time Objective)|	Tempo para restaurar serviço|	Tempo	< 1 hora|
+|RNF-DR-03|	Backup Automático|	Frequência de backup	Frequência|	Diário|
+|RNF-DR-04|	Multi-Region|	Réplicas em múltiplas regiões	Regiões|	us-central1, us-east1|
+
+
+
+### 5.5 Requisitos de Observabilidade
+|ID|	Requisito|	Descrição|	Ferramentas|
+|--|--|--|--|
+|RNF-OB-01|	Métricas Customizadas|	Coletar métricas de negócio	|Cloud Monitoring|
+|RNF-OB-02|	Distributed Tracing|	Rastrear requisições entre serviços|	Cloud Trace|
+|RNF-OB-03|	Centralização de Logs|	Agregar logs de todos os serviços|	Cloud Logging|
+|RNF-OB-04|	Alertas Proativos|	Alertar antes de falhas	|Cloud Monitoring + PagerDuty|
+|RNF-OB-05|	Dashboards|	Visualização em tempo real	|Grafana + Cloud Monitoring|
+|RNF-OB-06|	Health Checks|	Endpoints de verificação de saúde	|/health, /ready|
+
+
+
+### 5.8 Requisitos de Compliance
+|ID|	Requisito|	Descrição|	Norma|
+|--|--|--|--|
+|RNF-CP-01|	LGPD|	Proteção de dados pessoais	|Lei Geral de Proteção de Dados|
+|RNF-CP-02|	Retenção de Logs|	Manter logs por período definido|	7 anos (financeiro)|
+|RNF-CP-03|	Consentimento|	Registro de consentimento do usuário|	LGPD|
+|RNF-CP-04|	Direito ao Esquecimento|	Exclusão de dados do usuário|	LGPD|
+
+
+### Relatório FinOps - Ecossistema Fluxo de Caixa em Google Cloud
+
+
+
 
 
 
