@@ -961,14 +961,14 @@ Legenda:
 ### Relatório FinOps - Ecossistema Fluxo de Caixa em Google Cloud
 ## Sumário
 
-[1. Visão Geral do FinOps](#visao)\ 
+[1. Visão Geral do FinOps](#visao)\
 [2. Arquitetura do Ecossistema](#visao)\
 [3. Detalhamento de Custos por Serviço](#visao)\
 [4. Estimativa de Custo Total Mensal](#visao)\
 [5. Estratégias de Otimização de Custos](#visao)\
 [6. Ferramentas FinOps do Google Cloud](#visao)\
 [7. Monitoramento e Alertas Financeiros](#visao)\
-[8. Recomendações e Melhores Práticas](#visao)\
+[8. Recomendações e Melhores Práticas](#visao)
 
 
 
