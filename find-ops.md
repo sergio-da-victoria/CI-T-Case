@@ -246,8 +246,8 @@ __Subtotal Cloud CDN: ~$83/mês (opcional)__
 |CDN (Opcional)|	Cloud CDN|	$83|	0,5%|
 |Connectors (Opcional)|	Confluent Connectors|	$2.750|	15,8%|
 
-__TOTAL (sem connectors)		$17.366	100%__
-__TOTAL (com connectors)		$20.116	100%__
+**TOTAL (sem connectors)		$17.366	100%**\
+**TOTAL (com connectors)		$20.116	100%**
 
 
 
