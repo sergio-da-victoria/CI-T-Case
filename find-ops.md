@@ -8,7 +8,7 @@
 [5. Estratégias de Otimização de Custos](#estrategia)\
 [6. Ferramentas FinOps do Google Cloud](#ferramenta)\
 [7. Monitoramento e Alertas Financeiros](#monitoramento)\
-[8. Recomendações e Melhores Práticas](#melhores)
+[8. Recomendações e Melhores Práticas](#recomendacao)
 
 
 
@@ -440,5 +440,87 @@ def check_billing_cost(event, context):
 |Projeção de fim de mês|	Gauge/Medidor|	Diário
 
 
+### 7.3 Métricas FinOps a Monitorar
+|Métrica|	Descrição|	Alvo|
+|--|--|--|
+|Precisão de alocação de custos|	% de recursos com tags|	> 95%
+|Cobertura de CUD	% de recursos| cobertos por compromisso|	> 70%
+|Taxa de recursos ociosos|	% de recursos não utilizados|	< 10%
+|Eficiência de custo|	Custo por transação|	Redução mensal de 5%
+|MTTR financeiro|	Tempo para responder a anomalias|< 4 horas
 
 
+<a id="recomendacao"></a>
+### 8. Recomendações e Melhores Práticas
+##### 8.1 Recomendações Imediatas (Curto Prazo)
+
+|Ação|	Impacto|	Prazo|
+|--|--|--|
+|Implementar tagging completo|	Visibilidade|	1 semana
+|Configurar budgets e alertas|	Prevenção|	1 semana
+|Ativar FinOps Hub|	Governança|	1 dia
+|Revisar direitos de acesso|	Segurança|	1 semana
+
+
+
+### 8.2 Recomendações de Médio Prazo
+|Ação|	Impacto|	Prazo|
+|--|--|--|
+|Adquirir CUD para GKE e Cloud SQL|	20-40%|	1 mês
+Implementar right sizing automático|	20-30%|	2 meses
+Configurar amostragem de logs|	50-70%|	1 mês
+Revisar licenciamento Cloud Identity|	40-60%|	1 mês
+
+
+### 8.3 Recomendações de Longo Prazo
+|Ação|	Impacto|	Prazo|
+|--|--|--|
+|Migrar workloads para Spot VMs|	60-90%|	3 meses
+|Implementar arquitetura serverless|	30-50%|	6 meses
+|Negociar contrato enterprise|	15-25%|	12 meses
+
+
+### 8.4 Checklist de Boas Práticas FinOps
+- __Informar__
+   - Exportar dados de billing para BigQuery
+   - Criar dashboards de custo no Looker Studio
+   - Implementar tagging obrigatório por política
+   - Configurar relatórios automáticos de chargeback/showback
+- __Otimizar__
+   - Analisar recomendações do Recommender API semanalmente
+   - Revisar e ajustar compromissos de uso trimestralmente
+   - Automatizar desligamento de recursos não produtivos
+   - Implementar políticas de retenção de dados
+- __Operar__
+   - Revisões mensais de custo com stakeholders
+   - Estabelecer ownership de recursos
+   - Criar budget alerts para todos os projetos
+   - Documentar decisões de otimizaçã
+
+### 9. Resumo Executivo
+##### 9.1 Estimativa de Custo Base
+
+|Cenário|	Custo Mensal|	Custo Anual
+|--|--|--|
+|Produção|	$15.677|	$188.124
+|Desenvolvimento + Homologação + Produção|	$25.083|	$301.000
+|Otimizado (com CUD + práticas FinOps)|	$8.908|	$106.896
+
+
+### 9.2 Maiores Fatores de Custo
+|Serviço|	% do Total| Estratégia de Redução
+|--|--|--|
+|Cloud Identity|	31,5%|	Licenciamento misto
+|Observabilidade|	22,0%|	Amostragem + retenção reduzida
+|GKE|	19,1%|	CUD + Right sizing
+|Cloud SQL|	14,8%|	CUD + Read replicas otimizadas
+
+
+### 9.3 Próximos Passos
+1. __Semana 1:__ Implementar tagging e configurar budgets
+2. __Mês 1:__ Ativar FinOps Hub e configurar dashboards
+3. __Mês 2:__ Adquirir CUD para workloads estáveis
+4. __Mês 3:__ Implementar right sizing automático
+5. __Trimestre 2:__ Revisar e ajustar estratégia de otimização
+
+## Nota Final: Custos Baseado Google Cloud na região us-central1
