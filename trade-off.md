@@ -276,3 +276,31 @@ PONTUAÇÃO FINAL|	8.15|	8.05|	8.15
 - 4. Time-to-market (Tempo total decorrido desde a concepção de uma ideia, produto ou funcionalidade até o seu lançamento efetivo e disponibilidade para o consumidor final.)
 
 __Decisão: Google Cloud vence para MVP e crescimento, On-Premise pode ser melhor após escala massiva (>5 anos).__
+
+
+
+
+### 5.3 C# Sharp Core vs. Alternativas
+|Critério|	C# Sharp Core|	Java (Spring)|	Node.js|	Go
+|--|--|--|--|--|
+|Performance|	Alta (9)|	Alta (9)|	Média (6)|	Alta (9)
+|Produtividade|	Alta (9)|	Média (7)|	Alta (9)|	Média (7)|
+|Ecossistema|	Excelente (9)|	Excelente (9)|	Excelente (9)|	Bom (7)
+|Curva aprendizado|	Média (7)|	Alta (5)|	Baixa (9)|	Média (7)
+|Suporte Google|	Bom (8)|	Bom (8)|	Bom (8)|	Excelente (9)
+|PONTUAÇÃO|	8.4	|7.6	|8.2	|7.8
+
+__Decisão: C# Sharp Core escolhido por equilíbrio entre performance e produtividade.__
+
+
+<a id="risco"></a>
+### 6. Riscos e Mitigações
+
+### 6.1 Matriz de Riscos
+
+
+
+<a id="recomendacao"></a>
+### 7. Recomendações Baseadas em Trade-offs
+
+### 7.1 Decisões Confirmadas
