@@ -142,6 +142,7 @@ __Otimização: Para redução de custos, considerar Standard Tier para workload
 ### 3.6 Cloud Armor (WAF)
 
 |Componente|	Especificação|	Custo Mensal|
+|--|--|--|
 |Cloud Armor Standard|	Regras OWASP predefinidas + políticas customizadas|	~$180|
 |Taxa por política|	$0.75/hora por política|	~$540|
 |Processamento de Requisições|	10 milhões de requisições/mês|	~$0 (incluído)|
