@@ -299,7 +299,6 @@ __Decisão: C# Sharp Core escolhido por equilíbrio entre performance e produtiv
 ### 6.1 Matriz de Riscos
 
 
-
 <a id="recomendacao"></a>
 ### 7. Recomendações Baseadas em Trade-offs
 
