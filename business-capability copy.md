@@ -11,6 +11,7 @@
 
 ### 6. Diagrama BCM + Bounded Contexts
 
+
 ```mermaid
       graph TB
     subgraph "NÍVEL 1: Capacidade Estratégica"
@@ -368,12 +369,6 @@ Legenda:
 ##### Contexto: Lançamentos
 |ID|	Requisito|	Descrição|	Prioridade |Critério de Aceitação|
 |--|--|--|--|--|
-
-
-|ID|	Requisito|	Descrição|	Prioridade  |Alvo|
-|--|--|--|--|--|
-
-
 |RF-LC-01|	Registrar Débito|	Criar lançamento de saída financeira|	Must Have|	Valor |subtraído do saldo|
 |RF-LC-02|	Registrar Crédito|	Criar lançamento de entrada financeira|	Must Have|	Valor |adicionado ao saldo|
 |RF-LC-03|	Listar Lançamentos|	Listar lançamentos com filtros|	Must Have|	Paginação, ordenação por data|
