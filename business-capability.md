@@ -8,8 +8,115 @@
 [3. Bounded Contexts (Contextos Delimitados)](#bounded)\
 [4. Requisitos Funcionais Detalhados](#funcionais)\
 [5. Requisitos Não Funcionais Detalhados](#no-funcionais)\
-[6. Diagrama BCM + Bounded Contexts](#business)
 
+### 6. Diagrama BCM + Bounded Contexts
+
+```mermaid
+      graph TB
+    subgraph "NÍVEL 1: Capacidade Estratégica"
+        N1["🎯 Gestão do Fluxo de Caixa (Cash Flow Management)"]
+    end
+
+    subgraph "NÍVEL 2: Capacidades Primárias - Core Business"
+        N2_L["📝 Gestão de Lançamentos<br>• Registro de Débitos<br>• Registro de Créditos<br>• Cancelamento de Lançamentos<br>• Categorização Financeira"]
+        
+        N2_C["📊 Consolidação de Saldos<br>• Cálculo de Saldo Diário<br>• Cálculo de Saldo Mensal<br>• Projeções Financeiras<br>• Histórico de Saldos"]
+        
+        N2_R["📄 Relatórios e Análises<br>• Extrato Financeiro<br>• Relatório Gerencial<br>• Análise por Categoria<br>• Comparativo de Períodos"]
+    end
+
+    subgraph "NÍVEL 3: Capacidades de Suporte"
+        N3_ID["🔐 Identidade e Acesso<br>• Autenticação (Cloud Identity/AD)<br>• Autorização (RBAC)<br>• MFA (Multifator)<br>• Gestão de Usuários"]
+        
+        N3_N["📧 Notificações e Alertas<br>• Alerta de Saldo Baixo<br>• Confirmação de Lançamentos<br>• E-mails Transacionais<br>• Webhooks / Slack"]
+        
+        N3_A["📋 Auditoria e Compliance<br>• Registro de Eventos<br>• Trilha de Auditoria<br>• Consulta de Logs<br>• Compliance LGPD"]
+        
+        N3_E["📎 Exportação de Dados<br>• Exportação PDF<br>• Exportação Excel/CSV<br>• Download Assíncrono<br>• Relatórios Agendados"]
+    end
+
+    subgraph "NÍVEL 4: Capacidades Técnicas - Enabling"
+        N4_P["🗄️ Persistência de Dados<br>• PostgreSQL (Command DB)<br>• PostgreSQL (Read DB)<br>• MongoDB (Auditoria)<br>• Backup e Recovery"]
+        
+        N4_C["⚡ Cache de Alta Performance<br>• Redis (Memorystore)<br>• Cache de Saldo Diário<br>• TTL 24 horas<br>• Cache-Aside Pattern"]
+        
+        N4_M["📨 Mensageria Assíncrona<br>• Kafka (Confluent Cloud)<br>• Eventos de Domínio<br>• Garantia de Ordem<br>• Replay de Mensagens"]
+        
+        N4_O["🐳 Orquestração de Containers<br>• GKE Autopilot<br>• Auto-scaling<br>• Service Discovery<br>• Load Balancing"]
+        
+        N4_OB["📊 Observabilidade<br>• Cloud Monitoring<br>• Cloud Logging<br>• Cloud Trace<br>• Error Reporting"]
+        
+        N4_S["🛡️ Segurança<br>• Cloud Armor (WAF)<br>• IAM Policy<br>• Secret Manager<br>• Cloud NAT"]
+    end
+
+    %% Conexões Nível 1 -> Nível 2
+    N1 --> N2_L
+    N1 --> N2_C
+    N1 --> N2_R
+
+    %% Conexões Nível 2 -> Nível 3
+    N2_L --> N3_ID
+    N2_L --> N3_N
+    N2_L --> N3_A
+    N2_L --> N3_E
+    
+    N2_C --> N3_ID
+    N2_C --> N3_N
+    N2_C --> N3_A
+    N2_C --> N3_E
+    
+    N2_R --> N3_ID
+    N2_R --> N3_N
+    N2_R --> N3_A
+    N2_R --> N3_E
+
+    %% Conexões Nível 3 -> Nível 4
+    N3_ID --> N4_P
+    N3_ID --> N4_C
+    N3_ID --> N4_M
+    N3_ID --> N4_O
+    N3_ID --> N4_OB
+    N3_ID --> N4_S
+    
+    N3_N --> N4_P
+    N3_N --> N4_M
+    N3_N --> N4_O
+    N3_N --> N4_OB
+    N3_N --> N4_S
+    
+    N3_A --> N4_P
+    N3_A --> N4_C
+    N3_A --> N4_M
+    N3_A --> N4_OB
+    N3_A --> N4_S
+    
+    N3_E --> N4_P
+    N3_E --> N4_C
+    N3_E --> N4_O
+    N3_E --> N4_OB
+    N3_E --> N4_S
+
+    %% Estilos
+    style N1 fill:#dae8fc,stroke:#6c8ebf,stroke-width:2px,color:#000
+    style N2_L fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:#000
+    style N2_C fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:#000
+    style N2_R fill:#d5e8d4,stroke:#82b366,stroke-width:2px,color:#000
+    style N3_ID fill:#ffe6cc,stroke:#d79b00,stroke-width:2px,color:#000
+    style N3_N fill:#ffe6cc,stroke:#d79b00,stroke-width:2px,color:#000
+    style N3_A fill:#ffe6cc,stroke:#d79b00,stroke-width:2px,color:#000
+    style N3_E fill:#ffe6cc,stroke:#d79b00,stroke-width:2px,color:#000
+    style N4_P fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:#000
+    style N4_C fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:#000
+    style N4_M fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:#000
+    style N4_O fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:#000
+    style N4_OB fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:#000
+    style N4_S fill:#e1d5e7,stroke:#9673a6,stroke-width:2px,color:#000
+
+```
+
+
+    
+    
 
 
 <a id="business"></a>
