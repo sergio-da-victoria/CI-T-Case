@@ -257,3 +257,22 @@ Serverless (10%)|	9|	10|	8
 Suporte AD (10%)|	9|	7|	10
 Lock-in (5%)|	6|	5|	5
 PONTUAÇÃO FINAL|	8.15|	8.05|	8.15
+
+### 5.2 On-Premise vs. Google Cloud
+|Critério|	Google Cloud|	On-Premise (3 anos)
+|--|--|--|
+|CAPEX|	Baixo ($0 inicial)|	Alto ($200k servidores)
+|OPEX|	$188k/ano|	$80k/ano (eletricidade, manutenção, espaço)
+|TCO 3 anos|	$564k|	$440k
+|Time-to-market|	Dias|	Meses
+|Escalabilidade|	Ilimitada|	Limitada (compra antecipada)
+|Manutenção|	Zero|	Equipe dedicada (2-3 FTEs)
+|Recuperação DR|	Nativa|	Complexa
+
+**Legenda**
+- 1. CAPEX (Refere-se ao investimento de capital em ativos fixos e de longo prazo, como compra de servidores, data centers, licenças perpétuas de software e equipamentos de rede.)
+- 2. OPEX (Refere-se às despesas operacionais recorrentes necessárias para manter a infraestrutura e serviços de tecnologia funcionando no dia a dia.)
+- 3. TCO (Total Cost of Ownership ou Custo Total de Propriedade) em TI é uma métrica financeira que calcula o custo real de um ativo tecnológico (hardware, software ou serviço) ao longo de toda a sua vida útil. 
+- 4. Time-to-market (Tempo total decorrido desde a concepção de uma ideia, produto ou funcionalidade até o seu lançamento efetivo e disponibilidade para o consumidor final.)
+
+__Decisão: Google Cloud vence para MVP e crescimento, On-Premise pode ser melhor após escala massiva (>5 anos).__
