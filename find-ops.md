@@ -3,7 +3,7 @@
 
 [1. Visão Geral do FinOps](#visao)\
 [2. Arquitetura do Ecossistema](#arquitetura)\
-[3. Detalhamento de Custos por Serviço](#visao)\
+[3. Detalhamento de Custos por Serviço](#custo)\
 [4. Estimativa de Custo Total Mensal](#visao)\
 [5. Estratégias de Otimização de Custos](#visao)\
 [6. Ferramentas FinOps do Google Cloud](#visao)\
@@ -69,8 +69,9 @@ Comandos representam ações ou intenções iniciadas por um ator.
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2. Detalhamento de Custos por Serviço
-##### 2.1 Google Kubernetes Engine (GKE)
+<a id="custo"></a>
+### 3. Detalhamento de Custos por Serviço
+##### 3.1 Google Kubernetes Engine (GKE)
 
 Configuração: GKE Autopilot (recomendado para redução de overhead operacional)
 
@@ -196,6 +197,32 @@ __Total Observabilidade: ~$3.500/mês__
 |Cloud NAT Gateway|	5 TB de dados processados|	$0.045/GB|	~$230|
 
 __Subtotal Cloud NAT: ~$230/mês__
+
+
+### 3.10 Cloud DNS
+|Componente|	Especificação|	Custo| Mensal|
+|--|--|--|--|
+|Zonas Hospedadas|	2 zonas|	$0.20/zona/mês|	~$0.40|
+|Consultas|	10 milhões|	$0.40/1 milhão|	~$4|
+
+__Subtotal Cloud DNS: ~$5/mês__
+
+
+
+### 3.11 Secret Manager
+|Componente|	Especificação|	Custo| Mensal|
+|--|--|--|--|
+|Segredos Ativos|	20 secrets|	$0.06/secret/mês|	~$1.20|
+|Operações de Acesso|	100.000|	$0.03/10.000|	~$0.30|
+
+__Subtotal Secret Manager: ~$2/mês__
+
+3.12 Cloud CDN (Opcional)
+Componente	Especificação	Custo Mensal
+Cache Hit	1 TB	$0.075/GB (Américas)	~$75
+Cache Miss/Fill	100 GB	$0.075/GB	~$7.50
+Subtotal Cloud CDN: ~$83/mês (opcional)
+
 
 
 
