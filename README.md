@@ -2,26 +2,17 @@
 ####  Controle de fluxo de caixa diário com os lançamentos(débitos e créditos), também precisa de um relatório que disponibilize o saldo diário consolidado.
 
 
-## Sumário
-[1. Visão Geral do Event Storming](#visao)
-
-[2. Atores / Usuários](#atores)
-
-[3. Comandos](#comandos)
-
-[4. Eventos de Domínio](#dominios)
-
-[5. Agregados](#agregados)
-
-[6. Políticas / Regras de Negócio](#negocio)
-
-[7. Leituras / Consultas (CQRS)](#cqrs)
-
-[8. Sistemas Externos](#externo)
-
-[9. Fluxo Completo do Sistema](#fluxo)
-
-[10. Glossário do Event Storming](#glossario)
+##### Sumário
+[1. Visão Geral do Event Storming](#visao)\
+[2. Atores / Usuários](#atores)\
+[3. Comandos](#comandos)\
+[4. Eventos de Domínio](#dominios)\
+[5. Agregados](#agregados)\
+[6. Políticas / Regras de Negócio](#negocio)\
+[7. Leituras / Consultas (CQRS)](#cqrs)\
+[8. Sistemas Externos](#externo)\
+[9. Fluxo Completo do Sistema](#fluxo)\
+[10. Glossário do Event Storming](#glossario)\
 
 
 ### Diagrama Domain Driven Design - Fluxo de Caixa
@@ -959,7 +950,7 @@ Legenda:
 
 
 ### Relatório FinOps - Ecossistema Fluxo de Caixa em Google Cloud
-## Sumário
+##### Sumário
 
 [1. Visão Geral do FinOps](#visao)\
 [2. Arquitetura do Ecossistema](#visao)\
