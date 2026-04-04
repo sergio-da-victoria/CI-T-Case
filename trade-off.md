@@ -7,8 +7,8 @@
 [4. Vantagens e Desvantagens por Categoria](#vantagem)\
 [5. Comparativo com Alternativas](#comparativo)\
 [6. Riscos e Mitigações](#risco)\
-[7. Recomendações Baseadas em Trade-offs](#recomendacao)
-[8. Conclusão Executiva](#conclusao)
+[7. Recomendações Baseadas em Trade-offs](#recomendacao)\
+[8. Conclusão Executiva](#conclusao)\
 [9. ***Resumo Executiva***](#executivo)
 
 
