@@ -528,8 +528,9 @@ __GKE (Pods)__
 
 __|Conclusão: Todos os pods operam com menos de 2% de utilização.__
 
-### 3.2 Cloud SQL (PostgreSQL)
+### 9.4 Cloud SQL (PostgreSQL)
 |Métrica|	Capacidade|	Carga Estimada|	Utilização
+|--|--|--|--
 |Conexões simultâneas|	500	|50	|10%
 |Transações por segundo|	5.000|	100|	2%
 |IOPS|	10.000|	500|	5%
@@ -539,7 +540,7 @@ __Conclusão: Banco de dados opera com folga confortável__
 
 
 
-### 3.4 Memorystore (Redis)
+### 9.5 Memorystore (Redis)
 |Métrica	|Capacidade|	Carga Estimada|	Utilização
 |--|--|--|--|
 |Operações por segundo|	100.000|	200|	0,2%
@@ -547,3 +548,117 @@ __Conclusão: Banco de dados opera com folga confortável__
 |Conexões|	65.000|	50|	0,08%
 
 __Conclusão: Cache Redis opera com grande folga.__
+
+
+### 9.6 Distribuição Estimada das Requisições
+__Breakdown por Endpoint__
+|Endpoint|	% do Total|	Requisições (12h)|	req/seg (média)|	req/seg (pico)
+|--|--|--|--|--|
+|POST /lancamentos|	30%	|648.000	|15	|30
+|GET /consolidado/diario|	40%	|864.000	|20	|40
+|GET /lancamentos|	15%	|324.000	|7,5	|15
+|GET /relatorios/extrato|	5%|	108.000|	2,5	|5
+|POST /auth/login|	5%	|108.000	|2,5	|5
+|DELETE /lancamentos/{id}|	3%	|64.800	|1,5	|3
+|Outros|	2%	|43.200	|1,0|	2
+|TOTAL|	100%	|2.160.000|	50	|100
+
+*** 9.7 Projeção de Eventos no Kafka
+|Evento| Quantidade (12h)|	Mensagens/seg
+|--|--|--|
+|LancamentoRegistrado|	648.000|	15
+|LancamentoCancelado|	64.800|	1,5
+|SaldoDiarioAtualizado|	648.000|	15
+|SaldoBaixoAlertado|	10.000|	0,23
+|Eventos de Auditoria|	1.370.800|	31,7
+|TOTAL|	2.741.600|	63,4
+
+
+### 9.8 Tempo de Resposta Estimado
+|Componente|	Tempo Base|	Com Carga (50 req/seg)|	SLA
+|--|--|--|--|
+|API Gateway|	5 ms|	5-10 ms|	✅
+|auth-api|	50 ms|	50-80 ms|	✅
+|lancamentos-api|	30 ms|	30-50 ms|	✅
+|consolidacao-api (cache)|	5 ms|	5-10 ms|	✅
+|consolidacao-api (DB)|	50 ms|	50-80 ms|	✅
+|relatorios-api|	200 ms|	200-300 ms|	✅
+|Latência total (P95)|	-|	< 200 ms|	✅
+
+___Conclusão: Tempo de resposta permanece dentro do SLA (< 500ms).__
+
+### 9,9 Custo Estimado para Este Volume
+|Serviço|	Custo Base (ocioso)|	Custo com 2,16M req/12h|	Diferença
+|--|--|--|--|
+|GKE|	$3.030|	$3.050|	+$20
+|Cloud SQL|	$2.345|	$2.350|	+$5
+|Confluent Kafka|	$1.352|	$1.360|	+$8
+|Memorystore|	$160|	$160|	$0
+|Cloud Armor|	$720|	$720|	$0
+|Cloud Identity|	$5.000|	$5.000|	$0
+|Observabilidade|	$3.500|	$3.520|	+$20
+|TOTAL MENSAL|	$17.366|	$17.430|	+$64
+
+__Conclusão: O custo incremental para este volume de requisições é marginal (menos de 0,4% de aumento).__
+
+### 9.10 Capacidade de Pico (Stress Test)
+__7.1 Limites Teóricos do Sistema__
+|Componente|	Gargalo|	Capacidade Máxima|	Carga Atual|	Folga
+|--|--|--|--|--|
+|GKE| (CPU)|	vCPU	50.000 req/seg|	100|	500x
+|Cloud SQL (IOPS)|	Disco|	10.000 IOPS|	500|	20x
+|Kafka (throughput)|	Rede	|100 MB/s	|5 MB/s	|20x
+|Redis (OPS)|	Memória|	100.000 ops/seg	|200	|500x
+
+### 9.11 Teste de Carga Estimado
+
+```
+Nível de carga         req/seg    Status
+─────────────────────────────────────────
+Normal (cenário)       100        ✅ Muito abaixo
+Moderado               1.000      ✅ Confortável
+Alto                   5.000      ✅ Atingível
+Máximo projetado      10.000      ⚠️ Pode exigir scaling
+Limite teórico        50.000      ❌ Exige redesenho
+```
+### 9.12 Conclusão Final
+
+__8.1 Verdict__
+
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                     │
+│   ✅ O ECOSSISTEMA FUNCIONA MUITO BEM PARA 2,16 MILHÕES DE REQUISIÇÕES EM 12 HORAS  │
+│                                                                                     │
+│   • Utilização média: 0,5% da capacidade                                            │
+│   • Utilização de pico: 1,0% da capacidade                                          │
+│   • Tempo de resposta: < 200ms (SLA: 500ms)                                         │
+│   • Custo incremental: marginal (~$64/mês)                                          │
+│   • Folga para crescimento: 100x até próximo gargalo                                │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+```
+
+### 9.13 Recomendações
+|Recomendação|	Motivo|	Prioridade
+|--|--|--|
+|Manter arquitetura atual|	Sistema opera com folga	|✅ Já atendido
+|Reduzir recursos (opcional)|	Possível economia de ~30%|	⚪ Baixa prioridade
+|Implementar HPA (Horizontal Pod Autoscaler)|	Preparação para crescimento|	🟡 Média prioridade
+|Configurar alerts de escala|	Detectar aumento de tráfego	|🟢 Já planejado
+
+
+### 9.14 Resumo para Stakeholders
+|Pergunta|	Resposta
+|--|--
+|O sistema aguenta 2,16M requisições em 12h?|	✅ Sim, com folga de 100x
+|Vai ficar lento?|	❌ Não, tempo de resposta < 200ms
+|Vai quebrar?|	❌ Não, capacidade muito acima
+|Vai custar muito mais?|	❌ Não, custo incremental marginal
+|Precisa mudar algo?|	⚠️ Apenas monitoramento e alerts
+
+
+***Nota Final: O ecossistema foi projetado para suportar 10.000 requisições por segundo. Com apenas 100 req/seg no pico, o sistema opera com 1% da capacidade máxima, garantindo estabilidade, performance e baixo custo operacional.***
+
