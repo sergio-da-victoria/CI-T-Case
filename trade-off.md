@@ -516,12 +516,34 @@ Utilização do sistema (pico) = 100 ÷ 10.000 = 1,0%
 ### 9.3. Impacto por Componente
 __GKE (Pods)__
 
-|Componente	Réplicas|	Capacidade por Pod (req/seg)|	Capacidade Total|	Carga Estimada (pico)|	Utilização
-|auth-api	3	500	1.500	10	0,7%
-|lancamentos-api	3	1.000	3.000	30	1,0%
-|consolidacao-api	3	1.000	3.000	30	1,0%
-|relatorios-api	2	500	1.000	20	2,0%
-|consolidacao-worker	2	500	1.000	10	1,0%
-|notificacoes-worker	2	200	400	5	1,3%
-|auditoria-worker	2	500	1.000	10	1,0%
-|Conclusão: Todos os pods operam com menos de 2% de utilização.
+|Componente|	Réplicas|	Capacidade por Pod (req/seg)|	Capacidade Total|	Carga Estimada (pico)|	Utilização
+|--|--|--|--|--|--|
+|auth-api|	3|	500|	1.500|10|	0,7%
+|lancamentos-api|	3|	1.000|3.000|	30|	1,0%
+|consolidacao-api|	3	|1.000|	3.000|	30|	1,0%
+|relatorios-api|	2	|500|	1.000|	20|	2,0%
+|consolidacao-worker|	2	|500|	1.000|	10|	1,0%
+|notificacoes-worker|	2	|200|	400|	5|	1,3%
+|auditoria-worker|	2	|500	|1.000	|10	|1,0%
+
+__|Conclusão: Todos os pods operam com menos de 2% de utilização.__
+
+### 3.2 Cloud SQL (PostgreSQL)
+|Métrica|	Capacidade|	Carga Estimada|	Utilização
+|Conexões simultâneas|	500	|50	|10%
+|Transações por segundo|	5.000|	100|	2%
+|IOPS|	10.000|	500|	5%
+|Armazenamento|	1,5 TB|	500 GB|	33%
+
+__Conclusão: Banco de dados opera com folga confortável__
+
+
+
+### 3.4 Memorystore (Redis)
+|Métrica	|Capacidade|	Carga Estimada|	Utilização
+|--|--|--|--|
+|Operações por segundo|	100.000|	200|	0,2%
+|Memória utilizada|	10 GB|	2 GB|	20%
+|Conexões|	65.000|	50|	0,08%
+
+__Conclusão: Cache Redis opera com grande folga.__
