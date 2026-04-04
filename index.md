@@ -16,6 +16,8 @@
 [11. Business Capability Modeling](/business-capability.md)\
 [12. Relatório FindOps](/find-ops.md)
 [13. Trade OFF - Troubleshooting - Recomendações](/trade-off.md)
+[14. Scaffolding - Codigo](/scaffolding.md)
+
 
 
 ### Diagrama Domain Driven Design - Fluxo de Caixa
