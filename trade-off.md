@@ -585,7 +585,7 @@ __Breakdown por Endpoint__
 |relatorios-api|	200 ms|	200-300 ms|	✅
 |Latência total (P95)|	-|	< 200 ms|	✅
 
-___Conclusão: Tempo de resposta permanece dentro do SLA (< 500ms).__
+__Conclusão: Tempo de resposta permanece dentro do SLA (< 500ms).__
 
 ### 9,9 Custo Estimado para Este Volume
 |Serviço|	Custo Base (ocioso)|	Custo com 2,16M req/12h|	Diferença
