@@ -14,8 +14,8 @@
 [9. Fluxo Completo do Sistema](#fluxo)\
 [10. Glossário do Event Storming](#glossario)\
 [11. Business Capability Modeling](/business-capability.md)\
-[12. Relatório FindOps](/find-ops.md)
-[13. Trade OFF - Troubleshooting - Recomendações](/trade-off.md)
+[12. Relatório FindOps](/find-ops.md)\
+[13. Trade OFF - Troubleshooting - Recomendações](/trade-off.md)\
 [14. Scaffolding - Codigo](/scaffolding.md)
 
 
