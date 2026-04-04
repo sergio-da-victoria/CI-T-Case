@@ -5,7 +5,7 @@
 
 
 [1. Estrutura do Projeto](#estrutura)\
-[2. buildingblocks - Projeto Compartilhado](#buildingblocks)\
+[2. BuildingBlocks - Projeto Compartilhado](#buildingblocks)\
 [3. Circuit Breaker](#breaker)\
 [4. Auth API](#authapi)\
 [5. Lancamentos API](#lancamento)\
@@ -2005,124 +2005,19 @@ public class AuditoriaEvento
 
 ```
 
-<a id="estrutura"></a>
-
-### 8. Kubernetes Deployments (GKE)
-
-__8.1 auth-api.yaml__
-
-```
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: lancamentos-api
-  namespace: fluxo-caixa
-  labels:
-    app: lancamentos-api
-    environment: production
-    tier: backend
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: lancamentos-api
-  template:
-    metadata:
-      labels:
-        app: lancamentos-api
-        environment: production
-        tier: backend
-    spec:
-      containers:
-      - name: lancamentos-api
-        image: gcr.io/fluxo-caixa/lancamentos-api:latest
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 8082
-          name: http
-        env:
-        - name: ASPNETCORE_ENVIRONMENT
-          value: "Production"
-        - name: ConnectionStrings__LancamentosDb
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: lancamentos-db-connection
-        - name: Kafka__BootstrapServers
-          valueFrom:
-            secretKeyRef:
-              name: kafka-secrets
-              key: bootstrap-servers
-        - name: Jwt__Secret
-          valueFrom:
-            secretKeyRef:
-              name: jwt-secrets
-              key: secret
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "500m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
-        livenessProbe:
-          httpGet:
-            path: /health/live
-            port: 8082
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health/ready
-            port: 8082
-          initialDelaySeconds: 5
-          periodSeconds: 5
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: lancamentos-api
-  namespace: fluxo-caixa
-spec:
-  selector:
-    app: lancamentos-api
-  ports:
-  - port: 8082
-    targetPort: 8082
-    name: http
-  type: ClusterIP
----
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: lancamentos-api-hpa
-  namespace: fluxo-caixa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: lancamentos-api
-  minReplicas: 3
-  maxReplicas: 15
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+<a id="relatorio"></a>
 
 
-```
 
 
-__8.2 lancamentos-api.yaml__
+
+
+
+<a id="kubernete"></a>
+
+### 9. Kubernetes Deployments (GKE)
+
+__9.1 auth-api.yaml__
 
 ```
 apiVersion: apps/v1
@@ -2231,9 +2126,122 @@ spec:
         type: Utilization
         averageUtilization: 80
 
+
 ```
 
-__8.3 consolidacao-api.yaml__
+
+__9.2 lancamentos-api.yaml__
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lancamentos-api
+  namespace: fluxo-caixa
+  labels:
+    app: lancamentos-api
+    environment: production
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lancamentos-api
+  template:
+    metadata:
+      labels:
+        app: lancamentos-api
+        environment: production
+        tier: backend
+    spec:
+      containers:
+      - name: lancamentos-api
+        image: gcr.io/fluxo-caixa/lancamentos-api:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8082
+          name: http
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        - name: ConnectionStrings__LancamentosDb
+          valueFrom:
+            secretKeyRef:
+              name: db-secrets
+              key: lancamentos-db-connection
+        - name: Kafka__BootstrapServers
+          valueFrom:
+            secretKeyRef:
+              name: kafka-secrets
+              key: bootstrap-servers
+        - name: Jwt__Secret
+          valueFrom:
+            secretKeyRef:
+              name: jwt-secrets
+              key: secret
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8082
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8082
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lancamentos-api
+  namespace: fluxo-caixa
+spec:
+  selector:
+    app: lancamentos-api
+  ports:
+  - port: 8082
+    targetPort: 8082
+    name: http
+  type: ClusterIP
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: lancamentos-api-hpa
+  namespace: fluxo-caixa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: lancamentos-api
+  minReplicas: 3
+  maxReplicas: 15
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+```
+
+__9.3 consolidacao-api.yaml__
 
 ```
 apiVersion: apps/v1
@@ -2338,7 +2346,7 @@ spec:
 
 ```
 
-__8.4 relatorios-api.yaml__
+__9.4 relatorios-api.yaml__
 
 ```
 apiVersion: apps/v1
@@ -2418,7 +2426,7 @@ spec:
 
 ```
 
-__8.5 consolidacao-worker.yaml__
+__9.5 consolidacao-worker.yaml__
 
 ```
 
@@ -2507,7 +2515,7 @@ spec:
 
 ```
 
-__8.6 notificacoes-worker.yaml__
+__9.6 notificacoes-worker.yaml__
 
 ```
 apiVersion: apps/v1
@@ -2576,7 +2584,7 @@ spec:
 
 ```
 
-__8.7 auditoria-worker.yaml__
+__9.7 auditoria-worker.yaml__
 
 ```
 apiVersion: apps/v1
@@ -2627,7 +2635,7 @@ spec:
 
 ```
 
-__8.8 api-gateway.yaml__
+__9.8 api-gateway.yaml__
 
 ```
 apiVersion: apps/v1
@@ -2722,7 +2730,7 @@ spec:
 
 ```
 
-__8.9 ConfigMap e Secrets__
+__9.9 ConfigMap e Secrets__
 
 ```
 # configmap.yaml
@@ -2790,7 +2798,7 @@ stringData:
 
 ```
 
-__8.10 Namespace e Network Policy__
+__9.10 Namespace e Network Policy__
 
 ```
 # namespace.yaml
@@ -2844,7 +2852,7 @@ spec:
 ```
 
 
-__8.11 Dockerfile (Base)__
+__9.11 Dockerfile (Base)__
 
 ```
 # Dockerfile.base
@@ -2880,7 +2888,7 @@ ENTRYPOINT ["dotnet", "FluxoCaixa.Service.dll"]
 
 ```
 
-__8.12 Dockerfile específico para cada serviço (exemplo: auth-api)__
+__9.12 Dockerfile específico para cada serviço (exemplo: auth-api)__
 
 
 ```
@@ -2900,7 +2908,7 @@ ENTRYPOINT ["dotnet", "Auth.Api.dll"]
 
 ```
 
-__8.13 Comandos para Deploy no GKE__
+__9.13 Comandos para Deploy no GKE__
 
 ```
 # 1. Criar namespace
@@ -2944,12 +2952,3 @@ kubectl top pods -n fluxo-caixa
 kubectl top nodes
 
 ```
-
-
-
-
-
-
-
-
-
