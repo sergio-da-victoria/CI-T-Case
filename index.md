@@ -21,9 +21,9 @@
 ### Diagrama Domain Driven Design - Fluxo de Caixa
 ![Texto](/ddd-case.jpg)
 
+
 ### Diagrama do Event Storming - Fluxo de Caixa
 ![Texto](/event-storming.jpg)
-
 
 
 <a id="visao"></a>
