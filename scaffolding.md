@@ -10,8 +10,8 @@
 [4. Auth API](#authapi)\
 [5. Lancamentos API](#lancamento)\
 [6. Consolidacao API](#consolidacao)\
-[7. Workers](#work)\
-[8. Relatorios API](#relatorio)\
+[7. Relatorios API](#relatorio)\
+[8. Workers](#work)\
 [9. Kubernetes Deployments (GKE)](#kubernete)
 
 
@@ -1595,11 +1595,1308 @@ public class RedisCacheService : ICacheService
 
 ```
 
+
+
+<a id="relatorio"></a>
+
+### 8. Relatório API
+
+__8.1 Relatorio.API / Program.cs__
+
+```
+// Relatorios.Api/Program.cs
+using System.Text;
+using FluxoCaixa.Relatorios.Services;
+using FluxoCaixa.Relatorios.Services.Exportadores;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Npgsql;
+using Polly;
+using StackExchange.Redis;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Configuração de serviços
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo 
+    { 
+        Title = "Fluxo Caixa - Relatórios API", 
+        Version = "v1",
+        Description = "API para geração de relatórios financeiros e indicadores"
+    });
+    
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Insira o token JWT no formato: Bearer {token}"
+    });
+    
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+// Autenticação JWT
+var jwtSecret = builder.Configuration["Jwt:Secret"] ?? "sua-chave-secreta-aqui-com-minimo-32-caracteres";
+var key = Encoding.ASCII.GetBytes(jwtSecret);
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization();
+
+// Database
+var connectionString = builder.Configuration.GetConnectionString("ReadDb") 
+    ?? "Host=localhost;Database=fluxocaixa_read;Username=postgres;Password=postgres";
+builder.Services.AddNpgsqlDataSource(connectionString);
+
+// Redis Cache
+var redisConnection = builder.Configuration["Redis:ConnectionString"] ?? "localhost:6379";
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+    ConnectionMultiplexer.Connect(redisConnection));
+builder.Services.AddScoped<ICacheService, RedisCacheService>();
+
+// Circuit Breakers
+builder.Services.AddSingleton(CircuitBreakerPolicy.GetDatabaseCircuitBreakerPolicy());
+builder.Services.AddSingleton(CircuitBreakerPolicy.GetRedisCircuitBreakerPolicy());
+
+// Exportadores
+builder.Services.AddSingleton<IExportador, PdfExportador>();
+builder.Services.AddSingleton<IExportador, CsvExportador>();
+builder.Services.AddSingleton<IExportador, MarkdownExportador>();
+
+// Serviços
+builder.Services.AddScoped<IRelatorioService, RelatorioService>();
+builder.Services.AddScoped<IIndicadoresService, IndicadoresService>();
+
+// Health Checks
+builder.Services.AddHealthChecks()
+    .AddNpgSql(connectionString)
+    .AddRedis(redisConnection);
+
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+var app = builder.Build();
+
+// Middleware
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseCors("AllowAll");
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+app.MapHealthChecks("/health/live");
+app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = _ => false
+});
+
+app.Run();
+
+```
+
+__7.2 RelatorioController.cs__
+
+```
+
+// Relatorios.Api/Controllers/RelatorioController.cs
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using FluxoCaixa.Relatorios.Models;
+using FluxoCaixa.Relatorios.Models.Enums;
+using FluxoCaixa.Relatorios.Services;
+
+namespace FluxoCaixa.Relatorios.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize]
+public class RelatorioController : ControllerBase
+{
+    private readonly IRelatorioService _relatorioService;
+    private readonly ILogger<RelatorioController> _logger;
+
+    public RelatorioController(
+        IRelatorioService relatorioService,
+        ILogger<RelatorioController> logger)
+    {
+        _relatorioService = relatorioService;
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// Gera relatório diário de saldo consolidado
+    /// </summary>
+    [HttpGet("diario")]
+    public async Task<IActionResult> GerarRelatorioDiario(
+        [FromQuery] DateOnly data,
+        [FromQuery] FormatoExportacao formato = FormatoExportacao.PDF)
+    {
+        try
+        {
+            var request = new RelatorioDiarioRequest
+            {
+                Data = data,
+                Formato = formato,
+                UsuarioId = ObterUsuarioId()
+            };
+            
+            var resultado = await _relatorioService.GerarRelatorioDiarioAsync(request);
+            
+            return File(resultado.Conteudo, resultado.ContentType, resultado.NomeArquivo);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { erro = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao gerar relatório diário para data {Data}", data);
+            return StatusCode(500, new { erro = "Erro interno ao processar requisição" });
+        }
+    }
+
+    /// <summary>
+    /// Gera relatório semanal de saldo consolidado
+    /// </summary>
+    [HttpGet("semanal")]
+    public async Task<IActionResult> GerarRelatorioSemanal(
+        [FromQuery] int ano,
+        [FromQuery] int semana,
+        [FromQuery] FormatoExportacao formato = FormatoExportacao.PDF)
+    {
+        try
+        {
+            if (ano < 2000 || ano > 2100)
+                return BadRequest(new { erro = "Ano inválido" });
+            
+            if (semana < 1 || semana > 53)
+                return BadRequest(new { erro = "Semana inválida (1-53)" });
+            
+            var request = new RelatorioSemanalRequest
+            {
+                Ano = ano,
+                Semana = semana,
+                Formato = formato,
+                UsuarioId = ObterUsuarioId()
+            };
+            
+            var resultado = await _relatorioService.GerarRelatorioSemanalAsync(request);
+            
+            return File(resultado.Conteudo, resultado.ContentType, resultado.NomeArquivo);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { erro = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao gerar relatório semanal para ano {Ano}, semana {Semana}", ano, semana);
+            return StatusCode(500, new { erro = "Erro interno ao processar requisição" });
+        }
+    }
+
+    /// <summary>
+    /// Gera relatório mensal de saldo consolidado
+    /// </summary>
+    [HttpGet("mensal")]
+    public async Task<IActionResult> GerarRelatorioMensal(
+        [FromQuery] int ano,
+        [FromQuery] int mes,
+        [FromQuery] FormatoExportacao formato = FormatoExportacao.PDF)
+    {
+        try
+        {
+            if (ano < 2000 || ano > 2100)
+                return BadRequest(new { erro = "Ano inválido" });
+            
+            if (mes < 1 || mes > 12)
+                return BadRequest(new { erro = "Mês inválido (1-12)" });
+            
+            var request = new RelatorioMensalRequest
+            {
+                Ano = ano,
+                Mes = mes,
+                Formato = formato,
+                UsuarioId = ObterUsuarioId()
+            };
+            
+            var resultado = await _relatorioService.GerarRelatorioMensalAsync(request);
+            
+            return File(resultado.Conteudo, resultado.ContentType, resultado.NomeArquivo);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { erro = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao gerar relatório mensal para ano {Ano}, mês {Mes}", ano, mes);
+            return StatusCode(500, new { erro = "Erro interno ao processar requisição" });
+        }
+    }
+
+    /// <summary>
+    /// Gera relatório por período personalizado
+    /// </summary>
+    [HttpGet("periodo")]
+    public async Task<IActionResult> GerarRelatorioPorPeriodo(
+        [FromQuery] DateTime inicio,
+        [FromQuery] DateTime fim,
+        [FromQuery] FormatoExportacao formato = FormatoExportacao.PDF,
+        [FromQuery] bool agruparPorCategoria = true)
+    {
+        try
+        {
+            if (inicio > fim)
+                return BadRequest(new { erro = "Data inicial deve ser menor ou igual à data final" });
+            
+            if ((fim - inicio).TotalDays > 365)
+                return BadRequest(new { erro = "Período máximo de 365 dias" });
+            
+            var request = new RelatorioPeriodoRequest
+            {
+                DataInicio = inicio,
+                DataFim = fim,
+                Formato = formato,
+                AgruparPorCategoria = agruparPorCategoria,
+                UsuarioId = ObterUsuarioId()
+            };
+            
+            var resultado = await _relatorioService.GerarRelatorioPorPeriodoAsync(request);
+            
+            return File(resultado.Conteudo, resultado.ContentType, resultado.NomeArquivo);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { erro = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao gerar relatório por período de {Inicio} a {Fim}", inicio, fim);
+            return StatusCode(500, new { erro = "Erro interno ao processar requisição" });
+        }
+    }
+
+    /// <summary>
+    /// Gera histórico consolidado de saldos
+    /// </summary>
+    [HttpGet("historico")]
+    public async Task<IActionResult> GerarHistoricoConsolidado(
+        [FromQuery] int meses = 12,
+        [FromQuery] FormatoExportacao formato = FormatoExportacao.PDF,
+        [FromQuery] bool incluirProjecao = true)
+    {
+        try
+        {
+            if (meses < 1 || meses > 36)
+                return BadRequest(new { erro = "Número de meses deve estar entre 1 e 36" });
+            
+            var request = new HistoricoConsolidadoRequest
+            {
+                Meses = meses,
+                Formato = formato,
+                IncluirProjecao = incluirProjecao,
+                UsuarioId = ObterUsuarioId()
+            };
+            
+            var resultado = await _relatorioService.GerarHistoricoConsolidadoAsync(request);
+            
+            return File(resultado.Conteudo, resultado.ContentType, resultado.NomeArquivo);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { erro = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao gerar histórico consolidado para {Meses} meses", meses);
+            return StatusCode(500, new { erro = "Erro interno ao processar requisição" });
+        }
+    }
+
+    /// <summary>
+    /// Obtém dados de saldo diário (JSON)
+    /// </summary>
+    [HttpGet("dados/diario")]
+    public async Task<IActionResult> ObterDadosSaldoDiario([FromQuery] DateOnly data)
+    {
+        try
+        {
+            var resultado = await _relatorioService.ObterSaldoDiarioAsync(data, ObterUsuarioId());
+            return Ok(resultado);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao obter dados diários para data {Data}", data);
+            return StatusCode(500, new { erro = "Erro interno ao processar requisição" });
+        }
+    }
+
+    /// <summary>
+    /// Obtém dados de saldo mensal (JSON)
+    /// </summary>
+    [HttpGet("dados/mensal")]
+    public async Task<IActionResult> ObterDadosSaldoMensal(
+        [FromQuery] int ano,
+        [FromQuery] int mes)
+    {
+        try
+        {
+            var resultado = await _relatorioService.ObterSaldoMensalAsync(ano, mes, ObterUsuarioId());
+            return Ok(resultado);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao obter dados mensais para ano {Ano}, mês {Mes}", ano, mes);
+            return StatusCode(500, new { erro = "Erro interno ao processar requisição" });
+        }
+    }
+
+    /// <summary>
+    /// Obtém dados de saldo por período (JSON)
+    /// </summary>
+    [HttpGet("dados/periodo")]
+    public async Task<IActionResult> ObterDadosSaldoPeriodo(
+        [FromQuery] DateTime inicio,
+        [FromQuery] DateTime fim,
+        [FromQuery] bool agruparPorCategoria = true)
+    {
+        try
+        {
+            var resultado = await _relatorioService.ObterSaldoPeriodoAsync(inicio, fim, ObterUsuarioId());
+            return Ok(resultado);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao obter dados de período de {Inicio} a {Fim}", inicio, fim);
+            return StatusCode(500, new { erro = "Erro interno ao processar requisição" });
+        }
+    }
+
+    /// <summary>
+    /// Obtém indicadores financeiros (JSON)
+    /// </summary>
+    [HttpGet("indicadores")]
+    public async Task<IActionResult> ObterIndicadores(
+        [FromQuery] DateTime inicio,
+        [FromQuery] DateTime fim)
+    {
+        try
+        {
+            var resultado = await _relatorioService.CalcularIndicadoresAsync(inicio, fim, ObterUsuarioId());
+            return Ok(resultado);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao obter indicadores de {Inicio} a {Fim}", inicio, fim);
+            return StatusCode(500, new { erro = "Erro interno ao processar requisição" });
+        }
+    }
+
+    /// <summary>
+    /// Obtém resumo de indicadores financeiros (JSON)
+    /// </summary>
+    [HttpGet("indicadores/resumo")]
+    public async Task<IActionResult> ObterResumoIndicadores(
+        [FromQuery] DateTime inicio,
+        [FromQuery] DateTime fim)
+    {
+        try
+        {
+            var indicadores = await _relatorioService.CalcularIndicadoresAsync(inicio, fim, ObterUsuarioId());
+            
+            var resumo = new
+            {
+                periodo = $"{inicio:dd/MM/yyyy} a {fim:dd/MM/yyyy}",
+                status = ObterStatusGeral(indicadores),
+                score = CalcularScore(indicadores),
+                indicadoresPrincipais = new
+                {
+                    margemLiquida = new
+                    {
+                        valor = indicadores.MargemLiquida,
+                        classificacao = ClassificarMargem(indicadores.MargemLiquida),
+                        tendencia = "Estável"
+                    },
+                    roi = new
+                    {
+                        valor = indicadores.ROI,
+                        classificacao = ClassificarROI(indicadores.ROI),
+                        tendencia = "Estável"
+                    },
+                    liquidezCorrente = new
+                    {
+                        valor = indicadores.LiquidezCorrente,
+                        classificacao = ClassificarliquidezCorrente(indicadores.LiquidezCorrente),
+                        tendencia = "Estável"
+                    },
+                    ticketMedio = new
+                    {
+                        valor = indicadores.TicketMedio,
+                        classificacao = ClassificarTicketMedio(indicadores.TicketMedio),
+                        tendencia = "Estável"
+                    }
+                },
+                recomendacoes = GerarRecomendacoes(indicadores)
+            };
+            
+            return Ok(resumo);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao obter resumo de indicadores");
+            return StatusCode(500, new { erro = "Erro interno ao processar requisição" });
+        }
+    }
+
+    private Guid ObterUsuarioId()
+    {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userIdClaim))
+            throw new UnauthorizedAccessException("Usuário não autenticado");
+        
+        return Guid.Parse(userIdClaim);
+    }
+
+    private static string ObterStatusGeral(IndicadoresFinanceirosDto indicadores)
+    {
+        if (indicadores.MargemLiquida > 15 && indicadores.LiquidezCorrente > 1.5m)
+            return "EXCELENTE";
+        if (indicadores.MargemLiquida > 10 && indicadores.LiquidezCorrente > 1.2m)
+            return "SAUDAVEL";
+        if (indicadores.MargemLiquida > 5 && indicadores.LiquidezCorrente > 1)
+            return "REGULAR";
+        if (indicadores.MargemLiquida > 0)
+            return "ATENÇÃO";
+        return "CRÍTICO";
+    }
+
+    private static int CalcularScore(IndicadoresFinanceirosDto indicadores)
+    {
+        var score = 0;
+        
+        if (indicadores.MargemLiquida > 20) score += 30;
+        else if (indicadores.MargemLiquida > 10) score += 20;
+        else if (indicadores.MargemLiquida > 5) score += 10;
+        
+        if (indicadores.LiquidezCorrente > 2) score += 30;
+        else if (indicadores.LiquidezCorrente > 1.5m) score += 20;
+        else if (indicadores.LiquidezCorrente > 1) score += 10;
+        
+        if (indicadores.ROI > 15) score += 40;
+        else if (indicadores.ROI > 10) score += 30;
+        else if (indicadores.ROI > 5) score += 20;
+        else if (indicadores.ROI > 0) score += 10;
+        
+        return score;
+    }
+
+    private static string ClassificarMargem(decimal margem)
+    {
+        return margem switch
+        {
+            > 20 => "Excelente",
+            > 10 => "Boa",
+            > 5 => "Regular",
+            > 0 => "Baixa",
+            _ => "Negativa"
+        };
+    }
+
+    private static string ClassificarROI(decimal roi)
+    {
+        return roi switch
+        {
+            > 15 => "Excelente",
+            > 10 => "Bom",
+            > 5 => "Moderado",
+            > 0 => "Baixo",
+            _ => "Negativo"
+        };
+    }
+
+    private static string ClassificarliquidezCorrente(decimal liquidez)
+    {
+        return liquidez switch
+        {
+            > 2 => "Excelente",
+            > 1.5m => "Boa",
+            > 1 => "Regular",
+            _ => "Crítica"
+        };
+    }
+
+    private static string ClassificarTicketMedio(decimal ticket)
+    {
+        return ticket switch
+        {
+            > 500 => "Alto",
+            > 200 => "Médio",
+            > 50 => "Baixo",
+            _ => "Muito Baixo"
+        };
+    }
+
+    private static List<string> GerarRecomendacoes(IndicadoresFinanceirosDto indicadores)
+    {
+        var recomendacoes = new List<string>();
+        
+        if (indicadores.MargemLiquida < 10)
+            recomendacoes.Add("Busque aumentar sua margem líquida reduzindo custos ou aumentando preços");
+        
+        if (indicadores.LiquidezCorrente < 1.2m)
+            recomendacoes.Add("Aumente sua liquidez corrente reduzindo dívidas de curto prazo");
+        
+        if (indicadores.ROI < 10)
+            recomendacoes.Add("Avalie investimentos mais rentáveis para melhorar o ROI");
+        
+        if (indicadores.ConcentracaoReceita > 50)
+            recomendacoes.Add("Diversifique suas fontes de receita para reduzir risco");
+        
+        if (indicadores.VolatilidadeSaldo > 30)
+            recomendacoes.Add("Implemente estratégias para reduzir a volatilidade do saldo");
+        
+        if (recomendacoes.Count == 0)
+            recomendacoes.Add("Mantenha as boas práticas financeiras atuais");
+        
+        return recomendacoes;
+    }
+}
+
+```
+
+__7.3 IRelatorioService.cs__
+
+```
+
+// Relatorias.Services/IRelatorioService.cs
+using FluxoCaixa.Relatorios.Models;
+using FluxoCaixa.Relatorios.Models.Enums;
+
+namespace FluxoCaixa.Relatorios.Services;
+
+public interface IRelatorioService
+{
+    // Relatórios de Saldo
+    Task<RelatorioResponse> GerarRelatorioDiarioAsync(RelatorioDiarioRequest request, CancellationToken ct = default);
+    Task<RelatorioResponse> GerarRelatorioSemanalAsync(RelatorioSemanalRequest request, CancellationToken ct = default);
+    Task<RelatorioResponse> GerarRelatorioMensalAsync(RelatorioMensalRequest request, CancellationToken ct = default);
+    Task<RelatorioResponse> GerarRelatorioPorPeriodoAsync(RelatorioPeriodoRequest request, CancellationToken ct = default);
+    Task<RelatorioResponse> GerarHistoricoConsolidadoAsync(HistoricoConsolidadoRequest request, CancellationToken ct = default);
+    
+    // Dados para relatórios
+    Task<SaldoDiarioDto> ObterSaldoDiarioAsync(DateOnly data, Guid? usuarioId = null, CancellationToken ct = default);
+    Task<SaldoSemanalDto> ObterSaldoSemanalAsync(int ano, int semana, Guid? usuarioId = null, CancellationToken ct = default);
+    Task<SaldoMensalDto> ObterSaldoMensalAsync(int ano, int mes, Guid? usuarioId = null, CancellationToken ct = default);
+    Task<SaldoPeriodoDto> ObterSaldoPeriodoAsync(DateTime inicio, DateTime fim, Guid? usuarioId = null, CancellationToken ct = default);
+    Task<HistoricoConsolidadoDto> ObterHistoricoConsolidadoAsync(int meses, Guid? usuarioId = null, CancellationToken ct = default);
+    
+    // Indicadores
+    Task<IndicadoresFinanceirosDto> CalcularIndicadoresAsync(DateTime inicio, DateTime fim, Guid? usuarioId = null, CancellationToken ct = default);
+}
+
+
+```
+
+
+__7.4 RelatorioService.cs__
+
+```
+// Relatorias.Services/RelatorioService.cs
+using System.Globalization;
+using FluxoCaixa.Relatorios.Models;
+using FluxoCaixa.Relatorios.Models.Enums;
+using FluxoCaixa.Relatorios.Services.Exportadores;
+using Npgsql;
+using Polly;
+
+namespace FluxoCaixa.Relatorios.Services;
+
+public class RelatorioService : IRelatorioService
+{
+    private readonly NpgsqlDataSource _dataSource;
+    private readonly IEnumerable<IExportador> _exportadores;
+    private readonly IIndicadoresService _indicadoresService;
+    private readonly ICacheService _cache;
+    private readonly IAsyncPolicy _dbCircuitBreaker;
+    private readonly ILogger<RelatorioService> _logger;
+
+    public RelatorioService(
+        NpgsqlDataSource dataSource,
+        IEnumerable<IExportador> exportadores,
+        IIndicadoresService indicadoresService,
+        ICacheService cache,
+        [FromKeyedServices("DatabaseCircuitBreaker")] IAsyncPolicy dbCircuitBreaker,
+        ILogger<RelatorioService> logger)
+    {
+        _dataSource = dataSource;
+        _exportadores = exportadores;
+        _indicadoresService = indicadoresService;
+        _cache = cache;
+        _dbCircuitBreaker = dbCircuitBreaker;
+        _logger = logger;
+    }
+
+    public async Task<RelatorioResponse> GerarRelatorioDiarioAsync(RelatorioDiarioRequest request, CancellationToken ct = default)
+    {
+        var saldo = await ObterSaldoDiarioAsync(request.Data, request.UsuarioId, ct);
+        var indicadores = await _indicadoresService.CalcularIndicadoresDiariosAsync(request.Data, request.UsuarioId, ct);
+        
+        var exportador = ObterExportador(request.Formato);
+        var conteudo = await exportador.ExportarRelatorioDiarioAsync(saldo, indicadores, ct);
+        
+        return new RelatorioResponse
+        {
+            Id = Guid.NewGuid(),
+            Tipo = TipoRelatorio.Diario,
+            Formato = request.Formato,
+            DataGeracao = DateTime.UtcNow,
+            NomeArquivo = $"relatorio_diario_{request.Data:yyyyMMdd}.{exportador.Extensao}",
+            Conteudo = conteudo,
+            ContentType = exportador.ContentType,
+            TamanhoBytes = conteudo.Length
+        };
+    }
+
+    public async Task<RelatorioResponse> GerarRelatorioSemanalAsync(RelatorioSemanalRequest request, CancellationToken ct = default)
+    {
+        var saldo = await ObterSaldoSemanalAsync(request.Ano, request.Semana, request.UsuarioId, ct);
+        var indicadores = await _indicadoresService.CalcularIndicadoresSemanaisAsync(request.Ano, request.Semana, request.UsuarioId, ct);
+        
+        var exportador = ObterExportador(request.Formato);
+        var conteudo = await exportador.ExportarRelatorioSemanalAsync(saldo, indicadores, ct);
+        
+        return new RelatorioResponse
+        {
+            Id = Guid.NewGuid(),
+            Tipo = TipoRelatorio.Semanal,
+            Formato = request.Formato,
+            DataGeracao = DateTime.UtcNow,
+            NomeArquivo = $"relatorio_semanal_{request.Ano}_semana{request.Semana:00}.{exportador.Extensao}",
+            Conteudo = conteudo,
+            ContentType = exportador.ContentType,
+            TamanhoBytes = conteudo.Length
+        };
+    }
+
+    public async Task<RelatorioResponse> GerarRelatorioMensalAsync(RelatorioMensalRequest request, CancellationToken ct = default)
+    {
+        var saldo = await ObterSaldoMensalAsync(request.Ano, request.Mes, request.UsuarioId, ct);
+        var indicadores = await _indicadoresService.CalcularIndicadoresMensaisAsync(request.Ano, request.Mes, request.UsuarioId, ct);
+        
+        var exportador = ObterExportador(request.Formato);
+        var conteudo = await exportador.ExportarRelatorioMensalAsync(saldo, indicadores, ct);
+        
+        return new RelatorioResponse
+        {
+            Id = Guid.NewGuid(),
+            Tipo = TipoRelatorio.Mensal,
+            Formato = request.Formato,
+            DataGeracao = DateTime.UtcNow,
+            NomeArquivo = $"relatorio_mensal_{request.Ano}_{request.Mes:00}.{exportador.Extensao}",
+            Conteudo = conteudo,
+            ContentType = exportador.ContentType,
+            TamanhoBytes = conteudo.Length
+        };
+    }
+
+    public async Task<RelatorioResponse> GerarRelatorioPorPeriodoAsync(RelatorioPeriodoRequest request, CancellationToken ct = default)
+    {
+        var saldo = await ObterSaldoPeriodoAsync(request.DataInicio, request.DataFim, request.UsuarioId, ct);
+        var indicadores = await _indicadoresService.CalcularIndicadoresAsync(request.DataInicio, request.DataFim, request.UsuarioId, ct);
+        saldo.Indicadores = indicadores;
+        
+        var exportador = ObterExportador(request.Formato);
+        var conteudo = await exportador.ExportarRelatorioPeriodoAsync(saldo, request.AgruparPorCategoria, ct);
+        
+        return new RelatorioResponse
+        {
+            Id = Guid.NewGuid(),
+            Tipo = TipoRelatorio.PorPeriodo,
+            Formato = request.Formato,
+            DataGeracao = DateTime.UtcNow,
+            NomeArquivo = $"relatorio_periodo_{request.DataInicio:yyyyMMdd}_{request.DataFim:yyyyMMdd}.{exportador.Extensao}",
+            Conteudo = conteudo,
+            ContentType = exportador.ContentType,
+            TamanhoBytes = conteudo.Length
+        };
+    }
+
+    public async Task<RelatorioResponse> GerarHistoricoConsolidadoAsync(HistoricoConsolidadoRequest request, CancellationToken ct = default)
+    {
+        var historico = await ObterHistoricoConsolidadoAsync(request.Meses, request.UsuarioId, ct);
+        
+        var exportador = ObterExportador(request.Formato);
+        var conteudo = await exportador.ExportarHistoricoConsolidadoAsync(historico, request.IncluirProjecao, ct);
+        
+        return new RelatorioResponse
+        {
+            Id = Guid.NewGuid(),
+            Tipo = TipoRelatorio.HistoricoConsolidado,
+            Formato = request.Formato,
+            DataGeracao = DateTime.UtcNow,
+            NomeArquivo = $"historico_consolidado_{request.Meses}meses.{exportador.Extensao}",
+            Conteudo = conteudo,
+            ContentType = exportador.ContentType,
+            TamanhoBytes = conteudo.Length
+        };
+    }
+
+    public async Task<SaldoDiarioDto> ObterSaldoDiarioAsync(DateOnly data, Guid? usuarioId = null, CancellationToken ct = default)
+    {
+        var cacheKey = $"saldo_diario:{data:yyyy-MM-dd}:{usuarioId?.ToString() ?? "all"}";
+        
+        var cached = await _cache.GetAsync<SaldoDiarioDto>(cacheKey);
+        if (cached != null) return cached;
+        
+        var saldo = await _dbCircuitBreaker.ExecuteAsync(async () =>
+        {
+            await using var conn = await _dataSource.OpenConnectionAsync(ct);
+            
+            var sql = @"
+                SELECT 
+                    @data as Data,
+                    COALESCE((
+                        SELECT saldo FROM saldo_diario 
+                        WHERE data < @data 
+                        ORDER BY data DESC LIMIT 1
+                    ), 0) as SaldoInicial,
+                    COALESCE(SUM(CASE WHEN tipo = 'CREDITO' THEN valor ELSE 0 END), 0) as TotalCreditos,
+                    COALESCE(SUM(CASE WHEN tipo = 'DEBITO' THEN valor ELSE 0 END), 0) as TotalDebitos,
+                    COUNT(*) as QuantidadeTransacoes
+                FROM lancamentos 
+                WHERE DATE(data_hora) = @data
+                AND status = 'CONFIRMADO'
+                " + (usuarioId.HasValue ? "AND usuario_id = @usuarioId" : "");
+            
+            await using var cmd = new NpgsqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@data", data.ToDateTime(TimeOnly.MinValue));
+            if (usuarioId.HasValue) cmd.Parameters.AddWithValue("@usuarioId", usuarioId.Value);
+            
+            await using var reader = await cmd.ExecuteReaderAsync(ct);
+            
+            if (await reader.ReadAsync(ct))
+            {
+                var saldoInicial = reader.GetDecimal(1);
+                var totalCreditos = reader.GetDecimal(2);
+                var totalDebitos = reader.GetDecimal(3);
+                var quantidade = reader.GetInt32(4);
+                
+                return new SaldoDiarioDto
+                {
+                    Data = data,
+                    SaldoInicial = saldoInicial,
+                    TotalCreditos = totalCreditos,
+                    TotalDebitos = totalDebitos,
+                    SaldoFinal = saldoInicial + totalCreditos - totalDebitos,
+                    QuantidadeTransacoes = quantidade,
+                    MediaTransacao = quantidade > 0 ? (totalCreditos + totalDebitos) / quantidade : 0
+                };
+            }
+            
+            return new SaldoDiarioDto
+            {
+                Data = data,
+                SaldoInicial = 0,
+                TotalCreditos = 0,
+                TotalDebitos = 0,
+                SaldoFinal = 0,
+                QuantidadeTransacoes = 0,
+                MediaTransacao = 0
+            };
+        });
+        
+        await _cache.SetAsync(cacheKey, saldo, TimeSpan.FromHours(1));
+        return saldo;
+    }
+
+    public async Task<SaldoSemanalDto> ObterSaldoSemanalAsync(int ano, int semana, Guid? usuarioId = null, CancellationToken ct = default)
+    {
+        var (dataInicio, dataFim) = ObterDatasSemana(ano, semana);
+        
+        var saldosDiarios = new List<SaldoDiarioDto>();
+        var dataAtual = dataInicio;
+        
+        while (dataAtual <= dataFim)
+        {
+            var saldoDiario = await ObterSaldoDiarioAsync(dataAtual, usuarioId, ct);
+            saldosDiarios.Add(saldoDiario);
+            dataAtual = dataAtual.AddDays(1);
+        }
+        
+        return new SaldoSemanalDto
+        {
+            Ano = ano,
+            Semana = semana,
+            DataInicio = dataInicio,
+            DataFim = dataFim,
+            SaldoInicial = saldosDiarios.FirstOrDefault()?.SaldoInicial ?? 0,
+            TotalCreditos = saldosDiarios.Sum(s => s.TotalCreditos),
+            TotalDebitos = saldosDiarios.Sum(s => s.TotalDebitos),
+            SaldoFinal = saldosDiarios.LastOrDefault()?.SaldoFinal ?? 0,
+            QuantidadeTransacoes = saldosDiarios.Sum(s => s.QuantidadeTransacoes),
+            DetalhesDiarios = saldosDiarios
+        };
+    }
+
+    public async Task<SaldoMensalDto> ObterSaldoMensalAsync(int ano, int mes, Guid? usuarioId = null, CancellationToken ct = default)
+    {
+        var dataInicio = new DateOnly(ano, mes, 1);
+        var dataFim = dataInicio.AddMonths(1).AddDays(-1);
+        
+        var saldosDiarios = new List<SaldoDiarioDto>();
+        var dataAtual = dataInicio;
+        
+        while (dataAtual <= dataFim)
+        {
+            var saldoDiario = await ObterSaldoDiarioAsync(dataAtual, usuarioId, ct);
+            saldosDiarios.Add(saldoDiario);
+            dataAtual = dataAtual.AddDays(1);
+        }
+        
+        var creditosPorCategoria = await ObterCreditosPorCategoriaAsync(ano, mes, usuarioId, ct);
+        var debitosPorCategoria = await ObterDebitosPorCategoriaAsync(ano, mes, usuarioId, ct);
+        
+        return new SaldoMensalDto
+        {
+            Ano = ano,
+            Mes = mes,
+            NomeMes = new DateTime(ano, mes, 1).ToString("MMMM", new CultureInfo("pt-BR")),
+            SaldoInicial = saldosDiarios.FirstOrDefault()?.SaldoInicial ?? 0,
+            TotalCreditos = saldosDiarios.Sum(s => s.TotalCreditos),
+            TotalDebitos = saldosDiarios.Sum(s => s.TotalDebitos),
+            SaldoFinal = saldosDiarios.LastOrDefault()?.SaldoFinal ?? 0,
+            QuantidadeTransacoes = saldosDiarios.Sum(s => s.QuantidadeTransacoes),
+            DetalhesDiarios = saldosDiarios,
+            CreditosPorCategoria = creditosPorCategoria,
+            DebitosPorCategoria = debitosPorCategoria
+        };
+    }
+
+    public async Task<SaldoPeriodoDto> ObterSaldoPeriodoAsync(DateTime inicio, DateTime fim, Guid? usuarioId = null, CancellationToken ct = default)
+    {
+        var dataInicio = DateOnly.FromDateTime(inicio);
+        var dataFim = DateOnly.FromDateTime(fim);
+        
+        var saldosDiarios = new List<SaldoDiarioDto>();
+        var dataAtual = dataInicio;
+        
+        while (dataAtual <= dataFim)
+        {
+            var saldoDiario = await ObterSaldoDiarioAsync(dataAtual, usuarioId, ct);
+            saldosDiarios.Add(saldoDiario);
+            dataAtual = dataAtual.AddDays(1);
+        }
+        
+        var creditosPorCategoria = await ObterCreditosPorPeriodoAsync(inicio, fim, usuarioId, ct);
+        var debitosPorCategoria = await ObterDebitosPorPeriodoAsync(inicio, fim, usuarioId, ct);
+        
+        return new SaldoPeriodoDto
+        {
+            DataInicio = inicio,
+            DataFim = fim,
+            SaldoInicial = saldosDiarios.FirstOrDefault()?.SaldoInicial ?? 0,
+            TotalCreditos = saldosDiarios.Sum(s => s.TotalCreditos),
+            TotalDebitos = saldosDiarios.Sum(s => s.TotalDebitos),
+            SaldoFinal = saldosDiarios.LastOrDefault()?.SaldoFinal ?? 0,
+            QuantidadeTransacoes = saldosDiarios.Sum(s => s.QuantidadeTransacoes),
+            SaldosDiarios = saldosDiarios,
+            CreditosPorCategoria = creditosPorCategoria,
+            DebitosPorCategoria = debitosPorCategoria,
+            Indicadores = new IndicadoresFinanceirosDto()
+        };
+    }
+
+    public async Task<HistoricoConsolidadoDto> ObterHistoricoConsolidadoAsync(int meses, Guid? usuarioId = null, CancellationToken ct = default)
+    {
+        var dataFim = DateTime.UtcNow;
+        var dataInicio = dataFim.AddMonths(-meses);
+        
+        var saldosMensais = new List<SaldoMensalDto>();
+        var dataAtual = new DateTime(dataInicio.Year, dataInicio.Month, 1);
+        
+        while (dataAtual <= dataFim)
+        {
+            var saldoMensal = await ObterSaldoMensalAsync(dataAtual.Year, dataAtual.Month, usuarioId, ct);
+            saldosMensais.Add(saldoMensal);
+            dataAtual = dataAtual.AddMonths(1);
+        }
+        
+        var resumo = new ResumoConsolidadoDto
+        {
+            TotalCreditosPeriodo = saldosMensais.Sum(s => s.TotalCreditos),
+            TotalDebitosPeriodo = saldosMensais.Sum(s => s.TotalDebitos),
+            SaldoMedio = saldosMensais.Average(s => s.SaldoFinal),
+            MaiorSaldo = saldosMensais.Max(s => s.SaldoFinal),
+            MenorSaldo = saldosMensais.Min(s => s.SaldoFinal),
+            TotalMesesComSaldoPositivo = saldosMensais.Count(s => s.SaldoFinal > 0),
+            TotalMesesComSaldoNegativo = saldosMensais.Count(s => s.SaldoFinal < 0)
+        };
+        
+        var projecoes = await CalcularProjecoesAsync(saldosMensais, ct);
+        
+        return new HistoricoConsolidadoDto
+        {
+            DataInicio = dataInicio,
+            DataFim = dataFim,
+            SaldosMensais = saldosMensais,
+            ResumoGeral = resumo,
+            Projecoes = projecoes,
+            Indicadores = await _indicadoresService.CalcularIndicadoresAsync(dataInicio, dataFim, usuarioId, ct)
+        };
+    }
+
+    public async Task<IndicadoresFinanceirosDto> CalcularIndicadoresAsync(DateTime inicio, DateTime fim, Guid? usuarioId = null, CancellationToken ct = default)
+    {
+        return await _indicadoresService.CalcularIndicadoresAsync(inicio, fim, usuarioId, ct);
+    }
+
+    private IExportador ObterExportador(FormatoExportacao formato)
+    {
+        return _exportadores.FirstOrDefault(e => e.Formato == formato)
+            ?? throw new ArgumentException($"Formato {formato} não suportado");
+    }
+
+    private static (DateOnly dataInicio, DateOnly dataFim) ObterDatasSemana(int ano, int semana)
+    {
+        var primeiroDiaAno = new DateOnly(ano, 1, 1);
+        var diasParaPrimeiraSemana = (7 - (int)primeiroDiaAno.DayOfWeek + 1) % 7;
+        var dataInicio = primeiroDiaAno.AddDays(diasParaPrimeiraSemana + (semana - 1) * 7);
+        var dataFim = dataInicio.AddDays(6);
+        return (dataInicio, dataFim);
+    }
+
+    private async Task<Dictionary<string, decimal>> ObterCreditosPorCategoriaAsync(int ano, int mes, Guid? usuarioId, CancellationToken ct)
+    {
+        await using var conn = await _dataSource.OpenConnectionAsync(ct);
+        var sql = @"
+            SELECT categoria, SUM(valor) as total
+            FROM lancamentos
+            WHERE EXTRACT(YEAR FROM data_hora) = @ano
+            AND EXTRACT(MONTH FROM data_hora) = @mes
+            AND tipo = 'CREDITO'
+            AND status = 'CONFIRMADO'
+            " + (usuarioId.HasValue ? "AND usuario_id = @usuarioId" : "") + @"
+            GROUP BY categoria
+            ORDER BY total DESC";
+        
+        await using var cmd = new NpgsqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@ano", ano);
+        cmd.Parameters.AddWithValue("@mes", mes);
+        if (usuarioId.HasValue) cmd.Parameters.AddWithValue("@usuarioId", usuarioId.Value);
+        
+        await using var reader = await cmd.ExecuteReaderAsync(ct);
+        var resultados = new Dictionary<string, decimal>();
+        
+        while (await reader.ReadAsync(ct))
+        {
+            resultados[reader.GetString(0)] = reader.GetDecimal(1);
+        }
+        
+        return resultados;
+    }
+
+    private async Task<Dictionary<string, decimal>> ObterDebitosPorCategoriaAsync(int ano, int mes, Guid? usuarioId, CancellationToken ct)
+    {
+        await using var conn = await _dataSource.OpenConnectionAsync(ct);
+        var sql = @"
+            SELECT categoria, SUM(valor) as total
+            FROM lancamentos
+            WHERE EXTRACT(YEAR FROM data_hora) = @ano
+            AND EXTRACT(MONTH FROM data_hora) = @mes
+            AND tipo = 'DEBITO'
+            AND status = 'CONFIRMADO'
+            " + (usuarioId.HasValue ? "AND usuario_id = @usuarioId" : "") + @"
+            GROUP BY categoria
+            ORDER BY total DESC";
+        
+        await using var cmd = new NpgsqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@ano", ano);
+        cmd.Parameters.AddWithValue("@mes", mes);
+        if (usuarioId.HasValue) cmd.Parameters.AddWithValue("@usuarioId", usuarioId.Value);
+        
+        await using var reader = await cmd.ExecuteReaderAsync(ct);
+        var resultados = new Dictionary<string, decimal>();
+        
+        while (await reader.ReadAsync(ct))
+        {
+            resultados[reader.GetString(0)] = reader.GetDecimal(1);
+        }
+        
+        return resultados;
+    }
+
+    private async Task<Dictionary<string, decimal>> ObterCreditosPorPeriodoAsync(DateTime inicio, DateTime fim, Guid? usuarioId, CancellationToken ct)
+    {
+        await using var conn = await _dataSource.OpenConnectionAsync(ct);
+        var sql = @"
+            SELECT categoria, SUM(valor) as total
+            FROM lancamentos
+            WHERE data_hora BETWEEN @inicio AND @fim
+            AND tipo = 'CREDITO'
+            AND status = 'CONFIRMADO'
+            " + (usuarioId.HasValue ? "AND usuario_id = @usuarioId" : "") + @"
+            GROUP BY categoria
+            ORDER BY total DESC";
+        
+        await using var cmd = new NpgsqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@inicio", inicio);
+        cmd.Parameters.AddWithValue("@fim", fim);
+        if (usuarioId.HasValue) cmd.Parameters.AddWithValue("@usuarioId", usuarioId.Value);
+        
+        await using var reader = await cmd.ExecuteReaderAsync(ct);
+        var resultados = new Dictionary<string, decimal>();
+        
+        while (await reader.ReadAsync(ct))
+        {
+            resultados[reader.GetString(0)] = reader.GetDecimal(1);
+        }
+        
+        return resultados;
+    }
+
+    private async Task<Dictionary<string, decimal>> ObterDebitosPorPeriodoAsync(DateTime inicio, DateTime fim, Guid? usuarioId, CancellationToken ct)
+    {
+        await using var conn = await _dataSource.OpenConnectionAsync(ct);
+        var sql = @"
+            SELECT categoria, SUM(valor) as total
+            FROM lancamentos
+            WHERE data_hora BETWEEN @inicio AND @fim
+            AND tipo = 'DEBITO'
+            AND status = 'CONFIRMADO'
+            " + (usuarioId.HasValue ? "AND usuario_id = @usuarioId" : "") + @"
+            GROUP BY categoria
+            ORDER BY total DESC";
+        
+        await using var cmd = new NpgsqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@inicio", inicio);
+        cmd.Parameters.AddWithValue("@fim", fim);
+        if (usuarioId.HasValue) cmd.Parameters.AddWithValue("@usuarioId", usuarioId.Value);
+        
+        await using var reader = await cmd.ExecuteReaderAsync(ct);
+        var resultados = new Dictionary<string, decimal>();
+        
+        while (await reader.ReadAsync(ct))
+        {
+            resultados[reader.GetString(0)] = reader.GetDecimal(1);
+        }
+        
+        return resultados;
+    }
+
+    private async Task<List<ProjecaoMensalDto>> CalcularProjecoesAsync(List<SaldoMensalDto> historico, CancellationToken ct)
+    {
+        var projecoes = new List<ProjecaoMensalDto>();
+        
+        if (historico.Count < 3) return projecoes;
+        
+        var pesos = new[] { 0.5m, 0.3m, 0.2m };
+        var ultimosSaldos = historico.TakeLast(3).Select(s => s.SaldoFinal).ToList();
+        
+        for (int i = 1; i <= 6; i++)
+        {
+            var mediaPonderada = ultimosSaldos.Zip(pesos, (saldo, peso) => saldo * peso).Sum();
+            var desvioPadrao = CalcularDesvioPadrao(ultimosSaldos);
+            
+            var ultimoMes = historico.Last();
+            var dataProjecao = new DateTime(ultimoMes.Ano, ultimoMes.Mes, 1).AddMonths(i);
+            
+            projecoes.Add(new ProjecaoMensalDto
+            {
+                Ano = dataProjecao.Year,
+                Mes = dataProjecao.Month,
+                NomeMes = dataProjecao.ToString("MMMM", new CultureInfo("pt-BR")),
+                SaldoProjetado = mediaPonderada,
+                SaldoOtimista = mediaPonderada + desvioPadrao,
+                SaldoPessimista = mediaPonderada - desvioPadrao,
+                ProbabilidadePositivo = CalcularProbabilidadePositivo(mediaPonderada, desvioPadrao)
+            });
+            
+            ultimosSaldos.RemoveAt(0);
+            ultimosSaldos.Add(mediaPonderada);
+        }
+        
+        return projecoes;
+    }
+
+    private static decimal CalcularDesvioPadrao(List<decimal> valores)
+    {
+        if (valores.Count == 0) return 0;
+        var media = valores.Average();
+        var somaQuadrados = valores.Select(v => Math.Pow((double)(v - media), 2)).Sum();
+        var variancia = somaQuadrados / valores.Count;
+        return (decimal)Math.Sqrt(variancia);
+    }
+
+    private static decimal CalcularProbabilidadePositivo(decimal media, decimal desvioPadrao)
+    {
+        if (desvioPadrao == 0) return media > 0 ? 100m : 0m;
+        var z = (double)(0 - media) / (double)desvioPadrao;
+        var probabilidade = 0.5m * (1 + (decimal)Math.Erf(z / (decimal)Math.Sqrt(2)));
+        return Math.Round((1 - probabilidade) * 100, 2);
+    }
+}
+
+```
+
+__7.5 CacheService.cs__
+
+```
+
+// Relatorias.Services/CacheService.cs
+using System.Text.Json;
+using StackExchange.Redis;
+
+namespace FluxoCaixa.Relatorios.Services;
+
+public interface ICacheService
+{
+    Task<T?> GetAsync<T>(string key);
+    Task SetAsync<T>(string key, T value, TimeSpan? expiry = null);
+    Task RemoveAsync(string key);
+    Task<bool> ExistsAsync(string key);
+}
+
+public class RedisCacheService : ICacheService
+{
+    private readonly IConnectionMultiplexer _redis;
+    private readonly IDatabase _db;
+
+    public RedisCacheService(IConnectionMultiplexer redis)
+    {
+        _redis = redis;
+        _db = redis.GetDatabase();
+    }
+
+    public async Task<T?> GetAsync<T>(string key)
+    {
+        var value = await _db.StringGetAsync(key);
+        if (value.IsNullOrEmpty)
+            return default;
+        
+        return JsonSerializer.Deserialize<T>(value!);
+    }
+
+    public async Task SetAsync<T>(string key, T value, TimeSpan? expiry = null)
+    {
+        var json = JsonSerializer.Serialize(value);
+        await _db.StringSetAsync(key, json, expiry ?? TimeSpan.FromHours(1));
+    }
+
+    public async Task RemoveAsync(string key)
+    {
+        await _db.KeyDeleteAsync(key);
+    }
+
+    public async Task<bool> ExistsAsync(string key)
+    {
+        return await _db.KeyExistsAsync(key);
+    }
+}
+
+```
+
+__7.6 appsettings.json__
+
+```
+
+// appsettings.json
+{
+  "Jwt": {
+    "Secret": "sua-chave-secreta-aqui-com-minimo-32-caracteres"
+  },
+  "ConnectionStrings": {
+    "ReadDb": "Host=localhost;Database=fluxocaixa_read;Username=postgres;Password=postgres"
+  },
+  "Redis": {
+    "ConnectionString": "localhost:6379"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*"
+}
+
+```
+
+__7.7 Relatorios.csproj__
+
+```
+<!-- FluxoCaixa.Relatorios.csproj -->
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.0" />
+    <PackageReference Include="Npgsql" Version="9.0.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.24" />
+    <PackageReference Include="Polly" Version="8.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="iTextSharp.LGPLv2.Core" Version="3.4.19" />
+  </ItemGroup>
+
+</Project>
+
+```
+
 <a id="work"></a>
 
-### 7. Workers
+### 8. Workers
 
-__7.1 Consolidacao.Worker / Program.cs__
+__8.1 Consolidacao.Worker / Program.cs__
 
 ```
 using FluxoCaixa.CircuitBreaker.Configurations;
@@ -1643,7 +2940,7 @@ host.Run();
 
 ```
 
-__7.2 Consolidacao.Worker / ConsolidacaoWorker.cs__
+__8.2 Consolidacao.Worker / ConsolidacaoWorker.cs__
 
 ```
 using System.Text.Json;
@@ -1800,7 +3097,7 @@ public class ConsolidacaoWorker : BackgroundService
 
 ```
 
-__7.3 Notificacoes.Worker / NotificacoesWorker.cs__
+__8.3 Notificacoes.Worker / NotificacoesWorker.cs__
 
 ```
 
@@ -1902,7 +3199,7 @@ public class NotificacoesWorker : BackgroundService
 }
 ```
 
-__7.4 Auditoria.Worker / AuditoriaWorker.cs__
+__8.4 Auditoria.Worker / AuditoriaWorker.cs__
 
 ```
 using System.Text.Json;
@@ -2004,14 +3301,6 @@ public class AuditoriaEvento
 }
 
 ```
-
-<a id="relatorio"></a>
-
-
-
-
-
-
 
 <a id="kubernete"></a>
 

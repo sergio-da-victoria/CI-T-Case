@@ -32,6 +32,19 @@ Trade-off analysis é o processo de avaliar sistematicamente as compensações e
 |Escalabilidade|	Capacidade de crescimento, auto-scaling|	10%
 |Vendor Lock-in|	Portabilidade, dependência de fornecedor|	5%
 
+__Legenda__
+
+|Singla|Descrição
+|--|--
+|CAPEX| (Capital Expenditure) Investimento de capital na compra de ativos fixos de longo prazo, como servidores, computadores, licenças perpétuas de software e infraestrutura de rede.
+|OPEX| (Operational Expenditure) Gastos recorrentes e contínuos para manter a infraestrutura de tecnologia funcionando, como assinaturas de nuvem (SaaS), serviços terceirizados e manutenção.
+|TCO|  (Total Cost of Ownership ou Custo Total de Propriedade) na TI é uma metodologia que calcula o custo real de um ativo de tecnologia — como hardware, software ou serviços em nuvem — ao longo de toda a sua vida útil, indo muito além do preço de compra inicial.
+|Vendor Lock-in| (Aprisionamento Tecnológico) Ocorre quando uma empresa se torna dependente de um único fornecedor para produtos ou serviços, tornando a mudança para concorrentes extremamente difícil, cara ou tecnicamente inviável.
+
+
+
+
+
 ### 1.3 Visão Geral do Ecossistema Avaliado
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
