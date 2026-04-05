@@ -1,0 +1,381 @@
+<mxfile host="app.diagrams.net" agent="5.0">
+  <diagram id="c4-nivel3-v2" name="C4 Model - Nível 3: Componentes - Completo">
+    <mxGraphModel dx="7856" dy="3028" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="titulo-n3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="C4 Model - Nível 3: Diagrama de Componentes - Event-Driven, CQRS e Workers" vertex="1">
+          <mxGeometry height="40" width="900" x="-30" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="gateway-container" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14" value="API Gateway (Yarp)" vertex="1">
+          <mxGeometry height="200" width="280" x="40" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-router" parent="gateway-container" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=12" value="Router" vertex="1">
+          <mxGeometry height="35" width="120" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-auth1" parent="gateway-container" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=12" value="AuthMiddleware" vertex="1">
+          <mxGeometry height="35" width="120" x="145" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-rate" parent="gateway-container" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=12" value="RateLimiter" vertex="1">
+          <mxGeometry height="35" width="120" x="15" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-log" parent="gateway-container" style="rounded=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=12" value="LoggingMiddleware" vertex="1">
+          <mxGeometry height="35" width="120" x="145" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-container" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14" value="auth-api" vertex="1">
+          <mxGeometry height="300" width="280" x="380" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-controller" parent="auth-container" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12" value="AuthController" vertex="1">
+          <mxGeometry height="35" width="120" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-service" parent="auth-container" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="AuthService" vertex="1">
+          <mxGeometry height="35" width="120" x="145" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-cognito" parent="auth-container" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11" value="CognitoClient" vertex="1">
+          <mxGeometry height="35" width="120" x="15" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-ldap" parent="auth-container" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11" value="LdapClient" vertex="1">
+          <mxGeometry height="35" width="120" x="145" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-repo" parent="auth-container" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11" value="UsuarioRepository" vertex="1">
+          <mxGeometry height="35" width="120" x="15" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-jwt" parent="auth-container" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11" value="JwtService" vertex="1">
+          <mxGeometry height="35" width="120" x="145" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-cb" parent="auth-container" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10" value="Circuit Breaker" vertex="1">
+          <mxGeometry height="35" width="130" x="70" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="lancamentos-container" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14" value="lancamentos-api (Command Side)" vertex="1">
+          <mxGeometry height="350" width="320" x="720" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-controller" parent="lancamentos-container" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12" value="LancamentoController" vertex="1">
+          <mxGeometry height="35" width="130" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-service" parent="lancamentos-container" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="LancamentoService" vertex="1">
+          <mxGeometry height="35" width="130" x="165" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-validator" parent="lancamentos-container" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11" value="LancamentoValidator" vertex="1">
+          <mxGeometry height="35" width="130" x="15" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-repo" parent="lancamentos-container" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11" value="LancamentoRepository" vertex="1">
+          <mxGeometry height="35" width="130" x="165" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-publisher" parent="lancamentos-container" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11" value="KafkaEventPublisher" vertex="1">
+          <mxGeometry height="35" width="150" x="80" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-entity" parent="lancamentos-container" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" value="Lancamento (Aggregate)" vertex="1">
+          <mxGeometry height="35" width="150" x="80" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-cb" parent="lancamentos-container" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10" value="Circuit Breaker" vertex="1">
+          <mxGeometry height="35" width="130" x="90" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="consolidacao-container" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14" value="consolidacao-api (Query Side)" vertex="1">
+          <mxGeometry height="350" width="320" x="1100" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-controller" parent="consolidacao-container" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12" value="ConsolidadoController" vertex="1">
+          <mxGeometry height="35" width="130" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-service" parent="consolidacao-container" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="ConsolidacaoService" vertex="1">
+          <mxGeometry height="35" width="130" x="165" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-cache" parent="consolidacao-container" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11" value="CacheService (Redis)" vertex="1">
+          <mxGeometry height="35" width="130" x="15" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-repo" parent="consolidacao-container" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11" value="SaldoRepository" vertex="1">
+          <mxGeometry height="35" width="130" x="165" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-entity" parent="consolidacao-container" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11" value="SaldoDiario" vertex="1">
+          <mxGeometry height="35" width="130" x="90" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-cb" parent="consolidacao-container" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10" value="Circuit Breaker" vertex="1">
+          <mxGeometry height="35" width="130" x="90" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="relatorios-container" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14" value="relatorios-api" vertex="1">
+          <mxGeometry height="350" width="320" x="1480" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-controller" parent="relatorios-container" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12" value="RelatorioController" vertex="1">
+          <mxGeometry height="35" width="130" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-service" parent="relatorios-container" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="RelatorioService" vertex="1">
+          <mxGeometry height="35" width="130" x="165" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-export" parent="relatorios-container" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11" value="PdfExportador" vertex="1">
+          <mxGeometry height="35" width="90" x="15" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-csv" parent="relatorios-container" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11" value="CsvExportador" vertex="1">
+          <mxGeometry height="35" width="90" x="115" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-md" parent="relatorios-container" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11" value="MarkdownExportador" vertex="1">
+          <mxGeometry height="35" width="90" x="215" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-repo" parent="relatorios-container" style="rounded=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11" value="RelatorioRepository" vertex="1">
+          <mxGeometry height="35" width="130" x="90" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-indic" parent="relatorios-container" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11" value="IndicadoresService" vertex="1">
+          <mxGeometry height="35" width="130" x="90" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-cb" parent="relatorios-container" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10" value="Circuit Breaker" vertex="1">
+          <mxGeometry height="35" width="130" x="90" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="kafka-container" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14" value="Kafka Broker (Event-Driven)" vertex="1">
+          <mxGeometry height="200" width="1420" x="380" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="topic-lanc" parent="kafka-container" style="rounded=1;fillColor=#ffffff;strokeColor=#9673a6;fontStyle=1;fontSize=12" value="Topic: lancamentos" vertex="1">
+          <mxGeometry height="40" width="180" x="30" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="topic-cons" parent="kafka-container" style="rounded=1;fillColor=#ffffff;strokeColor=#9673a6;fontStyle=1;fontSize=12" value="Topic: consolidacao" vertex="1">
+          <mxGeometry height="40" width="180" x="250" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="topic-notif" parent="kafka-container" style="rounded=1;fillColor=#ffffff;strokeColor=#9673a6;fontStyle=1;fontSize=12" value="Topic: notificacoes" vertex="1">
+          <mxGeometry height="40" width="180" x="470" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="topic-audit" parent="kafka-container" style="rounded=1;fillColor=#ffffff;strokeColor=#9673a6;fontStyle=1;fontSize=12" value="Topic: auditoria" vertex="1">
+          <mxGeometry height="40" width="180" x="690" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="topic-dlq" parent="kafka-container" style="rounded=1;fillColor=#ffcccc;strokeColor=#cc0000;fontStyle=1;fontSize=12" value="DLQ (Dead Letter)" vertex="1">
+          <mxGeometry height="40" width="180" x="910" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="kafka-part" parent="kafka-container" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" value="3 Partições" vertex="1">
+          <mxGeometry height="20" width="180" x="30" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="kafka-ret" parent="kafka-container" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" value="Retenção: 7 dias" vertex="1">
+          <mxGeometry height="20" width="180" x="250" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="workers-container" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14" value="Workers (Consumers)" vertex="1">
+          <mxGeometry height="200" width="1420" x="380" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons" parent="workers-container" style="rounded=1;fillColor=#ffffff;strokeColor=#d79b00;fontStyle=1;fontSize=13" value="consolidacao-worker" vertex="1">
+          <mxGeometry height="45" width="220" x="30" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-desc" parent="workers-container" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" value="Atualiza Read DB e Redis Cache" vertex="1">
+          <mxGeometry height="25" width="220" x="30" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-cb" parent="workers-container" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10" value="Circuit Breaker" vertex="1">
+          <mxGeometry height="30" width="110" x="80" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif" parent="workers-container" style="rounded=1;fillColor=#ffffff;strokeColor=#d79b00;fontStyle=1;fontSize=13" value="notificacoes-worker" vertex="1">
+          <mxGeometry height="45" width="220" x="320" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-desc" parent="workers-container" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" value="Envia e-mails e alertas Slack" vertex="1">
+          <mxGeometry height="25" width="220" x="320" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-cb" parent="workers-container" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10" value="Circuit Breaker" vertex="1">
+          <mxGeometry height="30" width="110" x="370" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit" parent="workers-container" style="rounded=1;fillColor=#ffffff;strokeColor=#d79b00;fontStyle=1;fontSize=13" value="auditoria-worker" vertex="1">
+          <mxGeometry height="45" width="220" x="610" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-desc" parent="workers-container" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" value="Registra eventos no MongoDB" vertex="1">
+          <mxGeometry height="25" width="220" x="610" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-cb" parent="workers-container" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10" value="Circuit Breaker" vertex="1">
+          <mxGeometry height="30" width="110" x="660" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel" parent="workers-container" style="rounded=1;fillColor=#ffffff;strokeColor=#d79b00;fontStyle=1;fontSize=13" value="relatorios-worker" vertex="1">
+          <mxGeometry height="45" width="220" x="900" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-desc" parent="workers-container" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" value="Geração assíncrona de relatórios" vertex="1">
+          <mxGeometry height="25" width="220" x="900" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-cb" parent="workers-container" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=10" value="Circuit Breaker" vertex="1">
+          <mxGeometry height="30" width="110" x="950" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email" parent="workers-container" style="rounded=1;fillColor=#ffffff;strokeColor=#d79b00;fontStyle=1;fontSize=13" value="email-worker" vertex="1">
+          <mxGeometry height="45" width="200" x="1190" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-desc" parent="workers-container" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10" value="Processamento de fila de e-mails" vertex="1">
+          <mxGeometry height="25" width="200" x="1190" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="command-db" parent="1" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12" value="PostgreSQL (Command DB)" vertex="1">
+          <mxGeometry height="70" width="160" x="40" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="read-db" parent="1" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12" value="PostgreSQL (Read DB)" vertex="1">
+          <mxGeometry height="70" width="160" x="40" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="redis-db" parent="1" style="shape=cylinder3;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=11" value="Redis Cache (Memorystore)" vertex="1">
+          <mxGeometry height="70" width="160" x="40" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="mongodb" parent="1" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=12" value="MongoDB (Auditoria)" vertex="1">
+          <mxGeometry height="70" width="160" x="240" y="550" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud-storage" parent="1" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11" value="Cloud Storage (Relatórios)" vertex="1">
+          <mxGeometry height="70" width="160" x="240" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="gw-auth" edge="1" parent="1" source="gateway-container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0066CC;endArrow=block;" target="auth-container">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="300" />
+              <mxPoint x="520" y="300" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gw-lanc" edge="1" parent="1" source="gateway-container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0066CC;endArrow=block;" target="lancamentos-container">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="320" />
+              <mxPoint x="880" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gw-cons" edge="1" parent="1" source="gateway-container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0066CC;endArrow=block;" target="consolidacao-container">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="340" />
+              <mxPoint x="1260" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gw-rel" edge="1" parent="1" source="gateway-container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0066CC;endArrow=block;" target="relatorios-container">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="360" />
+              <mxPoint x="1640" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="auth-command" edge="1" parent="1" source="auth-container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;endArrow=block;dashed=1;" target="command-db">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="520" y="420" />
+              <mxPoint x="120" y="420" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lanc-command" edge="1" parent="1" source="lancamentos-container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;endArrow=block;dashed=1;" target="command-db">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="460" />
+              <mxPoint x="120" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cons-read" edge="1" parent="1" source="consolidacao-container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;endArrow=block;dashed=1;" target="read-db">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1260" y="460" />
+              <mxPoint x="120" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="cons-redis" edge="1" parent="1" source="consolidacao-container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;endArrow=block;dashed=1;" target="redis-db">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1260" y="480" />
+              <mxPoint x="120" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-read" edge="1" parent="1" source="relatorios-container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;endArrow=block;dashed=1;" target="read-db">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1640" y="460" />
+              <mxPoint x="120" y="460" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel-storage" edge="1" parent="1" source="relatorios-container" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;endArrow=block;dashed=1;" target="cloud-storage">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1640" y="480" />
+              <mxPoint x="320" y="480" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lanc-kafka" edge="1" parent="1" source="lanc-publisher" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#FF6600;endArrow=block;" target="topic-lanc" value="Publica LancamentoRegistrado">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="880" y="500" />
+              <mxPoint x="470" y="500" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kafka-cons-worker" edge="1" parent="1" source="topic-lanc" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#FF6600;endArrow=block;" target="worker-cons" value="Consome">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="470" y="620" />
+              <mxPoint x="490" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kafka-notif-worker" edge="1" parent="1" source="topic-cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#FF6600;endArrow=block;" target="worker-notif" value="Consome">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="620" />
+              <mxPoint x="780" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kafka-audit-worker" edge="1" parent="1" source="topic-audit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#FF6600;endArrow=block;" target="worker-audit" value="Consome">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="910" y="620" />
+              <mxPoint x="1070" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="kafka-rel-worker" edge="1" parent="1" source="topic-cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=3;strokeColor=#FF6600;endArrow=block;" target="worker-rel" value="Consome">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="640" />
+              <mxPoint x="1360" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="worker-cons-read" edge="1" parent="1" source="worker-cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;endArrow=block;dashed=1;" target="read-db">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="490" y="920" />
+              <mxPoint x="120" y="920" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="worker-cons-redis" edge="1" parent="1" source="worker-cons" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;endArrow=block;dashed=1;" target="redis-db">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="490" y="940" />
+              <mxPoint x="120" y="940" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="worker-audit-mongo" edge="1" parent="1" source="worker-audit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;endArrow=block;dashed=1;" target="mongodb">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1070" y="920" />
+              <mxPoint x="320" y="920" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="worker-rel-storage" edge="1" parent="1" source="worker-rel" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#9933CC;endArrow=block;dashed=1;" target="cloud-storage">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1360" y="920" />
+              <mxPoint x="320" y="920" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg-cqrs" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12" value="CQRS (Command/Query)" vertex="1">
+          <mxGeometry height="30" width="160" x="40" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-event" parent="1" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=12" value="Event-Driven (Kafka)" vertex="1">
+          <mxGeometry height="30" width="160" x="230" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-worker" parent="1" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=12" value="Worker (Consumer)" vertex="1">
+          <mxGeometry height="30" width="160" x="420" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-api" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12" value="API (REST)" vertex="1">
+          <mxGeometry height="30" width="120" x="610" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-cb" parent="1" style="rounded=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontSize=12" value="Circuit Breaker" vertex="1">
+          <mxGeometry height="30" width="130" x="760" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-db" parent="1" style="shape=cylinder3;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;fontSize=11" value="Database" vertex="1">
+          <mxGeometry height="40" width="90" x="920" y="1045" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-cache" parent="1" style="shape=cylinder3;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=11" value="Cache" vertex="1">
+          <mxGeometry height="40" width="90" x="1040" y="1045" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

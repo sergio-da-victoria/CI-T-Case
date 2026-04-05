@@ -1258,6 +1258,221 @@ public class LancamentosController : ControllerBase
 <a id="consolidacao"></a>
 ### 6. Consolidacao API
 
+### Consolidação de Saldo - Fluxo de Funcionamento
+
+__O que é o Consolidado?__
+__O Consolidado é o coração do sistema de Fluxo de Caixa. Ele é responsável por calcular, armazenar e disponibilizar o saldo financeiro do comerciante em diferentes períodos (diário, semanal, mensal). O consolidado responde à pergunta fundamental: "Quanto dinheiro eu tenho em um determinado dia/período?"__
+
+__Visão Geral do Fluxo de Funcionamento__
+
+```
+
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                         FLUXO COMPLETO DO CONSOLIDADO                                   │
+├─────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                         │
+│  ┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐        │
+│  │  Comerciante │────▶│  API Gateway │────▶│lancamentos-api│─▶│ Command DB  │        │
+│  │  (Registra)  │     │              │     │ (POST /lanc) │     │ (PostgreSQL) │        │
+│  └──────────────┘     └──────────────┘     └──────┬───────┘     └──────────────┘        │
+│                                                    │                                    │
+│                                                    │ Publica Evento                     │
+│                                                    ▼                                    │
+│                                          ┌──────────────────┐                           │
+│                                          │ Kafka - Topic    │                           │
+│                                          │ "lancamentos"    │                           │
+│                                          └────────┬─────────┘                           │
+│                                                    │                                    │
+│                                                    │ Consome                            │
+│                                                    ▼                                    │
+│  ┌──────────────────────────────────────────────────────────────────────────────────┐   │
+│  │                         consolidacao-worker                                      │   │
+│  │                                                                                  │   │
+│  │  1. Lê evento LancamentoRegistrado                                               │   │
+│  │  2. Identifica data e tipo (débito/crédito)                                      │   │
+│  │  3. Calcula novo saldo diário                                                    │   │
+│  │  4. Atualiza Read Database (PostgreSQL)                                          │   │
+│  │  5. Atualiza Redis Cache                                                         │   │
+│  │  6. Verifica se saldo < 0 → Dispara alerta                                       │   │
+│  │                                                                                  │   │
+│  └──────────────────────────────────────────────────────────────────────────────────┘   │
+│                                                    │                                    │
+│                                                    ▼                                    │
+│  ┌──────────────┐     ┌──────────────┐     ┌──────────────────────────────────────┐     │
+│  │  Comerciante │────▶│  API Gateway │────▶│ consolidacao-api (GET /consolidado)│     │
+│  │  (Consulta)  │     │              │     │                                      │     │
+│  └──────────────┘     └──────────────┘     │  1. Verifica Redis Cache (rápido)    │     │
+│                                            │  2. Se não houver, busca no Read DB  │     │
+│                                            │  3. Retorna saldo consolidado        │     │
+│                                            └──────────────────────────────────────┘     │
+│                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Componentes Envolvidos no Consolidado
+|Componente|	Responsabilidade
+|--|--
+|consolidacao-api	API| de consulta de saldos (Query Side - CQRS)
+|consolidacao-worker	Worker| que processa eventos e atualiza saldos
+|Read Database (PostgreSQL)|	Armazena saldos consolidados por data
+|Redis Cache	Cache| de alta velocidade para consultas
+|Kafka (Topic: lancamentos)|	Fila de eventos para processamento assíncrono
+
+### Consulta do Saldo Consolidado
+
+```
+Rquest
+// Comerciante consulta o saldo
+GET /api/consolidado/diario?data=2025-04-05
+
+// Fluxo da consulta:
+// 1. Verifica Redis → Cache Hit (mais rápido)
+// 2. Se não houver cache → Busca no PostgreSQL
+// 3. Retorna o resultado
+
+Response
+
+{
+    "data": "2025-04-05",
+    "saldoInicial": 1430.50,
+    "totalCreditos": 850.00,
+    "totalDebitos": 350.00,
+    "saldoFinal": 1930.50,
+    "quantidadeTransacoes": 12,
+    "mediaTransacao": 100.00
+}
+```
+
+
+### Tipos de Consolidado
+
+__Consolidado Diário__
+Campo	Descrição
+data	Data do consolidado
+saldoInicial	Saldo do dia anterior
+totalCreditos	Soma de todas as entradas do dia
+totalDebitos	Soma de todas as saídas do dia
+saldoFinal	saldoInicial + creditos - debitos
+quantidadeTransacoes	Número total de lançamentos
+
+
+__Consolidado Semanal__
+Agrupa os 7 dias da semana, mostrando:
+
+Saldo inicial da semana (domingo)
+
+Total de créditos/débitos da semana
+
+Saldo final da semana (sábado)
+
+Detalhamento diário
+
+__Consolidado Mensal__
+Agrupa todos os dias do mês, mostrando:
+
+Saldo inicial do mês
+
+Total de créditos/débitos do mês
+
+Saldo final do mês
+
+Detalhamento por categoria
+
+
+__Consolidado por Período__
+Permite consultar qualquer intervalo personalizado:
+
+Trimestre
+
+Semestre
+
+Ano
+
+Período customizado
+
+### Estrutura dos Dados Consolidados
+__Tabela saldo_diario (Read Database)__
+
+Coluna	Tipo	Descrição
+data	DATE	Primary Key
+total_creditos	DECIMAL(15,2)	Soma dos créditos do dia
+total_debitos	DECIMAL(15,2)	Soma dos débitos do dia
+saldo	DECIMAL(15,2)	Saldo final do dia
+quantidade_transacoes	INTEGER	Número de transações
+ultima_atualizacao	TIMESTAMP	Última vez que foi atualizado
+Cache Redis
+Chave	Valor	TTL
+saldo:2025-04-05	{ "saldo": 1930.50, "atualizadoEm": "..." }	24 horas
+
+### Padrões Implementados no Consolidado
+__CQRS (Command Query Responsibility Segregation)__
+
+
+Command Side (Escrita)              Query Side (Leitura)
+┌─────────────────────┐            ┌─────────────────────┐
+│  lancamentos-api    │            │  consolidacao-api   │
+│  (escreve dados)    │            │  (lê dados)         │
+└──────────┬──────────┘            └──────────┬──────────┘
+           │                                  │
+           │ Kafka                             │
+           ▼                                  ▼
+┌─────────────────────┐            ┌─────────────────────┐
+│  consolidacao-worker│            │  Redis Cache        │
+│  (atualiza leitura) │            │  (cache)            │
+└──────────┬──────────┘            └──────────┬──────────┘
+           │                                  │
+           ▼                                  ▼
+┌─────────────────────┐            ┌─────────────────────┐
+│  Read Database      │◄───────────│  PostgreSQL         │
+│  (dados consolidados)│            │  (fallback)         │
+└─────────────────────┘            └─────────────────────┘
+
+### Event-Driven
+Lançamento registrado → Evento publicado no Kafka
+Worker consome evento → Atualiza consolidado
+Desacoplamento entre escrita e leitura
+
+
+### Cache-Aside Pattern
+__Consulta de Saldo:__
+1. Verifica Redis → Se encontrou → Retorna (10ms)
+2. Se não encontrou → Busca no PostgreSQL (100ms)
+3. Atualiza Redis para próximas consultas
+4. Retorna resultado
+
+
+### Benefícios do Consolidado
+__Benefício	Descrição__
+Performance	Cache Redis reduz latência de 100ms para <10ms
+Escalabilidade	Leitura e escrita separadas (CQRS)
+Consistência Eventual	Processamento assíncrono via Kafka
+Disponibilidade	Cache e banco de dados redundantes
+Rastreabilidade	Histórico completo de saldos
+
+
+### Resumo do Fluxo
+
+1. Comerciante → Registra lançamento (débito/crédito)
+                    ↓
+2. lancamentos-api → Publica evento no Kafka
+                    ↓
+3. Kafka → Topic "lancamentos"
+                    ↓
+4. consolidacao-worker → Consome evento e calcula novo saldo
+                    ↓
+5. Worker → Atualiza PostgreSQL (Read DB)
+                    ↓
+6. Worker → Atualiza Redis Cache
+                    ↓
+7. Worker → Verifica se saldo < 0 (alerta)
+                    ↓
+8. Comerciante → Consulta saldo via consolidacao-api
+                    ↓
+9. consolidacao-api → Retorna do Redis (cache) ou PostgreSQL
+
+__O Consolidado é o componente que transforma dados brutos de lançamentos em informação financeira valiosa para o comerciante, permitindo tomada de decisão em tempo real.__
+
+
 __6.1 Program.cs__
 
 ```
@@ -2895,6 +3110,7 @@ __7.7 Relatorios.csproj__
 <a id="work"></a>
 
 ### 8. Workers
+
 
 __8.1 Consolidacao.Worker / Program.cs__
 

@@ -1,0 +1,107 @@
+<mxfile host="app.diagrams.net" agent="5.0">
+  <diagram id="c4-nivel1" name="C4 Model - Nível 1: Contexto">
+    <mxGraphModel dx="2020" dy="1081" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="titulo-n1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="C4 Model - Nível 1: Diagrama de Contexto - Ecossistema Fluxo de Caixa" vertex="1">
+          <mxGeometry height="40" width="800" x="110" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sistema-central" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=16" value="Sistema de Fluxo de Caixa" vertex="1">
+          <mxGeometry height="80" width="280" x="660" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="sistema-desc" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12" value="Plataforma de controle financeiro para comerciantes" vertex="1">
+          <mxGeometry height="30" width="280" x="660" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="comerciante" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14" value="👤 Comerciante" vertex="1">
+          <mxGeometry height="60" width="180" x="160" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="admin" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14" value="👨‍💼 Administrador" vertex="1">
+          <mxGeometry height="60" width="180" x="160" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="auditor" parent="1" style="rounded=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=14" value="🔍 Auditor" vertex="1">
+          <mxGeometry height="60" width="180" x="1260" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="cloud-identity" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14" value="🔐 Cloud Identity + AD" vertex="1">
+          <mxGeometry height="60" width="180" x="1260" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="kafka" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14" value="📨 Kafka (Confluent)" vertex="1">
+          <mxGeometry height="60" width="180" x="1260" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="redis" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14" value="⚡ Redis Cache" vertex="1">
+          <mxGeometry height="60" width="180" x="1260" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="postgres" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14" value="🐘 Cloud SQL (PostgreSQL)" vertex="1">
+          <mxGeometry height="60" width="180" x="1260" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="cdn" parent="1" style="rounded=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14" value="🌐 Cloud CDN" vertex="1">
+          <mxGeometry height="60" width="180" x="1260" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="edge-c1" edge="1" parent="1" source="comerciante" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0066CC;endArrow=block;" target="sistema-central">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="400" y="340" />
+              <mxPoint x="500" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-adm1" edge="1" parent="1" source="admin" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0066CC;endArrow=block;" target="sistema-central">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="400" y="530" />
+              <mxPoint x="500" y="530" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-aud1" edge="1" parent="1" source="auditor" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0066CC;endArrow=block;" target="sistema-central">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="340" />
+              <mxPoint x="1000" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-ci" edge="1" parent="1" source="sistema-central" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#009900;endArrow=block;" target="cloud-identity">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="510" />
+              <mxPoint x="1100" y="510" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-kafka" edge="1" parent="1" source="sistema-central" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#FF6600;endArrow=block;dashed=1;" target="kafka">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="650" />
+              <mxPoint x="1100" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-redis" edge="1" parent="1" source="sistema-central" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9933CC;endArrow=block;dashed=1;" target="redis">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="780" />
+              <mxPoint x="1100" y="780" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-postgres" edge="1" parent="1" source="sistema-central" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9933CC;endArrow=block;dashed=1;" target="postgres">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="910" />
+              <mxPoint x="1100" y="910" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge-cdn" edge="1" parent="1" source="sistema-central" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#009900;endArrow=block;" target="cdn">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="1040" />
+              <mxPoint x="1100" y="1040" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

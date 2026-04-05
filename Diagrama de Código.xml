@@ -1,0 +1,400 @@
+<mxfile host="app.diagrams.net" agent="5.0">
+  <diagram id="c4-nivel4-completo" name="C4 Model - Nível 4: Código - Todas APIs e Workers">
+    <mxGraphModel dx="2175" dy="1165" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="titulo-n4" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="C4 Model - Nível 4: Diagrama de Código - Todas APIs, Workers e Componentes do Ecossistema" vertex="1">
+          <mxGeometry height="40" width="950" x="20" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-api-class" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14" value="«API»&#xa;AuthApi" vertex="1">
+          <mxGeometry height="350" width="280" x="40" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-fields" parent="auth-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#6c8ebf;" value="Campos" vertex="1">
+          <mxGeometry height="80" width="260" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-field1" parent="auth-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _authService: IAuthService" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-field2" parent="auth-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _logger: ILogger" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-methods" parent="auth-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#6c8ebf;" value="Métodos" vertex="1">
+          <mxGeometry height="130" width="260" x="10" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-method1" parent="auth-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ Login(LoginRequest)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-method2" parent="auth-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ Register(RegisterRequest)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-method3" parent="auth-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ RefreshToken(RefreshRequest)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-method4" parent="auth-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ Logout()" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-services" parent="auth-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;" value="Serviços Utilizados" vertex="1">
+          <mxGeometry height="55" width="260" x="10" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="auth-serv1" parent="auth-services" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" value="• AuthService" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-api-class" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14" value="«API»&#xa;LancamentosApi" vertex="1">
+          <mxGeometry height="350" width="280" x="380" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-fields" parent="lanc-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#82b366;" value="Campos" vertex="1">
+          <mxGeometry height="80" width="260" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-field1" parent="lanc-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _lancamentoService: ILancamentoService" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-field2" parent="lanc-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _logger: ILogger" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-methods" parent="lanc-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#82b366;" value="Métodos" vertex="1">
+          <mxGeometry height="130" width="260" x="10" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-method1" parent="lanc-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ Registrar(LancamentoRequest)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-method2" parent="lanc-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ Cancelar(Guid id)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-method3" parent="lanc-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ObterPorId(Guid id)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-method4" parent="lanc-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ Listar(Filtros)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-services" parent="lanc-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;" value="Serviços Utilizados" vertex="1">
+          <mxGeometry height="55" width="260" x="10" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="lanc-serv1" parent="lanc-services" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" value="• LancamentoService" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-api-class" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14" value="«API»&#xa;ConsolidacaoApi" vertex="1">
+          <mxGeometry height="350" width="280" x="720" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-fields" parent="cons-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#82b366;" value="Campos" vertex="1">
+          <mxGeometry height="80" width="260" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-field1" parent="cons-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _consolidacaoService: IConsolidacaoService" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-field2" parent="cons-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _logger: ILogger" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-methods" parent="cons-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#82b366;" value="Métodos" vertex="1">
+          <mxGeometry height="130" width="260" x="10" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-method1" parent="cons-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ObterSaldoDiario(DateOnly data)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-method2" parent="cons-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ObterSaldoMensal(int ano, int mes)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-method3" parent="cons-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ObterSaldoPeriodo(DateTime inicio, fim)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-method4" parent="cons-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ObterHistorico(int meses)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-services" parent="cons-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;" value="Serviços Utilizados" vertex="1">
+          <mxGeometry height="55" width="260" x="10" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="cons-serv1" parent="cons-services" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" value="• ConsolidacaoService" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-api-class" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14" value="«API»&#xa;RelatoriosApi" vertex="1">
+          <mxGeometry height="350" width="280" x="1060" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-fields" parent="rel-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#82b366;" value="Campos" vertex="1">
+          <mxGeometry height="80" width="260" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-field1" parent="rel-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _relatorioService: IRelatorioService" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-field2" parent="rel-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _logger: ILogger" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-methods" parent="rel-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#82b366;" value="Métodos" vertex="1">
+          <mxGeometry height="130" width="260" x="10" y="145" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-method1" parent="rel-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ GerarRelatorioDiario(DateOnly data)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-method2" parent="rel-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ GerarRelatorioMensal(int ano, int mes)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-method3" parent="rel-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ GerarRelatorioPeriodo(inicio, fim)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-method4" parent="rel-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ObterIndicadores(inicio, fim)" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-services" parent="rel-api-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;" value="Serviços Utilizados" vertex="1">
+          <mxGeometry height="55" width="260" x="10" y="285" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-serv1" parent="rel-services" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" value="• RelatorioService" vertex="1">
+          <mxGeometry height="18" width="240" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-class" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14" value="«Worker»&#xa;ConsolidacaoWorker" vertex="1">
+          <mxGeometry height="350" width="320" x="40" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-fields" parent="worker-cons-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#d79b00;" value="Campos" vertex="1">
+          <mxGeometry height="100" width="300" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-f1" parent="worker-cons-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _consumer: IConsumer&lt;string,string&gt;" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-f2" parent="worker-cons-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _dataSource: NpgsqlDataSource" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-f3" parent="worker-cons-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _redis: IConnectionMultiplexer" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="71" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-methods" parent="worker-cons-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#d79b00;" value="Métodos" vertex="1">
+          <mxGeometry height="130" width="300" x="10" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-m1" parent="worker-cons-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ExecuteAsync(CancellationToken)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-m2" parent="worker-cons-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- ProcessarEvento(string message)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-m3" parent="worker-cons-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- AtualizarSaldoDiario(...)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-m4" parent="worker-cons-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- AtualizarCacheRedis(...)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-topics" parent="worker-cons-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Tópicos Consumidos" vertex="1">
+          <mxGeometry height="40" width="300" x="10" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-cons-t1" parent="worker-cons-topics" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" value="• lancamentos" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-class" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14" value="«Worker»&#xa;NotificacoesWorker" vertex="1">
+          <mxGeometry height="350" width="320" x="420" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-fields" parent="worker-notif-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#d79b00;" value="Campos" vertex="1">
+          <mxGeometry height="100" width="300" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-f1" parent="worker-notif-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _consumer: IConsumer&lt;string,string&gt;" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-f2" parent="worker-notif-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _sendGridClient: ISendGridClient" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-f3" parent="worker-notif-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _logger: ILogger" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="71" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-methods" parent="worker-notif-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#d79b00;" value="Métodos" vertex="1">
+          <mxGeometry height="130" width="300" x="10" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-m1" parent="worker-notif-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ExecuteAsync(CancellationToken)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-m2" parent="worker-notif-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- ProcessarAlerta(string message)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-m3" parent="worker-notif-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- EnviarEmail(...)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-m4" parent="worker-notif-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- EnviarSlack(...)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-topics" parent="worker-notif-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Tópicos Consumidos" vertex="1">
+          <mxGeometry height="40" width="300" x="10" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-notif-t1" parent="worker-notif-topics" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" value="• consolidacao" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-class" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14" value="«Worker»&#xa;AuditoriaWorker" vertex="1">
+          <mxGeometry height="350" width="320" x="800" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-fields" parent="worker-audit-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#d79b00;" value="Campos" vertex="1">
+          <mxGeometry height="100" width="300" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-f1" parent="worker-audit-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _consumer: IConsumer&lt;string,string&gt;" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-f2" parent="worker-audit-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _mongoCollection: IMongoCollection" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-f3" parent="worker-audit-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _logger: ILogger" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="71" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-methods" parent="worker-audit-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#d79b00;" value="Métodos" vertex="1">
+          <mxGeometry height="130" width="300" x="10" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-m1" parent="worker-audit-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ExecuteAsync(CancellationToken)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-m2" parent="worker-audit-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- ProcessarEvento(string message)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-m3" parent="worker-audit-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- SalvarNoMongoDB(...)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-m4" parent="worker-audit-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- AplicarRetencao()" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-topics" parent="worker-audit-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Tópicos Consumidos" vertex="1">
+          <mxGeometry height="40" width="300" x="10" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-audit-t1" parent="worker-audit-topics" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" value="• lancamentos, consolidacao, notificacoes" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-class" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14" value="«Worker»&#xa;RelatoriosWorker" vertex="1">
+          <mxGeometry height="350" width="320" x="1180" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-fields" parent="worker-rel-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#d79b00;" value="Campos" vertex="1">
+          <mxGeometry height="100" width="300" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-f1" parent="worker-rel-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _consumer: IConsumer&lt;string,string&gt;" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-f2" parent="worker-rel-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _relatorioService: IRelatorioService" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-f3" parent="worker-rel-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _storage: CloudStorageService" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="71" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-methods" parent="worker-rel-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#d79b00;" value="Métodos" vertex="1">
+          <mxGeometry height="130" width="300" x="10" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-m1" parent="worker-rel-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ExecuteAsync(CancellationToken)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-m2" parent="worker-rel-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- ProcessarSolicitacao(string message)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-m3" parent="worker-rel-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- GerarRelatorioAsync(...)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-m4" parent="worker-rel-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- UploadParaCloudStorage(...)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-topics" parent="worker-rel-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Tópicos Consumidos" vertex="1">
+          <mxGeometry height="40" width="300" x="10" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-rel-t1" parent="worker-rel-topics" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" value="• relatorios-requests" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-class" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=45;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=14" value="«Worker»&#xa;EmailWorker" vertex="1">
+          <mxGeometry height="350" width="320" x="1560" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-fields" parent="worker-email-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#d79b00;" value="Campos" vertex="1">
+          <mxGeometry height="100" width="300" x="10" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-f1" parent="worker-email-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _consumer: IConsumer&lt;string,string&gt;" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-f2" parent="worker-email-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _smtpClient: SmtpClient" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="48" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-f3" parent="worker-email-fields" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- _logger: ILogger" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="71" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-methods" parent="worker-email-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#ffffff;strokeColor=#d79b00;" value="Métodos" vertex="1">
+          <mxGeometry height="130" width="300" x="10" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-m1" parent="worker-email-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="+ ExecuteAsync(CancellationToken)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-m2" parent="worker-email-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- ProcessarEmail(string message)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-m3" parent="worker-email-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- EnviarEmailAsync(...)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="72" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-m4" parent="worker-email-methods" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontFamily=Courier New;" value="- TratarFalha(...)" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="94" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-topics" parent="worker-email-class" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=25;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;" value="Tópicos Consumidos" vertex="1">
+          <mxGeometry height="40" width="300" x="10" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="worker-email-t1" parent="worker-email-topics" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9" value="• notificacoes" vertex="1">
+          <mxGeometry height="18" width="280" x="10" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="interface-auth" parent="1" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12" value="«interface»&#xa;IAuthService" vertex="1">
+          <mxGeometry height="140" width="250" x="40" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="int-auth-m1" parent="interface-auth" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ Login(...)" vertex="1">
+          <mxGeometry height="20" width="230" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="int-auth-m2" parent="interface-auth" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ Register(...)" vertex="1">
+          <mxGeometry height="20" width="230" x="10" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="int-auth-m3" parent="interface-auth" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ RefreshToken(...)" vertex="1">
+          <mxGeometry height="20" width="230" x="10" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="interface-lanc-svc" parent="1" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12" value="«interface»&#xa;ILancamentoService" vertex="1">
+          <mxGeometry height="160" width="250" x="330" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="int-lanc-m1" parent="interface-lanc-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ RegistrarLancamento(...)" vertex="1">
+          <mxGeometry height="20" width="230" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="int-lanc-m2" parent="interface-lanc-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ CancelarLancamento(...)" vertex="1">
+          <mxGeometry height="20" width="230" x="10" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="int-lanc-m3" parent="interface-lanc-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ ObterPorId(...)" vertex="1">
+          <mxGeometry height="20" width="230" x="10" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="int-lanc-m4" parent="interface-lanc-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ Listar(...)" vertex="1">
+          <mxGeometry height="20" width="230" x="10" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="interface-cons-svc" parent="1" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12" value="«interface»&#xa;IConsolidacaoService" vertex="1">
+          <mxGeometry height="160" width="260" x="620" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="int-cons-m1" parent="interface-cons-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ ObterSaldoDiario(...)" vertex="1">
+          <mxGeometry height="20" width="240" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="int-cons-m2" parent="interface-cons-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ ObterSaldoMensal(...)" vertex="1">
+          <mxGeometry height="20" width="240" x="10" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="int-cons-m3" parent="interface-cons-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ ObterSaldoPeriodo(...)" vertex="1">
+          <mxGeometry height="20" width="240" x="10" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="int-cons-m4" parent="interface-cons-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ ObterHistorico(...)" vertex="1">
+          <mxGeometry height="20" width="240" x="10" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="interface-rel-svc" parent="1" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12" value="«interface»&#xa;IRelatorioService" vertex="1">
+          <mxGeometry height="180" width="270" x="920" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="int-rel-m1" parent="interface-rel-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ GerarRelatorioDiario(...)" vertex="1">
+          <mxGeometry height="20" width="250" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="int-rel-m2" parent="interface-rel-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ GerarRelatorioMensal(...)" vertex="1">
+          <mxGeometry height="20" width="250" x="10" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="int-rel-m3" parent="interface-rel-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ GerarRelatorioPeriodo(...)" vertex="1">
+          <mxGeometry height="20" width="250" x="10" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="int-rel-m4" parent="interface-rel-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ GerarHistorico(...)" vertex="1">
+          <mxGeometry height="20" width="250" x="10" y="125" as="geometry" />
+        </mxCell>
+        <mxCell id="int-rel-m5" parent="interface-rel-svc" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontFamily=Courier New;" value="+ CalcularIndicadores(...)" vertex="1">
+          <mxGeometry height="20" width="250" x="10" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-api" parent="1" style="rounded=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12" value="API" vertex="1">
+          <mxGeometry height="30" width="80" x="40" y="1160" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-worker" parent="1" style="rounded=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" value="Worker" vertex="1">
+          <mxGeometry height="30" width="80" x="140" y="1160" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-interface" parent="1" style="rounded=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12" value="Interface" vertex="1">
+          <mxGeometry height="30" width="80" x="240" y="1160" as="geometry" />
+        </mxCell>
+        <mxCell id="leg-dep" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1.5;strokeColor=#0066CC;endArrow=block;dashed=1;fontSize=10" value="Dependência">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="1175" as="sourcePoint" />
+            <mxPoint x="480" y="1175" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
