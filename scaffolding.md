@@ -1347,67 +1347,77 @@ Response
 ### Tipos de Consolidado
 
 __Consolidado Diário__
-Campo	Descrição
-data	Data do consolidado
-saldoInicial	Saldo do dia anterior
-totalCreditos	Soma de todas as entradas do dia
-totalDebitos	Soma de todas as saídas do dia
-saldoFinal	saldoInicial + creditos - debitos
-quantidadeTransacoes	Número total de lançamentos
+|Campo|	Descrição
+|--|--
+|data|	Data do consolidado
+|saldoInicial|	Saldo do dia anterior
+|totalCreditos|	Soma de todas as entradas do dia
+|totalDebitos|	Soma de todas as saídas do dia
+|saldoFinal|	saldoInicial + creditos - debitos
+|quantidadeTransacoes|	Número total de lançamentos
 
 
 __Consolidado Semanal__
+```
 Agrupa os 7 dias da semana, mostrando:
-
 Saldo inicial da semana (domingo)
-
 Total de créditos/débitos da semana
-
 Saldo final da semana (sábado)
-
 Detalhamento diário
+```
 
 __Consolidado Mensal__
+```
 Agrupa todos os dias do mês, mostrando:
-
 Saldo inicial do mês
-
 Total de créditos/débitos do mês
-
 Saldo final do mês
-
 Detalhamento por categoria
+```
 
 
 __Consolidado por Período__
+```
 Permite consultar qualquer intervalo personalizado:
-
 Trimestre
-
 Semestre
-
 Ano
-
 Período customizado
+```
 
 ### Estrutura dos Dados Consolidados
 __Tabela saldo_diario (Read Database)__
 
-Coluna	Tipo	Descrição
-data	DATE	Primary Key
-total_creditos	DECIMAL(15,2)	Soma dos créditos do dia
-total_debitos	DECIMAL(15,2)	Soma dos débitos do dia
-saldo	DECIMAL(15,2)	Saldo final do dia
-quantidade_transacoes	INTEGER	Número de transações
-ultima_atualizacao	TIMESTAMP	Última vez que foi atualizado
-Cache Redis
-Chave	Valor	TTL
-saldo:2025-04-05	{ "saldo": 1930.50, "atualizadoEm": "..." }	24 horas
+|Coluna|	Tipo|	Restrição| Descrição|
+|--|--|--|--
+|data|	DATE|	PRIMARY| KEY	Data do consolidado (formato YYYY-MM-DD)
+|total_creditos|	DECIMAL(15,2)|	NOT NULL DEFAULT 0|	Soma de todas as entradas do dia
+|total_debitos|	DECIMAL(15,2)|	NOT NULL DEFAULT 0|	Soma de todas as saídas do dia
+|saldo|	DECIMAL(15,2)|	NOT NULL DEFAULT 0|	Saldo final do dia
+|quantidade_transacoes|	INTEGER|	NOT NULL DEFAULT 0|	Número total de lançamentos no dia
+|ticket_medio|	DECIMAL(15,2)|	GENERATED|	Valor médio por transação (calculado)
+|ultima_atualizacao|	TIMESTAMP|	NOT NULL|	Última vez que o registro foi atualizado
+|versao|	INTEGER|	NOT NULL DEFAULT 1|	Controle de concorrência otimista
+|criado_em|	TIMESTAMP|	NOT NULL DEFAULT NOW()|	Data de criação do registro
+
+
+### 3.1 Dados de Exemplo
+|data|	total_creditos|	total_debitos|	saldo|	qtd_transacoes|	ticket_medio
+|--|--|--|--|--|--
+|2025-04-01|	1.250,00|	850,00|	1.500,00|	15|	140,00
+|2025-04-02|	850,00|	420,00|	1.930,00|	12|	105,83
+|2025-04-03|	320,00|	180,00|	2.070,00|	8|	62,50
+|2025-04-04|	150,00|	290,00|	1.930,00|	6|	73,33
+|2025-04-05|	0,00|	500,00|	1.430,00|	1|	500,00
+|2025-04-06|	500,00|	0,00|	1.930,00|	1|	500,00
+|2025-04-07|	780,00|	350,00|	2.360,00|	10|	113,00
+
+
 
 ### Padrões Implementados no Consolidado
 __CQRS (Command Query Responsibility Segregation)__
 
-
+```
 Command Side (Escrita)              Query Side (Leitura)
 ┌─────────────────────┐            ┌─────────────────────┐
 │  lancamentos-api    │            │  consolidacao-api   │
@@ -1424,53 +1434,58 @@ Command Side (Escrita)              Query Side (Leitura)
            ▼                                  ▼
 ┌─────────────────────┐            ┌─────────────────────┐
 │  Read Database      │◄───────────│  PostgreSQL         │
-│  (dados consolidados)│            │  (fallback)         │
+│ (dados consolidados)│            │  (fallback)         │
 └─────────────────────┘            └─────────────────────┘
+```
 
 ### Event-Driven
+```
 Lançamento registrado → Evento publicado no Kafka
 Worker consome evento → Atualiza consolidado
 Desacoplamento entre escrita e leitura
+```
 
 
 ### Cache-Aside Pattern
 __Consulta de Saldo:__
+
+```
 1. Verifica Redis → Se encontrou → Retorna (10ms)
 2. Se não encontrou → Busca no PostgreSQL (100ms)
 3. Atualiza Redis para próximas consultas
 4. Retorna resultado
+```
 
 
 ### Benefícios do Consolidado
 __Benefício	Descrição__
-Performance	Cache Redis reduz latência de 100ms para <10ms
-Escalabilidade	Leitura e escrita separadas (CQRS)
-Consistência Eventual	Processamento assíncrono via Kafka
-Disponibilidade	Cache e banco de dados redundantes
-Rastreabilidade	Histórico completo de saldos
+
+```
+1. Performance	Cache Redis reduz latência de 100ms para <10ms
+3. Escalabilidade	Leitura e escrita separadas (CQRS)
+4. Consistência Eventual	Processamento assíncrono via Kafka
+5. Disponibilidade	Cache e banco de dados redundantes
+6. Rastreabilidade	Histórico completo de saldos
+```
 
 
 ### Resumo do Fluxo
 
+```
+
 1. Comerciante → Registra lançamento (débito/crédito)
-                    ↓
 2. lancamentos-api → Publica evento no Kafka
-                    ↓
 3. Kafka → Topic "lancamentos"
-                    ↓
 4. consolidacao-worker → Consome evento e calcula novo saldo
-                    ↓
 5. Worker → Atualiza PostgreSQL (Read DB)
-                    ↓
 6. Worker → Atualiza Redis Cache
-                    ↓
 7. Worker → Verifica se saldo < 0 (alerta)
-                    ↓
 8. Comerciante → Consulta saldo via consolidacao-api
-                    ↓
 9. consolidacao-api → Retorna do Redis (cache) ou PostgreSQL
+```
 
 __O Consolidado é o componente que transforma dados brutos de lançamentos em informação financeira valiosa para o comerciante, permitindo tomada de decisão em tempo real.__
+
 
 
 __6.1 Program.cs__
