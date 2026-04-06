@@ -561,7 +561,11 @@ Consultas (CQRS):
 
 ```
 
-### Consolidação de Saldo - Fluxo de Funcionamento
+
+
+
+<a id="consolidado"></a>
+### 11. Consolidação de Saldo - Fluxo de Funcionamento (core)
 
 __O que é o Consolidado?__
 __O Consolidado é o coração do sistema de Fluxo de Caixa. Ele é responsável por calcular, armazenar e disponibilizar o saldo financeiro do comerciante em diferentes períodos (diário, semanal, mensal). O consolidado responde à pergunta fundamental: "Quanto dinheiro eu tenho em um determinado dia/período?"__
@@ -789,6 +793,10 @@ __Benefício	Descrição__
 
 __O Consolidado é o componente que transforma dados brutos de lançamentos em informação financeira valiosa para o comerciante, permitindo tomada de decisão em tempo real.__
 
+
+
+<a id="diagrama"></a>
+### Diagramas de Arquitetura
 
 ### Diagrama C4 Model Contexto
 ![Contexto](/Diagrama-de-Contexto.jpg)
