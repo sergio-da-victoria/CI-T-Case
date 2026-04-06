@@ -11,7 +11,7 @@
 [6. Artifact Registry - Configuração](#registry)\
 [7. Google Cloud Deploy - Configuração](#deply)\
 [8. Scripts de Deploy](#script)\
-[9. Pipeline Completa](#pipline)\
+[9. Pipeline Completa](#pipeline)\
 [10. Monitoramento e Alertas](#monitoramento)
 
 
@@ -1217,7 +1217,7 @@ gcloud deploy releases rollback $RELEASE_ID \
 echo "✅ Rollback to $RELEASE_ID completed"
 ```
 
-<a id="pipelene"></a>
+<a id="pipeline"></a>
 ### 9. Pipeline Completa
 
 ### 9.1 Workflow GitHub Actions (Alternativo)
