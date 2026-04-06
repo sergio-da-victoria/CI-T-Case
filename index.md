@@ -495,7 +495,7 @@ Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker   
    b. Notificacoes-worker consome o evento
    c. Envia e-mail via SendGrid/SMTP
    d. (Opcional) Envia mensagem no Slack/Teams
-
+mermaid
 ```
 
 ### Diagrama C4 Model Contexto
@@ -512,6 +512,11 @@ Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker   
 
 ### Diagrama Sistema BPMN
 ![BPMN](/Diagrama-BPMN.jpg)
+
+
+### Diagrama de Sequência Detalhado
+![Sequência](/Diagrama-de-sequencia.jpg)
+
 
 
 <a id="glossario"></a>

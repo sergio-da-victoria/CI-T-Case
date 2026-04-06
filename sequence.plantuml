@@ -1,0 +1,112 @@
+@startuml
+Alice -> Bob : hello
+@enduml
+@startuml
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam sequenceMessageAlign center
+skinparam responseMessageBelowArrow true
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+title Diagrama de Sequência Completo - Fluxo de Caixa com Cloud Identity + AD
+
+actor "Comerciante" as C #dae8fc
+participant "WAF\n(Cloud Armor)" as WAF #ffcccc
+participant "API Gateway" as GW #fff2cc
+participant "Auth API" as AAPI #d5e8d4
+participant "Cloud Identity" as CI #e1d5e7
+participant "Active Directory" as AD #e1d5e7
+participant "Lancamentos API" as LAPI #d5e8d4
+database "Command DB\n(PostgreSQL)" as CDB #f8cecc
+queue "Kafka" as K #e1d5e7
+participant "Consolidacao\nWorker" as CW #ffe6cc
+database "Read DB\n(PostgreSQL)" as RDB #f8cecc
+database "Redis Cache" as RC #ffe6cc
+participant "Consolidacao API" as CAP #d5e8d4
+participant "Notificacoes\nWorker" as NW #ffe6cc
+participant "SendGrid" as SG #f5f5f5
+
+== FLUXO DE AUTENTICAÇÃO ==
+
+C -> WAF : 1. POST /auth/login (email/senha ou domínio)
+WAF -> GW : 2. Encaminha requisição
+GW -> AAPI : 3. Roteia para Auth API
+
+alt Login via Cloud Identity
+AAPI -> CI : 4a. InitiateSrpAuth (email, senha)
+CI --> AAPI : 5a. AuthenticationResult (Tokens)
+CI -> CI : 6a. Verifica MFA (opcional)
+else Login via Active Directory
+AAPI -> AD : 4b. Bind LDAP (domínio, usuário, senha)
+AD --> AAPI : 5b. Dados do usuário
+AAPI -> CI : 6b. Sincroniza com Cognito (opcional)
+end
+
+AAPI -> CDB : 7. Busca/Cria usuário local
+CDB --> AAPI : 8. Dados do usuário
+AAPI -> AAPI : 9. Gera JWT interno
+AAPI -> RC : 10. Cacheia refresh token
+AAPI --> GW : 11. Retorna JWT
+GW --> WAF : 12. Response
+WAF --> C : 13. Token JWT recebido
+
+== FLUXO DE REGISTRO DE LANÇAMENTO ==
+
+C -> WAF : 14. POST /lancamentos (com JWT)
+WAF -> GW : 15. Filtra e encaminha
+GW -> GW : 16. Valida JWT Token
+GW -> LAPI : 17. Roteia para Lancamentos API
+LAPI -> LAPI : 18. Extrai claims do token
+LAPI -> LAPI : 19. Valida dados
+LAPI -> CDB : 20. INSERT lancamentos
+CDB --> LAPI : 21. Confirma persistência
+LAPI -> K : 22. Publica evento LancamentoRegistrado
+K --> LAPI : 23. Confirma publicação
+LAPI --> GW : 24. Retorna sucesso (201 Created)
+GW --> WAF : 25. Response
+WAF --> C : 26. Lançamento registrado
+
+== PROCESSAMENTO ASSÍNCRONO (WORKER) ==
+
+K -> CW : 27. Consome evento LancamentoRegistrado
+CW -> CW : 28. Extrai data, valor, tipo
+CW -> RDB : 29. UPSERT saldo_diario
+RDB --> CW : 30. Confirma atualização
+CW -> RC : 31. SET cache saldo:data:user
+RC --> CW : 32. Cache atualizado
+CW -> CW : 33. Verifica saldo < 0
+
+alt Saldo Negativo
+CW -> K : 34. Publica SaldoBaixoAlertado
+K -> NW : 35. Consome alerta
+NW -> SG : 36. Envia e-mail
+SG --> NW : 37. E-mail enviado
+NW -> NW : 38. Registra log
+end
+
+== CONSULTA DE SALDO ==
+
+C -> WAF : 39. GET /consolidado/diario (com JWT)
+WAF -> GW : 40. Filtra e encaminha
+GW -> GW : 41. Valida JWT Token
+GW -> CAP : 42. Roteia para Consolidacao API
+CAP -> CAP : 43. Extrai usuarioId do token
+CAP -> RC : 44. GET saldo:data:user
+
+alt Cache Hit
+RC --> CAP : 45. Retorna saldo do cache
+CAP --> GW : 46. Resposta rápida (<50ms)
+else Cache Miss
+RC --> CAP : 45. Cache miss (null)
+CAP -> RDB : 46. SELECT saldo_diario (com filtro user)
+RDB --> CAP : 47. Retorna saldo
+CAP -> RC : 48. SET cache (TTL 24h)
+CAP --> GW : 49. Resposta (<150ms)
+end
+
+GW --> WAF : 50. Response
+WAF --> C : 51. Saldo consolidado
+
+@enduml
+
