@@ -136,7 +136,7 @@ __A camada de segurança do ecossistema Fluxo de Caixa foi projetada seguindo o 
 ```
 
 <a id="model"></a>
-#### 2. Modelo de Responsabilidade Compartilhada
+### 2. Modelo de Responsabilidade Compartilhada
 |Camada|	Responsabilidade Google Cloud|	Responsabilidade Cliente (Fluxo Caixa)
 |--|--|--
 |Perímetro| Infraestrutura de rede global, DDoS protection base|	Configuração WAF, Regras customizadas, Rate limiting
@@ -152,8 +152,7 @@ __A camada de segurança do ecossistema Fluxo de Caixa foi projetada seguindo o 
 
 __3.1 WAF (Cloud Armor) - Detalhamento Completo__
 __O Google Cloud Armor é o Web Application Firewall (WAF) que protege o ecossistema contra ataques na camada de aplicação (OWASP Top 10).__
-
-### __Regras| Predefinidas (OWASP Top 10)__
+__Regras| Predefinidas (OWASP Top 10)__
 
 |Regra|	Descrição|	Ação|	Severidade
 |--|--|--|--
@@ -167,8 +166,7 @@ __O Google Cloud Armor é o Web Application Firewall (WAF) que protege o ecossis
 
 
 __Regras Customizadas para o Ecossistema__
-
-# Regras customizadas do Cloud Armor
+__Regras customizadas do Cloud Armor__
 
 ```
 yaml
@@ -404,51 +402,51 @@ resource "google_compute_security_policy" "ddos_protection" {
 ├─────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                     │
 │  ┌─────────────────────────────────────────────────────────────────────────────┐    │
-│  │                    VPC PÚBLICA (DMZ) - 10.0.0.0/20                          │   │
-│  │  ┌─────────────────────────────────────────────────────────────────────┐    │   │
-│  │  │  Subnet: public-lb (10.0.0.0/24)                                    │    │   │
-│  │  │  • Cloud Load Balancer  • Cloud CDN  • Cloud Armor (WAF)            │    │   │
-│  │  └─────────────────────────────────────────────────────────────────────┘    │   │
-│  │  ┌─────────────────────────────────────────────────────────────────────┐    │   │
-│  │  │  Subnet: public-gateway (10.0.1.0/24)                               │    │   │
-│  │  │  • API Gateway (Yarp)  • Rate Limiting                              │    │   │
-│  │  └─────────────────────────────────────────────────────────────────────┘    │   │
-│  └─────────────────────────────────────────────────────────────────────────────┘   │
-│                                      │                                             │
-│                                      │ (VPC Peering + Firewall)                    │
-│                                      ▼                                             │
-│  ┌─────────────────────────────────────────────────────────────────────────────┐   │
-│  │                    VPC DE APLICAÇÃO - 10.0.16.0/20                          │   │
-│  │  ┌─────────────────────────────────────────────────────────────────────┐    │   │
-│  │  │  Subnet: app-services (10.0.16.0/24)                                │    │   │
-│  │  │  • GKE Cluster  • Auth API  • Lancamentos API                       │    │   │
-│  │  │  • Consolidacao API  • Relatorios API                               │    │   │
-│  │  └─────────────────────────────────────────────────────────────────────┘    │   │
-│  │  ┌─────────────────────────────────────────────────────────────────────┐    │   │
-│  │  │  Subnet: app-workers (10.0.17.0/24)                                 │    │   │
-│  │  │  • Consolidacao Worker  • Notificacoes Worker  • Auditoria Worker   │    │   │
-│  │  └─────────────────────────────────────────────────────────────────────┘    │   │
-│  └─────────────────────────────────────────────────────────────────────────────┘   │
-│                                      │                                             │
-│                                      │ (Private Google Access)                     │
-│                                      ▼                                             │
-│  ┌─────────────────────────────────────────────────────────────────────────────┐   │
-│  │                    VPC DE DADOS - 10.0.32.0/20                              │   │
-│  │  ┌─────────────────────────────────────────────────────────────────────┐    │   │
-│  │  │  Subnet: data-sql (10.0.32.0/24)                                    │    │   │
-│  │  │  • Cloud SQL (PostgreSQL)  • Read Replica                           │    │   │
-│  │  └─────────────────────────────────────────────────────────────────────┘    │   │
-│  │  ┌─────────────────────────────────────────────────────────────────────┐    │   │
-│  │  │  Subnet: data-cache (10.0.33.0/24)                                  │    │   │
-│  │  │  • Memorystore (Redis)  • Redis Cluster                             │    │   │
-│  │  └─────────────────────────────────────────────────────────────────────┘    │   │
-│  │  ┌─────────────────────────────────────────────────────────────────────┐    │   │
-│  │  │  Subnet: data-storage (10.0.34.0/24)                                │    │   │
-│  │  │  • Cloud Storage  • MongoDB                                         │    │   │
-│  │  └─────────────────────────────────────────────────────────────────────┘    │   │
-│  └─────────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                    │
-└────────────────────────────────────────────────────────────────────────────────────┘
+│  │                    VPC PÚBLICA (DMZ) - 10.0.0.0/20                          │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │  Subnet: public-lb (10.0.0.0/24)                                    │    │    │
+│  │  │  • Cloud Load Balancer  • Cloud CDN  • Cloud Armor (WAF)            │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │  Subnet: public-gateway (10.0.1.0/24)                               │    │    │
+│  │  │  • API Gateway (Yarp)  • Rate Limiting                              │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  └─────────────────────────────────────────────────────────────────────────────┘    │
+│                                      │                                              │
+│                                      │ (VPC Peering + Firewall)                     │
+│                                      ▼                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
+│  │                    VPC DE APLICAÇÃO - 10.0.16.0/20                          │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │  Subnet: app-services (10.0.16.0/24)                                │    │    │
+│  │  │  • GKE Cluster  • Auth API  • Lancamentos API                       │    │    │
+│  │  │  • Consolidacao API  • Relatorios API                               │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │  Subnet: app-workers (10.0.17.0/24)                                 │    │    │
+│  │  │  • Consolidacao Worker  • Notificacoes Worker  • Auditoria Worker   │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  └─────────────────────────────────────────────────────────────────────────────┘    │
+│                                      │                                              │
+│                                      │ (Private Google Access)                      │
+│                                      ▼                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────────┐    │
+│  │                    VPC DE DADOS - 10.0.32.0/20                              │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │  Subnet: data-sql (10.0.32.0/24)                                    │    │    │
+│  │  │  • Cloud SQL (PostgreSQL)  • Read Replica                           │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │  Subnet: data-cache (10.0.33.0/24)                                  │    │    │
+│  │  │  • Memorystore (Redis)  • Redis Cluster                             │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  │  ┌─────────────────────────────────────────────────────────────────────┐    │    │
+│  │  │  Subnet: data-storage (10.0.34.0/24)                                │    │    │
+│  │  │  • Cloud Storage  • MongoDB                                         │    │    │
+│  │  └─────────────────────────────────────────────────────────────────────┘    │    │
+│  └─────────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                     │
+└─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 4.2 Firewall Rules
@@ -553,7 +551,7 @@ resource "google_compute_firewall" "allow_internal_gke" {
 ```
 ## 4.3 VPC Service Controls
 
-___O VPC Service Controls cria um perímetro de segurança ao redor dos serviços gerenciados:__
+__O VPC Service Controls cria um perímetro de segurança ao redor dos serviços gerenciados:__
 
 ```
 hcl
