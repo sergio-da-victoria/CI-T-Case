@@ -4,16 +4,18 @@
 
 [1. Visão Geral da Arquitetura de Segurança](#visao)\
 [2. Modelo de Responsabilidade Compartilhada](#model)\
-[3. Camada 1: Segurança de Perímetro (Edge Security)](#ed)\
-[4. Camada 2: Segurança de Rede (Network Security)](#netw)\
+[3. Camada 1: Segurança de Perímetro (Edge Security)](#seguranca)\
+[4. Camada 2: Segurança de Rede (Network Security)](#network)\
 [5. Camada 3: Segurança de Identidade e Acesso (IAM)](#iam)\
-[6. Camada 4: Segurança de Aplicação (App Security)](#app)\
+[6. Camada 4: Segurança de Aplicação (App Security)](#aplication)\
 [7. Camada 5: Segurança de Dados (Data Security)](#dados)\
 [8. Camada 6: Monitoramento e Resposta a Incidentes](#incidentes)\
 [9. Matriz de Responsabilidades por Camada](#matriz)\
 [10. Checklist de Implementação](#implementacao)
 
 
+
+<a id="visao"></a>
 ### 1. Visão Geral da Arquitetura de Segurança
 __A camada de segurança do ecossistema Fluxo de Caixa foi projetada seguindo o princípio de Defesa em Profundidade (Defense in Depth), onde múltiplas camadas de controle protegem o sistema contra falhas ou vulnerabilidades em qualquer camada individual.__
 
@@ -133,6 +135,7 @@ __A camada de segurança do ecossistema Fluxo de Caixa foi projetada seguindo o 
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+<a id="model"></a>
 #### 2. Modelo de Responsabilidade Compartilhada
 |Camada|	Responsabilidade Google Cloud|	Responsabilidade Cliente (Fluxo Caixa)
 |--|--|--
@@ -144,6 +147,7 @@ __A camada de segurança do ecossistema Fluxo de Caixa foi projetada seguindo o 
 |Monitoramento|	Logging infrastructure, SCC base|	Alert configuration, Incident response plan
 
 
+<a id="#seguranca"></a>
 ### 3. Camada 1: Segurança de Perímetro (Edge Security)
 
 __3.1 WAF (Cloud Armor) - Detalhamento Completo__
@@ -387,6 +391,7 @@ resource "google_compute_security_policy" "ddos_protection" {
 |Geo-blocking Acionado|	🟡 MÉDIA|	Tráfego de país bloqueado|	Log + Monitorar|	Slack
 
 
+<a id="#network"></a>
 ### 4. Camada 2: Segurança de Rede (Network Security)
 
 ### 4.1 VPC Architecture
@@ -632,6 +637,7 @@ resource "google_compute_subnetwork" "private_subnet" {
 |VPC Flow Log Anomaly|	🟠 ALTA|	Tráfego anômalo detectado|	Investigar origem	|Slack
 
 
+<a id="#iam"></a>
 ### 5. Camada 3: Segurança de Identidade e Acesso (IAM)
 __5.1 Cloud Identity + Active Directory__
 __O ecossistema suporta dois modos de autenticação:__
@@ -1055,6 +1061,7 @@ metadata:
 |IAM Policy Alterada|	🟡 MÉDIA|	Mudança em política IAM|	Revisar alteração	|E-mail
 
 
+<a id="#aplication"></a>
 ### 6. Camada 4: Segurança de Aplicação (App Security)
 
 ### 6.1 Arquitetura de Segurança de Aplicação
@@ -1251,6 +1258,7 @@ API Abuse Detectado|	🟠 ALTA|	Padrão de abuso de API|	Rate limit + Alertar	|S
 Container Vulnerability|	🟠 ALTA|	CVE em container image|	Rebuild image	|Slack
 
 
+<a id="#dados"></a>
 ### 7. Camada 5: Segurança de Dados (Data Security)
 __7.1 Criptografia em Trânsito (TLS 1.3)__
 
@@ -1501,6 +1509,8 @@ resource "google_storage_bucket" "encrypted_backups" {
 |KMS Key Rotation Atrasada|	🟡 MÉDIA|	Key > 90 dias sem rotação|	Rotacionar chave|	Slack
 |Criptografia Desabilitada|	🟠 ALTA|	TLS/SSL desabilitado|	Reativar imediatamente|	PagerDuty
 
+
+<a id="#incidentes"></a>
 ### 8. Camada 6: Monitoramento e Resposta a Incidentes
 __8.1 Security Command Center (SCC)__
 
@@ -1689,6 +1699,7 @@ resource "google_monitoring_alert_policy" "security_alert" {
 |24|	SIEM|	Comportamento Anômalo|	🟠 ALTA|	UBA detecta anomalia|	Investigar|	Slack|	30min
 
 
+<a id="matriz"></a>
 ### 9. Matriz de Responsabilidades por Camada
 |Camada|	Componente|	Google Cloud|	Time Security|	Time DevOps|	Time Aplicação
 |--|--|--|--|--|--|
@@ -1709,16 +1720,20 @@ resource "google_monitoring_alert_policy" "security_alert" {
 |Dados|	Data Masking|	❌|	✅ Regras|	❌|	✅ Implementação
 					
 
-# Checklist de Implementação de Segurança - Ecossistema Fluxo de Caixa
-# Instruções de Uso
+<a id="implementacao"></a>
+# 10. Checklist de Implementação de Segurança - Ecossistema Fluxo de Caixa
 
+
+### Instruções de Uso
 ### Marque cada item como ✅ (concluído), 🔄 (em andamento), ⏸️ (pausado) ou ❌ (não iniciado)
 
 -   __Registre a data de conclusão e o responsável__
 -   __Itens com 🔴 são críticos e devem ser priorizados__
 -   __Revise este checklist mensalmente para garantir conformidade contínua__
 
-### 10. CAMADA 1: SEGURANÇA DE PERÍMETRO (Edge Security)
+
+
+### CAMADA 1: SEGURANÇA DE PERÍMETRO (Edge Security)
 
 |#|	Item|	Prioridade|	Status|	Data|	Responsável|	Observações
 |--|--|--|--|--|--|--
