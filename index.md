@@ -17,7 +17,8 @@
 [12. Business Capability Modeling](/business-capability.md)\
 [13. Relatório FindOps](/find-ops.md)\
 [14. Trade OFF - Troubleshooting - Recomendações](/trade-off.md)\
-[15. Scaffolding - Codigo](/scaffolding.md)
+[15. Scaffolding - Codigo](/scaffolding.md)\
+[16. CI/CD Pipeline - Google Cloud Build, Cloud Deploy, Artifact Registry com TDD e DBB](/deplyment-ci-cd.md)
 
 
 ### Diagrama Domain Driven Design - Fluxo de Caixa
