@@ -1,0 +1,97 @@
+sequenceDiagram
+    participant C as Comerciante
+    participant WAF as WAF (Cloud Armor)
+    participant GW as API Gateway
+    participant AAPI as Auth API
+    participant CI as Cloud Identity
+    participant AD as Active Directory
+    participant LAPI as Lancamentos API
+    participant CDB as Command DB (PostgreSQL)
+    participant K as Kafka
+    participant CW as Consolidacao Worker
+    participant RDB as Read DB (PostgreSQL)
+    participant RC as Redis Cache
+    participant CAP as Consolidacao API
+    participant NW as Notificacoes Worker
+    participant SG as SendGrid
+
+    Note over C,SG: FLUXO DE AUTENTICAÇÃO
+
+    C->>WAF: 1. POST /auth/login (email/senha ou domínio)
+    WAF->>GW: 2. Encaminha requisição
+    GW->>AAPI: 3. Roteia para Auth API
+
+    alt Login via Cloud Identity
+        AAPI->>CI: 4a. InitiateSrpAuth (email, senha)
+        CI-->>AAPI: 5a. AuthenticationResult (Tokens)
+        CI->>CI: 6a. Verifica MFA (opcional)
+    else Login via Active Directory
+        AAPI->>AD: 4b. Bind LDAP (domínio, usuário, senha)
+        AD-->>AAPI: 5b. Dados do usuário
+        AAPI->>CI: 6b. Sincroniza com Cognito (opcional)
+    end
+
+    AAPI->>CDB: 7. Busca/Cria usuário local
+    CDB-->>AAPI: 8. Dados do usuário
+    AAPI->>AAPI: 9. Gera JWT interno
+    AAPI->>RC: 10. Cacheia refresh token
+    AAPI-->>GW: 11. Retorna JWT
+    GW-->>WAF: 12. Response
+    WAF-->>C: 13. Token JWT recebido
+
+    Note over C,SG: FLUXO DE REGISTRO DE LANÇAMENTO
+
+    C->>WAF: 14. POST /lancamentos (com JWT)
+    WAF->>GW: 15. Filtra e encaminha
+    GW->>GW: 16. Valida JWT Token
+    GW->>LAPI: 17. Roteia para Lancamentos API
+    LAPI->>LAPI: 18. Extrai claims do token
+    LAPI->>LAPI: 19. Valida dados
+    LAPI->>CDB: 20. INSERT lancamentos
+    CDB-->>LAPI: 21. Confirma persistência
+    LAPI->>K: 22. Publica evento LancamentoRegistrado
+    K-->>LAPI: 23. Confirma publicação
+    LAPI-->>GW: 24. Retorna sucesso (201 Created)
+    GW-->>WAF: 25. Response
+    WAF-->>C: 26. Lançamento registrado
+
+    Note over C,SG: PROCESSAMENTO ASSÍNCRONO (WORKER)
+
+    K->>CW: 27. Consome evento LancamentoRegistrado
+    CW->>CW: 28. Extrai data, valor, tipo
+    CW->>RDB: 29. UPSERT saldo_diario
+    RDB-->>CW: 30. Confirma atualização
+    CW->>RC: 31. SET cache saldo:data:user
+    RC-->>CW: 32. Cache atualizado
+    CW->>CW: 33. Verifica saldo < 0
+    
+    alt Saldo Negativo
+        CW->>K: 34. Publica SaldoBaixoAlertado
+        K->>NW: 35. Consome alerta
+        NW->>SG: 36. Envia e-mail
+        SG-->>NW: 37. E-mail enviado
+        NW->>NW: 38. Registra log
+    end
+
+    Note over C,SG: CONSULTA DE SALDO
+
+    C->>WAF: 39. GET /consolidado/diario (com JWT)
+    WAF->>GW: 40. Filtra e encaminha
+    GW->>GW: 41. Valida JWT Token
+    GW->>CAP: 42. Roteia para Consolidacao API
+    CAP->>CAP: 43. Extrai usuarioId do token
+    CAP->>RC: 44. GET saldo:data:user
+    
+    alt Cache Hit
+        RC-->>CAP: 45. Retorna saldo do cache
+        CAP-->>GW: 46. Resposta rápida (<50ms)
+    else Cache Miss
+        RC-->>CAP: 45. Cache miss (null)
+        CAP->>RDB: 46. SELECT saldo_diario (com filtro user)
+        RDB-->>CAP: 47. Retorna saldo
+        CAP->>RC: 48. SET cache (TTL 24h)
+        CAP-->>GW: 49. Resposta (<150ms)
+    end
+    
+    GW-->>WAF: 50. Response
+    WAF-->>C: 51. Saldo consolidado
