@@ -9,7 +9,7 @@
 [4. Database Build (DBB)](#database)\
 [5. Google Cloud Build - Configuração](#build)\
 [6. Artifact Registry - Configuração](#registry)\
-[7. Google Cloud Deploy - Configuração](#deply)\
+[7. Google Cloud Deploy - Configuração](#deploy)\
 [8. Scripts de Deploy](#script)\
 [9. Pipeline Completa](#pipeline)\
 [10. Monitoramento e Alertas](#monitoramento)
