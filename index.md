@@ -560,6 +560,7 @@ Consultas (CQRS):
     └──► GET /relatorio → View Materializada → Cache
 
 ```
+
 ### Diagrama C4 Model Contexto
 ![Contexto](/Diagrama-de-Contexto.jpg)
 
