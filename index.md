@@ -13,11 +13,11 @@
 [8. Sistemas Externos](#externo)\
 [9. Fluxo Completo do Sistema](#fluxo)\
 [10. Glossário do Event Storming](#glossario)\
+[11. Consolidação de Saldo - Fluxo de Funcionamento Coração do Sistema](#consolidado)\
 [11. Business Capability Modeling](/business-capability.md)\
 [12. Relatório FindOps](/find-ops.md)\
 [13. Trade OFF - Troubleshooting - Recomendações](/trade-off.md)\
 [14. Scaffolding - Codigo](/scaffolding.md)
-
 
 
 ### Diagrama Domain Driven Design - Fluxo de Caixa
@@ -498,6 +498,22 @@ Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker   
 
 ```
 
+### Diagrama C4 Model Contexto
+![Contexto](/Diagrama-de-Contexto.jpg)
+
+### Diagrama C4 Model Container
+![Contêineres](/Diagrama-de-Conteineres.jpg)
+
+### Diagrama C4 Model Componentes
+![Componentes](/Diagrama-de-Componentes.jpg)
+
+### Diagrama C4 Model Codigo
+![Codigo](/Diagrama-de-Codigo.jpg)
+
+### Diagrama Sistema BPMN
+![BPMN](/Diagrama-BPMN.jpg)
+
+
 <a id="glossario"></a>
 ### 10. Glossário do Event Storming
 |Termo|	Definição|
@@ -792,24 +808,3 @@ __Benefício	Descrição__
 ```
 
 __O Consolidado é o componente que transforma dados brutos de lançamentos em informação financeira valiosa para o comerciante, permitindo tomada de decisão em tempo real.__
-
-
-
-<a id="diagrama"></a>
-### Diagramas de Arquitetura
-
-### Diagrama C4 Model Contexto
-![Contexto](/Diagrama-de-Contexto.jpg)
-
-### Diagrama C4 Model Container
-![Contêineres](/Diagrama-de-Conteineres.jpg)
-
-### Diagrama C4 Model Componentes
-![Componentes](/Diagrama-de-Componentes.jpg)
-
-### Diagrama C4 Model Codigo
-![Codigo](/Diagrama-de-Codigo.jpg)
-
-### Diagrama Sistema BPMN
-![BPMN](/Diagrama-BPMN.jpg)
-
