@@ -18,7 +18,7 @@
 [13. Relatório FindOps](/find-ops.md)\
 [14. Trade OFF - Troubleshooting - Recomendações](/trade-off.md)\
 [15. Scaffolding - Codigo](/scaffolding.md)\
-[16. CI/CD Pipeline - Google Cloud Build, Cloud Deploy, Artifact Registry com TDD e DBB](/deplyment-ci-cd.md)
+[16. CI/CD Pipeline - Google Cloud Build, Cloud Deploy, Artifact Registry com TDD e DBB](/deplyment-ci-cd.md)\
 [17. Camada de Segurança - Ecossistema Fluxo de Caixa](/seguranca.md)
 
 
