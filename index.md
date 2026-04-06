@@ -560,3 +560,18 @@ Consultas (CQRS):
     └──► GET /relatorio → View Materializada → Cache
 
 ```
+### Diagrama C4 Model Contexto
+![Contexto](/Diagrama-de-Contexto.jpg)
+
+### Diagrama C4 Model Container
+![Contêineres](/Diagrama-de-Conteineres.jpg)
+
+### Diagrama C4 Model Componentes
+![Componentes](/Diagrama-de-Componentes.jpg)
+
+### Diagrama C4 Model Codigo
+![Codigo](/Diagrama-de-Codigo.jpg)
+
+### Diagrama Sistema BPMN
+![BPMN](/Diagrama-BPMN.jpg)
+

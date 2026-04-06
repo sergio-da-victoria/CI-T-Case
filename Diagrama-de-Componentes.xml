@@ -1,11 +1,11 @@
 <mxfile host="app.diagrams.net" agent="5.0">
   <diagram id="c4-nivel3-v2" name="C4 Model - Nível 3: Componentes - Completo">
-    <mxGraphModel dx="7856" dy="3028" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1600" math="0" shadow="0">
+    <mxGraphModel dx="2020" dy="1081" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1600" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="titulo-n3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="C4 Model - Nível 3: Diagrama de Componentes - Event-Driven, CQRS e Workers" vertex="1">
-          <mxGeometry height="40" width="900" x="-30" y="30" as="geometry" />
+        <mxCell id="titulo-n3" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" value="C4 Model - Nível 3: Diagrama de Componentes - Event-Driven, CQRS , Workers, API&#39;s, TOPIC, CQRS" vertex="1">
+          <mxGeometry height="40" width="970" x="40" y="20" as="geometry" />
         </mxCell>
         <mxCell id="gateway-container" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=35;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14" value="API Gateway (Yarp)" vertex="1">
           <mxGeometry height="200" width="280" x="40" y="100" as="geometry" />
