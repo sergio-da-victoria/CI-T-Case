@@ -11,7 +11,7 @@
 [6. Políticas / Regras de Negócio](#negocio)\
 [7. Leituras / Consultas (CQRS)](#cqrs)\
 [8. Sistemas Externos](#externo)\
-[9. Fluxo Completo do Sistema](#fluxo)\
+[9. Fluxo Completo do Sistema Com Diagramas  C1 a C4 Sequência BPMN](#fluxo)\
 [10. Glossário do Event Storming](#glossario)\
 [11. Consolidação de Saldo](#consolidado)\
 [12. Business Capability Modeling](/business-capability.md)\
@@ -20,8 +20,8 @@
 [15. Scaffolding - Codigo](/scaffolding.md)\
 [16. CI/CD Pipeline - Google Cloud Build, Cloud Deploy, Artifact Registry com TDD e DBB](/deplyment-ci-cd.md)\
 [17. Camada de Segurança](/seguranca.md)\
-[18. Observabilidade, Monitoração e Métricas e Logs](/observabilidade.md)\
-[19. Observabilidade, SLO & SLI & SLA](/slo-sli-sla-observabilidade.md)
+[18. Observabilidade (Monitoração e Métricas e Logs)](/observabilidade.md)\
+[19. Observabilidade (SLO & SLI & SLA)](/slo-sli-sla-observabilidade.md)
 
 
 
@@ -437,7 +437,8 @@ Sistemas externos são dependências de infraestrutura ou serviços de terceiros
 
 <a id="fluxo"></a>
 ### 9. Fluxo Completo do Sistema
-##### Fluxo Principal (Registro de Lançamento)
+
+### Fluxo Principal (Registro de Lançamento)
 
 ```
 1. Comerciante autentica via Cognito/AD
@@ -458,7 +459,7 @@ Sistemas externos são dependências de infraestrutura ou serviços de terceiros
 9. Comerciante consulta saldo via GET /consolidado (cache)
 ```
 
-##### Diagrama de Sequência do Fluxo Principal
+### Diagrama de Sequência do Fluxo Principal
 
 ```
 Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker    Redis    PostgreSQL    SendGrid
@@ -490,7 +491,7 @@ Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker   
 
 ```
 
-##### Fluxo de Alerta de Saldo Baixo
+### Fluxo de Alerta de Saldo Baixo
 
 ```
 1. LancamentoRegistrado é processado
@@ -504,16 +505,16 @@ Comerciante    API Gateway    Lancamentos-api    Kafka    Consolidacao-worker   
 mermaid
 ```
 
-### Diagrama C4 Model Contexto
+### Diagrama C4 Model Contexto - Nível 1
 ![Contexto](/Diagrama-de-Contexto.jpg)
 
-### Diagrama C4 Model Container
+### Diagrama C4 Model Container - Nível 2
 ![Contêineres](/Diagrama-de-Conteineres.jpg)
 
-### Diagrama C4 Model Componentes
+### Diagrama C4 Model Componentes - Nível 3
 ![Componentes](/Diagrama-de-Componentes.jpg)
 
-### Diagrama C4 Model Codigo
+### Diagrama C4 Model Codigo - Nível 4
 ![Codigo](/Diagrama-de-Codigo.jpg)
 
 ### Diagrama Sistema BPMN
