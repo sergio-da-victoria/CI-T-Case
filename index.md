@@ -20,7 +20,9 @@
 [15. Scaffolding - Codigo](/scaffolding.md)\
 [16. CI/CD Pipeline - Google Cloud Build, Cloud Deploy, Artifact Registry com TDD e DBB](/deplyment-ci-cd.md)\
 [17. Camada de Segurança](/seguranca.md)\
-[18. Observabilidade, Monitoração e Métricas e Logs](/observabilidade.md)
+[18. Observabilidade, Monitoração e Métricas e Logs](/slo-sli-sla-observabilidade.md)\
+[19. Observabilidade, SLO & SLI & SLA](/observabilidade.md)
+
 
 
 
