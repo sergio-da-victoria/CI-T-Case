@@ -268,5 +268,461 @@
 
 
 
+### 5.4 Métricas de Segurança de Dados
+|Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
+|--|--|--|--|--|--
+|security_secret_access_total|	Counter|	Acessos a secrets|	secret_name, accessed_by_type (human/service)|	Monitorar|	1min
+|security_encryption_keys_rotated_total|	Counter|	Rotações de chaves de criptografia|	key_name,status|	Monitorar|	1min
+|security_backup_encrypted_total|	Counter|	Backups criptografados|	backup_type,size|	Monitorar|	1dia
+|security_data_exfiltration_detected|	Counter|	Tentativas de exfiltração de dados|	source_ip,volume,destination|	0|	15s
+
+
+# 6. Métricas Detalhadas dos Bancos de Dados
+### 6.1 Métricas do PostgreSQL (Cloud SQL)
+|Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
+|--|--|--|--|--|--
+|cloudsql_cpu_utilization|	Gauge|	Uso de CPU|	instance,environment|	< 80%|	1min
+|cloudsql_memory_utilization|	Gauge|	Uso de memória|	instance|	< 85%|	1min
+|cloudsql_disk_utilization|	Gauge|	Uso de disco|	instance|	< 80%|	1min
+|cloudsql_connections|	Gauge|	Conexões ativas|	instance,database|	< 80% do limite|	15s
+|cloudsql_replica_lag_seconds|	Gauge|	Atraso da réplica|	instance|	< 10s|	1min
+|postgresql_transactions_total|	Counter|	Transações por segundo|	instance,database|	Monitorar|	15s
+|postgresql_slow_queries_total|	Counter|	Queries lentas (> 1s)|	instance,database,query_hash|	< 10/hora|	1min
+|postgresql_deadlocks_total|	Counter|	Deadlocks detectados|	instance,database|	0|	1min
+|postgresql_cache_hit_ratio|	Gauge|	Taxa de acerto do cache|	instance,cache_type (shared, effective)|	> 95%|	1min
+|postgresql_temp_files_total|	Counter|	Arquivos temporários criados|	instance,database|	< 100/hora|	1min
+
+
+### 6.2 Métricas do Redis (Memorystore)
+|Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
+|--|--|--|--|--|--
+|redis_cpu_utilization|	Gauge|	Uso de CPU|	instance|	< 70%	|1min
+|redis_memory_usage_ratio|	Gauge|	Uso de memória|	instance|	< 80%|	1min
+|redis_connected_clients|	Gauge|	Clientes conectados|	instance|	Monitorar|	15s
+|redis_cache_hit_ratio|	Gauge|	Taxa de acerto de cache|	instance|	> 90%|	1min
+|redis_evicted_keys_total|	Counter|	Chaves removidas por evicção|	instance,reason (volatile, allkeys)|	< 1000/hora|	1min
+|redis_expired_keys_total|	Counter|	Chaves expiradas|	instance|	Monitorar|	1min
+|redis_keyspace_hits_total|	Counter|	Acessos com sucesso|	instance,database|	Monitorar|	15s
+|redis_keyspace_misses_total|	Counter|	Acessos sem sucesso|	instance,database|	< 10%|	15s
+|redis_commands_processed_total|	Counter|	Comandos processados|	instance,command|	Monitorar|	15s
+|redis_replication_lag_seconds|	Gauge|	Atraso da replicação|	instance|	< 5s|	1min
+
+
+### 6.3 Métricas do MongoDB (Atlas)
+|Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
+|--|--|--|--|--|--
+|mongodb_cpu_utilization| Gauge|	Uso de CPU|	cluster,node|	< 80%|	1min
+|mongodb_memory_utilization|	Gauge|	Uso de memória|	cluster|	< 85%|	1min
+|mongodb_disk_utilization|	Gauge|	Uso de disco|	cluster|	< 80%|	1min
+|mongodb_connections_current|	Gauge|	Conexões atuais|	cluster|	< 80% do limite|	15s
+|mongodb_operation_latencies|	Histogram|	Latência de operações|	cluster,operation (reads, writes, commands)|	reads < 100ms, writes < 200ms|	15s
+|mongodb_operations_total|	Counter|	Total de operações|	cluster,operation,database|	Monitorar|	15s
+|mongodb_documents_count|	Gauge|	Total de documentos|	cluster,database,collection|	Monitorar|	5min
+|mongodb_index_size_bytes|	Gauge|	Tamanho dos índices|	cluster,database,collection|	Monitorar|	5min
+|mongodb_oplog_utilization|	Gauge|	Uso do oplog|	cluster|	< 80%|	1min
+|mongodb_cache_utilization|	Gaug|e	Uso do cache WiredTiger|	cluster|	< 80%|	1min
+
+# 7. Métricas Detalhadas do Kafka
+### 7.1 Métricas de Produção
+|Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
+|--|--|--|--|--|--
+|kafka_messages_in_per_sec|	Gauge|	Mensagens recebidas por segundo|	topic,partition|	Monitorar|	15s
+|kafka_bytes_in_per_sec|	Gauge|	Bytes recebidos por segundo|	topic,partition|	Monitorar|	15s
+|kafka_bytes_out_per_sec|	Gauge|	Bytes enviados por segundo|	topic,partition|	Monitorar|	15s
+|kafka_produce_requests_total|	Counter|	Requisições de produção|	topic,client_id|	Monitorar|	15s
+|kafka_produce_errors_total|	Counter|	Erros na produção|	topic,error_type|	< 0.1%|	1min
+|kafka_produce_latency_seconds|	Histogram|	Latência de produção|	topic|	P95 < 50ms|	15s
+
+
+### 7.2 Métricas de Consumo
+|Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
+|--|--|--|--|--|--
+|kafka_consumer_lag|	Gauge|	Atraso do consumidor|	topic,partition,consumer_group|	< 1000|	15s
+|kafka_consumer_lag_millis|	Gauge|	Atraso em milissegundos|	topic,consumer_group|	< 10000ms|	15s
+|kafka_consumer_commits_total|	Counter|	Commits realizados|	topic,partition,consumer_group|	Monitorar|	1min
+|kafka_consumer_errors_total|	Counter|	Erros do consumidor| consumer_group,error_type	|< 10/hora|	1min
+|kafka_fetch_requests_total|	Counter|	Requisições de fetch| topic, consumer_group|	Monitorar|	15s
+|kafka_fetch_latency_seconds|	Histogram|	Latência de fetch|	topic|	P95 < 100ms|	15
+
+
+### 7.3 Métricas de Cluster
+|Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
+|--|--|--|--|--|--
+|kafka_partitions_under_replicated|	Gauge|	Partições sub-replicadas|	topic|	0|	1min
+|kafka_offline_partitions|	Gauge|	Partições offline|	topic|	0|	1min
+|kafka_controller_count|	Gauge|	Número de controllers|	cluster|	1|	1min
+|kafka_active_controllers|	Gauge|	Controllers ativos|	cluster|	1|	1min
+|kafka_isr_shrinks_total|	Counter|	Reduções de ISR|	topic,partition|	Monitorar|	1min
+|kafka_isr_expands_total|	Counter|	Expansões de ISR|	topic, partition|	Monitorar|	1min
+|kafka_leader_elections_total|	Counter|	Eleições de líder|	topic, partition|	< 10/hora|	1min
+
+### 8.1 Métricas de Rede
+|Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
+|--|--|--|--|--|--
+|gke_cluster_cpu_utilization|	Gauge|	Uso de CPU do cluster|	cluster_name,node_pool|	< 80%|	1min
+|gke_cluster_memory_utilization|	Gauge|	Uso de memória do cluster|	cluster_name,node_pool|	< 85%|	1min
+|gke_cluster_disk_utilization|	Gauge|	Uso de disco dos nós|	cluster_name,node|	< 80%|	1min
+|gke_node_count|	Gauge|	Número de nós|	cluster_name,node_pool|	Monitorar|	1min
+|gke_pod_count|	Gauge|	Número de pods|	cluster_name,namespace|	Monitorar|	15s
+|gke_container_restarts_total|	Counter|	Reinicializações de containers|	pod,container,reason|	< 10/hora|	1min
+
+### 8.2 Métricas de Rede
+|Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
+|--|--|--|--|--|--
+|gke_network_received_bytes|	Counter|	Bytes recebidos|	pod,namespace|	Monitorar|	15s
+|gke_network_sent_bytes|	Counter|	Bytes enviados|	pod,namespace|	Monitorar|	15s
+|gke_network_received_packets|	Counter|	Pacotes recebidos|	pod,namespace| Monitorar|	15s
+|gke_network_sent_packets|	Counter|	Pacotes enviados|	pod,namespace	|Monitorar	|15s
+|gke_network_errors_total|	Counter|	Erros de rede|	pod,namespace,direction|	< 100/hora|	1min
+
+
+# 9. Dashboards no Cloud Monitoring
+### 9.1 Dashboard da API
+
+```
+hcl
+
+resource "google_monitoring_dashboard" "api_dashboard" {
+  dashboard_json = <<EOF
+{
+  "displayName": "Fluxo Caixa - API Dashboard",
+  "gridLayout": {
+    "columns": 2,
+    "widgets": [
+      {
+        "title": "📊 Request Rate (req/s)",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/api_requests_total' | rate(1m)",
+            "plotType": "LINE",
+            "minAlignmentPeriod": "60s"
+          }],
+          "yAxis": {
+            "label": "Requests per second"
+          }
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "📈 Error Rate (5xx)",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/api_requests_total' | filter (status =~ '5..') | rate(1m)",
+            "plotType": "LINE"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "⏱️ Latency (P95)",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/api_request_duration_seconds' | histogram_quantile(0.95)"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "👥 Active Users",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/usuarios_ativos'"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "📦 Total Lancamentos by Type",
+        "pieChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/lancamentos_total' | group_by [tipo]"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "💰 Total Value by Category",
+        "pieChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/lancamentos_valor_total' | group_by [categoria]"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "🔐 JWT Validation Success Rate",
+        "scorecard": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/jwt_validacoes_total' | filter (resultado = 'sucesso') | rate(1m)"
+          }]
+        },
+        "height": 3,
+        "width": 1
+      },
+      {
+        "title": "💾 API Memory Usage",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch k8s_container | metric 'kubernetes.io/container/memory/used_bytes' | filter (namespace_name = 'fluxo-caixa')"
+          }]
+        },
+        "height": 3,
+        "width": 1
+      }
+    ]
+  }
+}
+EOF
+}
+```
+
+### 9.2 Dashboard dos Workers
+
+```
+hcl
+
+
+resource "google_monitoring_dashboard" "workers_dashboard" {
+  dashboard_json = <<EOF
+{
+  "displayName": "Fluxo Caixa - Workers Dashboard",
+  "gridLayout": {
+    "columns": 2,
+    "widgets": [
+      {
+        "title": "📨 Messages Processed by Worker",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/worker_messages_processed_total' | rate(1m)"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "⚠️ Worker Errors",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/worker_messages_failed_total' | rate(1m)"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "⏱️ Processing Duration (P95)",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/worker_processing_duration_seconds' | histogram_quantile(0.95)"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "📊 Kafka Consumer Lag",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch kafka | metric 'kafka.consumer_lag' | group_by [consumer_group]"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "🔄 Worker Retries",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/worker_retries_total' | rate(1m)"
+          }]
+        },
+        "height": 3,
+        "width": 1
+      },
+      {
+        "title": "🗑️ DLQ Messages",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/worker_dlq_messages_total' | rate(1m)"
+          }]
+        },
+        "height": 3,
+        "width": 1
+      }
+    ]
+  }
+}
+EOF
+}
+
+```
+
+### 9.3 Dashboard de Segurança
+
+```
+
+hcl
+
+
+resource "google_monitoring_dashboard" "security_dashboard" {
+  dashboard_json = <<EOF
+{
+  "displayName": "Fluxo Caixa - Security Dashboard",
+  "gridLayout": {
+    "columns": 2,
+    "widgets": [
+      {
+        "title": "🛡️ Security Incidents by Type",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/security_incidents_total'"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "🚫 WAF Blocked Requests",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/security_waf_blocked_total' | rate(1m)"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "🔑 Authentication Failures",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/auth_logins_failed_total' | rate(1m)"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "🚨 Unauthorized Access Attempts",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/auth_unauthorized_total' | rate(1m)"
+          }]
+        },
+        "height": 4,
+        "width": 1
+      },
+      {
+        "title": "💉 SQL Injection Attempts",
+        "xyChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/security_sql_injection_total' | rate(1m)"
+          }]
+        },
+        "height": 3,
+        "width": 1
+      },
+      {
+        "title": "🔐 Secret Access by Type",
+        "pieChart": {
+          "dataSets": [{
+            "timeSeriesQuery": "fetch prometheus_target | metric 'prometheus.googleapis.com/security_secret_access_total' | group_by [accessed_by_type]"
+          }]
+        },
+        "height": 3,
+        "width": 1
+      }
+    ]
+  }
+}
+EOF
+}
+
+```
+
+# 10. Alertas no Cloud Monitoring
+
+10.1 Alertas da API
+Alerta	Severidade	Condição	Duração	Canais
+API High Latency	🔴 CRÍTICA	P95 > 500ms	5min	PagerDuty, Slack
+API High Error Rate	🔴 CRÍTICA	Erros 5xx > 1%	2min	PagerDuty, Slack
+API Low Availability	🔴 CRÍTICA	Uptime < 99.9%	5min	PagerDuty
+API High CPU	🟠 ALTA	CPU > 80%	10min	Slack
+API High Memory	🟠 ALTA	Memória > 85%	10min	Slack
+API Many 4xx Errors	🟡 MÉDIA	4xx > 10%	5min	Slack, E-mail
+
+
+10.2 Alertas dos Workers
+Alerta	Severidade	Condição	Duração	Canais
+Kafka High Lag	🔴 CRÍTICA	Consumer lag > 5000	5min	PagerDuty, Slack
+Worker High Error Rate	🔴 CRÍTICA	Erros > 10/min	2min	PagerDuty
+Worker Processing Slow	🟠 ALTA	P95 processing > 500ms	5min	Slack
+Worker Down	🔴 CRÍTICA	Worker offline	1min	PagerDuty
+DLQ Growing	🟠 ALTA	DLQ messages > 1000	10min	Slack
+
+
+10.3 Alertas de Segurança
+Alerta	Severidade	Condição	Duração	Canais
+SQL Injection Detected	🔴 CRÍTICA	Qualquer tentativa	0s	PagerDuty, Slack
+XSS Attack Detected	🔴 CRÍTICA	Qualquer tentativa	0s	PagerDuty, Slack
+Brute Force Attack	🟠 ALTA	> 10 falhas/min	1min	PagerDuty, Slack
+Unauthorized Access	🔴 CRÍTICA	Qualquer acesso negado	0s	PagerDuty, Slack
+WAF Block Spike	🟠 ALTA	> 100 bloqueios/min	1min	Slack
+Secret Accessed by Human	🟠 ALTA	Secret de app acessada	0s	Slack
+
+
+10.4 Alertas de Banco de Dados
+Alerta	Severidade	Condição	Duração	Canais
+PostgreSQL High CPU	🟠 ALTA	CPU > 80%	10min	Slack
+PostgreSQL Low Storage	🔴 CRÍTICA	Disco > 85%	5min	PagerDuty
+Redis Low Cache Hit	🟡 MÉDIA	Cache hit < 80%	10min	Slack
+MongoDB High Latency	🟠 ALTA	Reads > 200ms	5min	Slack
+Database Connection Spike	🟡 MÉDIA	Conexões > 80%	5min	Slack
+
+
+13. Tabela Resumo de Métricas por Serviço
+Serviço	Quantidade Métricas	Quantidade Alertas	Dashboard
+APIs (Auth, Lancamentos, Consolidacao, Relatorios)	25	8	1
+Workers (4 workers)	20	6	1
+Segurança	18	8	1
+PostgreSQL	12	4	1
+Redis	10	3	1
+MongoDB	10	3	1
+Kafka	15	4	1
+GKE Infraestrutura	10	3	1
+TOTAL	120	39	8
+Canais de Notificação por Severidade
+Severidade	Canais	Tempo de Resposta
+🔴 CRÍTICA	PagerDuty + Slack + SMS	5 minutos
+🟠 ALTA	PagerDuty + Slack	15 minutos
+🟡 MÉDIA	Slack + E-mail	1 hora
+🟢 BAIXA	Log only	24 horas
+Ferramentas Utilizadas
+Ferramenta	Propósito	Métricas	Logs	Traces	Alertas
+Cloud Monitoring	Métricas e Alertas	✅	❌	❌	✅
+Cloud Logging	Logs Centralizados	✅	✅	❌	✅
+Cloud Trace	Distributed Tracing	❌	❌	✅	❌
+Cloud Profiler	Performance Analysis	✅	❌	❌	❌
+Error Reporting	Error Aggregation	✅	✅	✅	✅
+Prometheus	Métricas Customizadas	✅	❌	❌	✅
+OpenTelemetry	Instrumentação	✅	✅	✅	❌
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
