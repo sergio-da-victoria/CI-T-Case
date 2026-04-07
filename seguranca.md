@@ -1,4 +1,4 @@
-# Camada de Segurança - Ecossistema Fluxo de Caixa (Detalhamento Completo)
+# Camada de Segurança - (Detalhamento Completo)
 
 ### Sumário
 

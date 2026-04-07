@@ -13,13 +13,14 @@
 [8. Sistemas Externos](#externo)\
 [9. Fluxo Completo do Sistema](#fluxo)\
 [10. Glossário do Event Storming](#glossario)\
-[11. Consolidação de Saldo - Fluxo de Funcionamento Coração do Sistema](#consolidado)\
+[11. Consolidação de Saldo](#consolidado)\
 [12. Business Capability Modeling](/business-capability.md)\
-[13. Relatório FindOps](/find-ops.md)\
+[13. Relatório FindOps - Custos](/find-ops.md)\
 [14. Trade OFF - Troubleshooting - Recomendações](/trade-off.md)\
 [15. Scaffolding - Codigo](/scaffolding.md)\
 [16. CI/CD Pipeline - Google Cloud Build, Cloud Deploy, Artifact Registry com TDD e DBB](/deplyment-ci-cd.md)\
-[17. Camada de Segurança - Ecossistema Fluxo de Caixa](/seguranca.md)
+[17. Camada de Segurança](/seguranca.md)/
+[18. Observabilidade, Monitoração e Métricas e Logs](/observabilidade.md)
 
 
 
@@ -589,7 +590,7 @@ Consultas (CQRS):
 
 
 <a id="consolidado"></a>
-### 11. Consolidação de Saldo - Fluxo de Funcionamento (core)
+### 11. Consolidação de Saldo - (core)
 
 __O que é o Consolidado?__
 __O Consolidado é o coração do sistema de Fluxo de Caixa. Ele é responsável por calcular, armazenar e disponibilizar o saldo financeiro do comerciante em diferentes períodos (diário, semanal, mensal). O consolidado responde à pergunta fundamental: "Quanto dinheiro eu tenho em um determinado dia/período?"__
