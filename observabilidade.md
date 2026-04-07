@@ -17,6 +17,8 @@
 [12. Terraform para Observabilidade](#terraform)\
 [13. Tabela Resumo de Métricas por Serviço](#resumo)
 
+
+<a id="visao"></a>
 # 1. Visão Geral da Observabilidade
 
 ### 1.1 Os Três Pilares da Observabilidade
@@ -118,6 +120,7 @@
 └─────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+<a id="ferramenta)"></a>
 # 2. Ferramentas do Google Cloud Observability
 
 ### 2.1 Cloud Monitoring
@@ -165,6 +168,8 @@
 |Stack Traces|	Captura de stack traces|	Debugging
 |Notifications|	Alertas de novos erros|	Notificações para equipe
 
+
+<a id="api"></a>
 # 3. Métricas Detalhadas das APIs
 
 ### 3.1 Métricas Obrigatórias (RED Method)
@@ -202,6 +207,7 @@
 |api_health_check_success|	Gauge|	Status do health check (/health)|	endpoint|	1|	30s
 |api_ready_check_success|	Gauge|	Status do readiness check|	endpoint	1|	30s
 
+<a id="work"></a>
 # 4. Métricas Detalhadas dos Workers
 ### 4.1 Métricas de Processamento
 
@@ -232,6 +238,7 @@
 |worker_threads_active|	Gauge|	Threads ativas|	worker_name|	Monitorar|	15s
 |worker_uptime_seconds|	Gauge|	Tempo desde último| restart|	worker_name|	> 24h|	15s
 
+<a id="seguranca"></a>
 # 5. Métricas Detalhadas de Segurança
 ### 5.1 Métricas de Ameaças
 |Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
@@ -256,8 +263,6 @@
 |auth_tokens_invalid_total|	Counter|	Tokens inválidos recebidos|	reason (expired,signature,malformed)|	< 100/hora|	1min
 
 
-
-
 ### 5.3 Métricas de Autorização
 |Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
 |--|--|--|--|--|--
@@ -276,7 +281,7 @@
 |security_backup_encrypted_total|	Counter|	Backups criptografados|	backup_type,size|	Monitorar|	1dia
 |security_data_exfiltration_detected|	Counter|	Tentativas de exfiltração de dados|	source_ip,volume,destination|	0|	15s
 
-
+<a id="dado"></a>
 # 6. Métricas Detalhadas dos Bancos de Dados
 ### 6.1 Métricas do PostgreSQL (Cloud SQL)
 |Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
@@ -322,6 +327,7 @@
 |mongodb_oplog_utilization|	Gauge|	Uso do oplog|	cluster|	< 80%|	1min
 |mongodb_cache_utilization|	Gaug|e	Uso do cache WiredTiger|	cluster|	< 80%|	1min
 
+<a id="kafka"></a>
 # 7. Métricas Detalhadas do Kafka
 ### 7.1 Métricas de Produção
 |Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
@@ -356,7 +362,9 @@
 |kafka_isr_expands_total|	Counter|	Expansões de ISR|	topic, partition|	Monitorar|	1min
 |kafka_leader_elections_total|	Counter|	Eleições de líder|	topic, partition|	< 10/hora|	1min
 
-### 8.1 Métricas de Rede
+<a id="gke"></a>
+# 8. Métricas Detalhadas de Infraestrutura (GKE)
+### 8.1 Métricas do Cluster - (GKE)
 |Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
 |--|--|--|--|--|--
 |gke_cluster_cpu_utilization|	Gauge|	Uso de CPU do cluster|	cluster_name,node_pool|	< 80%|	1min
@@ -366,7 +374,7 @@
 |gke_pod_count|	Gauge|	Número de pods|	cluster_name,namespace|	Monitorar|	15s
 |gke_container_restarts_total|	Counter|	Reinicializações de containers|	pod,container,reason|	< 10/hora|	1min
 
-### 8.2 Métricas de Rede
+### 8.2 Métricas de Rede - (GKE)
 |Métrica|	Tipo|	Descrição|	Labels|	Alvo|	Frequência
 |--|--|--|--|--|--
 |gke_network_received_bytes|	Counter|	Bytes recebidos|	pod,namespace|	Monitorar|	15s
@@ -376,6 +384,7 @@
 |gke_network_errors_total|	Counter|	Erros de rede|	pod,namespace,direction|	< 100/hora|	1min
 
 
+<a id="monitoring"></a>
 # 9. Dashboards no Cloud Monitoring
 ### 9.1 Dashboard da API
 
@@ -645,6 +654,7 @@ EOF
 
 ```
 
+<a id="alerta"></a>
 # 10. Alertas no Cloud Monitoring
 
 ### 10.1 Alertas da API
@@ -689,6 +699,7 @@ DLQ Growing|	🟠 ALTA|	DLQ messages > 1000|	10min|	Slack
 |Database Connection Spike|	🟡 MÉDIA|	Conexões > 80%|	5min|	Slack
 
 
+<a id="stack"></a>
 # 11. Instrumentação em C# .NET 10
 ### 11.1 Program.cs - Configuração OpenTelemetry
 
@@ -955,6 +966,7 @@ public class MetricsService
 
 ```
 
+<a id="terraform"></a>
 # 12. Terraform para Observabilidade
 
 ```
@@ -1070,7 +1082,9 @@ resource "google_monitoring_service" "api_service" {
 
 ```
 
+<a id="resumo"></a>
 # 13. Tabela Resumo de Métricas por Serviço
+
 |Serviço|	Quantidade Métricas|	Quantidade Alertas|	Dashboard
 |--|--|--|--
 APIs (Auth,Lancamentos,Consolidacao,Relatorios)|	25|	8|	1
@@ -1103,6 +1117,12 @@ APIs (Auth,Lancamentos,Consolidacao,Relatorios)|	25|	8|	1
 |Error Reporting|	Error Aggregation|	✅|	✅|	✅|	✅
 |Prometheus|	Métricas Customizadas|	✅|	❌|	❌|	✅
 |OpenTelemetry|	Instrumentação|	✅|	✅|	✅|	❌
+
+
+
+# 14. Observabilidade com SLI, SLO & SLA
+
+
 
 
 
