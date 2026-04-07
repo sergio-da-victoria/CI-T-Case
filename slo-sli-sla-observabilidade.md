@@ -72,15 +72,15 @@ Para um profissional de TI, a **Observabilidade** fornece os dados, o **SLI** se
 
 ### Sumário
 
-[1. O que são SLI e SLO?](#visao)\
-[2. SLIs para o Ecossistema Fluxo de Caixa](#visao)\
-[3. SLOs para o Ecossistema Fluxo de Caixa](#visao)\
-[4. Implementação no Google Cloud Monitoring](#visao)\
-[5. Error Budget e Alertas](#visao)\
-[6. Dashboard de SLOs](#visao)\
-[7. Políticas de Alerta Baseadas em SLO]
+[1. O que são SLI e SLO?](#sao_sli)\
+[2. SLIs para o Ecossistema Fluxo de Caixa](#sli)\
+[3. SLOs para o Ecossistema Fluxo de Caixa](#slo)\
+[4. Implementação no Google Cloud Monitoring](#google)\
+[5. Error Budget e Alertas](#error)\
+[6. Dashboard de SLOs](#dasboard)\
+[7. Políticas de Alerta Baseadas em SLO](#politica)
 
-
+<a id="sao_sli"></a>
 # 1.1 Definições
 
 ```
@@ -188,7 +188,7 @@ Para um profissional de TI, a **Observabilidade** fornece os dados, o **SLI** se
 
 ```
 
-
+<a id="sli"></a>
 # 2. SLIs para o Ecossistema Fluxo de Caixa
 
 ### 2.1 SLIs de Disponibilidade
@@ -219,6 +219,7 @@ Latência do Kafka|	Publicação de mensagens|	kafka_produce_latency_seconds|	< 
 
 # 3. SLOs para o Ecossistema Fluxo de Caixa
 
+<a id="slo"></a>
 ### 3.1 SLOs por Serviço
 |Serviço|	SLO	|Descrição|	Janela|	Error Budget
 |--|--|--|--|--
@@ -256,6 +257,7 @@ Latência do Kafka|	Publicação de mensagens|	kafka_produce_latency_seconds|	< 
 |Redis|	Cache hit ratio|	> 90%|	Eficiência do cache
 
 
+<a id="google"></a>
 # 4. Implementação no Google Cloud Monitoring
 ### 4.1 Definindo SLIs no Terraform
 
@@ -498,7 +500,7 @@ resource "google_monitoring_service" "redis_service" {
 }
 
 ```
-
+<a id="error"></a>
 # 5. Error Budget e Alertas
 
 ### 5.1 Error Budget Burn Rate Alerts
@@ -665,6 +667,7 @@ EOF
 
 ```
 
+<a id="dasboard"></a> 
 # 6. Dashboard de SLOs
 
 ### 6.1 Dashboard Completo de SLOs
@@ -731,6 +734,7 @@ json
 
 ```
 
+<a id="politica"></a> 
 # 7. Políticas de Alerta Baseadas em SLO
 
 ### 7.1 Matriz de Decisão por Severidade
