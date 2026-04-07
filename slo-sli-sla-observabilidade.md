@@ -1,9 +1,18 @@
-No contexto de **TI (Tecnologia da Informação)** e especificamente em **SRE (Site Reliability Engineering)** e **DevOps**, esses quatro conceitos formam a estrutura para garantir que sistemas sejam confiáveis, escaláveis e que atendam às expectativas do negócio.
+# Observabilidade com SLI & SLO & SLA - Ecossistema Fluxo de Caixa
 
-Aqui está uma visão técnica e prática de como eles funcionam no dia a dia de um departamento de TI:
+### Sumário
+
+
+[1. O que são SLI e SLO?](#sao_sli)\
+[2. SLIs para o Ecossistema Fluxo de Caixa](#sli)\
+[3. SLOs para o Ecossistema Fluxo de Caixa](#slo)\
+[4. Implementação no Google Cloud Monitoring](#google)\
+[5. Error Budget e Alertas](#error)\
+[6. Dashboard de SLOs](#dasboard)\
+[7. Políticas de Alerta Baseadas em SLO](#politica)
 
 ---
-
+<a id="sao_sli"></a>
 ### 1. Observabilidade (O "Porquê")
 Diferente do monitoramento clássico (que apenas avisa se o servidor caiu), a observabilidade em TI é sobre entender estados internos complexos. Em arquiteturas de **microserviços** e **nuvem (Cloud)**, é impossível prever todas as formas de falha.
 
@@ -68,19 +77,6 @@ Se você trabalha com TI, ao definir seus SLIs e SLOs, você deve sempre olhar p
 Para um profissional de TI, a **Observabilidade** fornece os dados, o **SLI** seleciona o dado importante, o **SLO** define a meta de qualidade para o time técnico, e o **SLA** protege o negócio legalmente caso as falhas ultrapassem o limite aceitável.
 
 
-# Observabilidade com SLI e SLO - Ecossistema Fluxo de Caixa
-
-### Sumário
-
-[1. O que são SLI e SLO?](#sao_sli)\
-[2. SLIs para o Ecossistema Fluxo de Caixa](#sli)\
-[3. SLOs para o Ecossistema Fluxo de Caixa](#slo)\
-[4. Implementação no Google Cloud Monitoring](#google)\
-[5. Error Budget e Alertas](#error)\
-[6. Dashboard de SLOs](#dasboard)\
-[7. Políticas de Alerta Baseadas em SLO](#politica)
-
-<a id="sao_sli"></a>
 # 1.1 Definições
 
 ```
