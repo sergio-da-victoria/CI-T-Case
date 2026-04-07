@@ -1094,11 +1094,11 @@ APIs (Auth,Lancamentos,Consolidacao,Relatorios)|	25|	8|	1
 
 
 # Ferramentas Utilizadas
-|Ferramenta	Propósito|	Métricas|	Logs|	Traces|	Alertas
-|--|--|--|--|--
+|Ferramenta|	Propósito|	Métricas|	Logs|	Traces|	Alertas
+|--|--|--|--|--|--
 |Cloud Monitoring|	Métricas e Alertas|	✅|	❌|	❌|	✅
 |Cloud Logging|	Logs Centralizados|	✅|	✅|	❌|	✅
-|Cloud Trace|	Distributed Tracing	❌|	❌|	✅|	❌
+|Cloud Trace|	Distributed Tracing|	❌|	❌|	✅|	❌
 |Cloud Profiler|	Performance Analysis|	✅|	❌|	❌|	❌
 |Error Reporting|	Error Aggregation|	✅|	✅|	✅|	✅
 |Prometheus|	Métricas Customizadas|	✅|	❌|	❌|	✅
