@@ -647,73 +647,462 @@ EOF
 
 # 10. Alertas no Cloud Monitoring
 
-10.1 Alertas da API
-Alerta	Severidade	Condição	Duração	Canais
-API High Latency	🔴 CRÍTICA	P95 > 500ms	5min	PagerDuty, Slack
-API High Error Rate	🔴 CRÍTICA	Erros 5xx > 1%	2min	PagerDuty, Slack
-API Low Availability	🔴 CRÍTICA	Uptime < 99.9%	5min	PagerDuty
-API High CPU	🟠 ALTA	CPU > 80%	10min	Slack
-API High Memory	🟠 ALTA	Memória > 85%	10min	Slack
-API Many 4xx Errors	🟡 MÉDIA	4xx > 10%	5min	Slack, E-mail
+### 10.1 Alertas da API
+|Alerta|	Severidade|	Condição|	Duração|	Canais
+|--|--|--|--|--
+|API High Latency|	🔴 CRÍTICA|	P95 > 500ms|	5min|	PagerDuty,Slack
+|API High Error Rate|	🔴 CRÍTICA|	Erros 5xx > 1%|	2min|	PagerDuty,Slack
+|API Low Availability|	🔴 CRÍTICA|	Uptime < 99.9%|	5min|	PagerDuty
+|API High CPU|	🟠 ALTA|	CPU > 80%|	10min|	Slack
+|API High Memory|	🟠 ALTA|	Memória > 85%|	10min|	Slack
+|API Many 4xx Errors|	🟡 MÉDIA|	4xx > 10%|	5min|	Slack,E-mail
 
 
-10.2 Alertas dos Workers
-Alerta	Severidade	Condição	Duração	Canais
-Kafka High Lag	🔴 CRÍTICA	Consumer lag > 5000	5min	PagerDuty, Slack
-Worker High Error Rate	🔴 CRÍTICA	Erros > 10/min	2min	PagerDuty
-Worker Processing Slow	🟠 ALTA	P95 processing > 500ms	5min	Slack
-Worker Down	🔴 CRÍTICA	Worker offline	1min	PagerDuty
-DLQ Growing	🟠 ALTA	DLQ messages > 1000	10min	Slack
+### 10.2 Alertas dos Workers
+|Alerta|	Severidade|	Condição|	Duração|	Canais
+|--|--|--|--|--
+Kafka High Lag|	🔴 CRÍTICA|	Consumer lag > 5000|	5min|	PagerDuty,Slack
+Worker High Error Rate|	🔴 CRÍTICA|	Erros > 10/min|	2min|	PagerDuty
+Worker Processing Slow|	🟠 ALTA|	P95 processing > 500ms|	5min|	Slack
+Worker Down|	🔴 CRÍTICA|	Worker offline|	1min|	PagerDuty
+DLQ Growing|	🟠 ALTA|	DLQ messages > 1000|	10min|	Slack
 
 
-10.3 Alertas de Segurança
-Alerta	Severidade	Condição	Duração	Canais
-SQL Injection Detected	🔴 CRÍTICA	Qualquer tentativa	0s	PagerDuty, Slack
-XSS Attack Detected	🔴 CRÍTICA	Qualquer tentativa	0s	PagerDuty, Slack
-Brute Force Attack	🟠 ALTA	> 10 falhas/min	1min	PagerDuty, Slack
-Unauthorized Access	🔴 CRÍTICA	Qualquer acesso negado	0s	PagerDuty, Slack
-WAF Block Spike	🟠 ALTA	> 100 bloqueios/min	1min	Slack
-Secret Accessed by Human	🟠 ALTA	Secret de app acessada	0s	Slack
+### 10.3 Alertas de Segurança
+|Alerta|	Severidade|	Condição|	Duração|	Canais
+|--|--|--|--|--
+|SQL Injection Detected|	🔴 CRÍTICA|	Qualquer tentativa|	0s|	PagerDuty, Slack
+|XSS Attack Detected|	🔴 CRÍTICA|	Qualquer tentativa|	0s|	PagerDuty, Slack
+|Brute Force Attack|	🟠 ALTA|	> 10 falhas/min|	1min|	PagerDuty,Slack
+|Unauthorized Access|	🔴 CRÍTICA|	Qualquer acesso negado|	0s|	PagerDuty,Slack
+|WAF Block Spike|	🟠 ALTA|	> 100 bloqueios/min|	1min|	Slack
+|Secret Accessed by Human|	🟠 ALTA|	Secret de app acessada|	0s|	Slack|
 
 
-10.4 Alertas de Banco de Dados
-Alerta	Severidade	Condição	Duração	Canais
-PostgreSQL High CPU	🟠 ALTA	CPU > 80%	10min	Slack
-PostgreSQL Low Storage	🔴 CRÍTICA	Disco > 85%	5min	PagerDuty
-Redis Low Cache Hit	🟡 MÉDIA	Cache hit < 80%	10min	Slack
-MongoDB High Latency	🟠 ALTA	Reads > 200ms	5min	Slack
-Database Connection Spike	🟡 MÉDIA	Conexões > 80%	5min	Slack
+### 10.4 Alertas de Banco de Dados
+|Alerta|	Severidade|	Condição|	Duração|	Canais
+|--|--|--|--|--
+|PostgreSQL High CPU|	🟠 ALTA	CPU| > 80%|	10min|	Slack
+|PostgreSQL Low Storage|	🔴 CRÍTICA|	Disco > 85%|	5min|	PagerDuty
+|Redis Low Cache Hit|	🟡 MÉDIA|	Cache hit < 80%|	10min|	Slack
+|MongoDB High Latency|	🟠 ALTA|	Reads > 200ms|	5min|	Slack
+|Database Connection Spike|	🟡 MÉDIA|	Conexões > 80%|	5min|	Slack
 
 
-13. Tabela Resumo de Métricas por Serviço
-Serviço	Quantidade Métricas	Quantidade Alertas	Dashboard
-APIs (Auth, Lancamentos, Consolidacao, Relatorios)	25	8	1
-Workers (4 workers)	20	6	1
-Segurança	18	8	1
-PostgreSQL	12	4	1
-Redis	10	3	1
-MongoDB	10	3	1
-Kafka	15	4	1
-GKE Infraestrutura	10	3	1
-TOTAL	120	39	8
-Canais de Notificação por Severidade
-Severidade	Canais	Tempo de Resposta
-🔴 CRÍTICA	PagerDuty + Slack + SMS	5 minutos
-🟠 ALTA	PagerDuty + Slack	15 minutos
-🟡 MÉDIA	Slack + E-mail	1 hora
-🟢 BAIXA	Log only	24 horas
-Ferramentas Utilizadas
-Ferramenta	Propósito	Métricas	Logs	Traces	Alertas
-Cloud Monitoring	Métricas e Alertas	✅	❌	❌	✅
-Cloud Logging	Logs Centralizados	✅	✅	❌	✅
-Cloud Trace	Distributed Tracing	❌	❌	✅	❌
-Cloud Profiler	Performance Analysis	✅	❌	❌	❌
-Error Reporting	Error Aggregation	✅	✅	✅	✅
-Prometheus	Métricas Customizadas	✅	❌	❌	✅
-OpenTelemetry	Instrumentação	✅	✅	✅	❌
+# 11. Instrumentação em C# .NET 10
+### 11.1 Program.cs - Configuração OpenTelemetry
 
 
+```
 
+csharp
+
+// Program.cs - Configuração completa de observabilidade
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Exporter;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Configurar OpenTelemetry
+builder.Services.AddOpenTelemetry()
+    .ConfigureResource(resource => resource
+        .AddService(
+            serviceName: "fluxo-caixa-api",
+            serviceVersion: "1.0.0",
+            serviceInstanceId: Environment.MachineName)
+        .AddAttributes(new Dictionary<string, object>
+        {
+            ["deployment.environment"] = builder.Environment.EnvironmentName,
+            ["service.namespace"] = "fluxo-caixa",
+            ["cloud.provider"] = "gcp",
+            ["cloud.region"] = "us-central1"
+        }))
+    .WithTracing(tracing => tracing
+        .AddAspNetCoreInstrumentation(options =>
+        {
+            options.RecordException = true;
+            options.Filter = (httpContext) =>
+                !httpContext.Request.Path.StartsWithSegments("/health") &&
+                !httpContext.Request.Path.StartsWithSegments("/metrics");
+            options.EnrichWithHttpRequest = (activity, request) =>
+            {
+                activity.SetTag("http.user_agent", request.Headers.UserAgent.ToString());
+                activity.SetTag("http.client_ip", request.HttpContext.Connection.RemoteIpAddress?.ToString());
+            };
+            options.EnrichWithHttpResponse = (activity, response) =>
+            {
+                activity.SetTag("http.status_code", response.StatusCode);
+            };
+        })
+        .AddHttpClientInstrumentation(options =>
+        {
+            options.RecordException = true;
+            options.EnrichWithHttpRequestMessage = (activity, request) =>
+            {
+                activity.SetTag("http.request.method", request.Method.Method);
+            };
+        })
+        .AddSqlClientInstrumentation(options =>
+        {
+            options.RecordException = true;
+            options.SetDbStatementForText = true;
+            options.EnableConnectionLevelAttributes = true;
+        })
+        .AddRedisInstrumentation()
+        .AddKafkaInstrumentation()
+        .AddSource("FluxoCaixa.*")
+        .SetSampler(new AlwaysOnSampler())
+        .AddOtlpExporter(options =>
+        {
+            options.Endpoint = new Uri(builder.Configuration["OTLP:Endpoint"] ?? "http://localhost:4317");
+            options.Protocol = OtlpExportProtocol.Grpc;
+        }))
+    .WithMetrics(metrics => metrics
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddRuntimeInstrumentation()
+        .AddProcessInstrumentation()
+        .AddEventCountersInstrumentation()
+        .AddMeter("FluxoCaixa.*")
+        .AddPrometheusExporter());
+
+// Métricas customizadas
+builder.Services.AddSingleton<MetricsService>();
+builder.Services.AddSingleton<SecurityMetricsService>();
+
+// Cloud Logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddGoogleCloudLogging(options =>
+{
+    options.ProjectId = builder.Configuration["GoogleCloud:ProjectId"];
+    options.LogName = "fluxo-caixa-api-logs";
+    options.IncludeEventId = true;
+    options.IncludeScopes = true;
+    options.ResourceLabels = new Dictionary<string, string>
+    {
+        ["service"] = "fluxo-caixa-api",
+        ["environment"] = builder.Environment.EnvironmentName
+    };
+});
+
+// Cloud Error Reporting
+builder.Services.AddGoogleErrorReporting(options =>
+{
+    options.ProjectId = builder.Configuration["GoogleCloud:ProjectId"];
+    options.ServiceName = "fluxo-caixa-api";
+    options.Version = "1.0.0";
+});
+
+// Health Checks
+builder.Services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration.GetConnectionString("ReadDb")!)
+    .AddRedis(builder.Configuration["Redis:ConnectionString"]!)
+    .AddKafka(builder.Configuration["Kafka:BootstrapServers"]!);
+
+var app = builder.Build();
+
+// Middleware para métricas
+app.UseMiddleware<MetricsMiddleware>();
+app.UseMiddleware<TracingMiddleware>();
+app.UseMiddleware<LoggingMiddleware>();
+
+// Endpoints de observabilidade
+app.MapPrometheusScrapingEndpoint();
+app.MapHealthChecks("/health/live");
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = _ => false
+});
+
+app.Run();
+
+```
+
+11.2 Métricas Customizadas
+
+```
+
+csharp
+
+// MetricsService.cs - Métricas de negócio
+public class MetricsService
+{
+    private readonly Counter<long> _lancamentosCounter;
+    private readonly Counter<double> _lancamentosValorCounter;
+    private readonly Histogram<double> _requestDurationHistogram;
+    private readonly UpDownCounter<long> _usuariosAtivosGauge;
+    private readonly Counter<long> _jwtValidacoesCounter;
+    private readonly Histogram<double> _dbQueryDurationHistogram;
+    private readonly Counter<long> _cacheHitsCounter;
+    private readonly Counter<long> _cacheMissesCounter;
+
+    public MetricsService(IMeterFactory meterFactory)
+    {
+        var meter = meterFactory.Create("FluxoCaixa.API");
+
+        _lancamentosCounter = meter.CreateCounter<long>(
+            "lancamentos_total",
+            description: "Total number of lancamentos");
+
+        _lancamentosValorCounter = meter.CreateCounter<double>(
+            "lancamentos_valor_total",
+            unit: "BRL",
+            description: "Total value of lancamentos");
+
+        _requestDurationHistogram = meter.CreateHistogram<double>(
+            "request_duration_seconds",
+            unit: "s",
+            description: "Request duration in seconds");
+
+        _usuariosAtivosGauge = meter.CreateUpDownCounter<long>(
+            "usuarios_ativos",
+            description: "Number of active users");
+
+        _jwtValidacoesCounter = meter.CreateCounter<long>(
+            "jwt_validacoes_total",
+            description: "Total JWT validations");
+
+        _dbQueryDurationHistogram = meter.CreateHistogram<double>(
+            "db_query_duration_seconds",
+            unit: "s",
+            description: "Database query duration");
+
+        _cacheHitsCounter = meter.CreateCounter<long>(
+            "cache_hits_total",
+            description: "Total cache hits");
+
+        _cacheMissesCounter = meter.CreateCounter<long>(
+            "cache_misses_total",
+            description: "Total cache misses");
+    }
+
+    public void RecordLancamento(string tipo, string categoria, string usuarioTier)
+    {
+        _lancamentosCounter.Add(1, new KeyValuePair<string, object>[]
+        {
+            new("tipo", tipo),
+            new("categoria", categoria),
+            new("usuario_tier", usuarioTier)
+        });
+    }
+
+    public void RecordLancamentoValor(double valor, string tipo, string categoria)
+    {
+        _lancamentosValorCounter.Add(valor, new KeyValuePair<string, object>[]
+        {
+            new("tipo", tipo),
+            new("categoria", categoria)
+        });
+    }
+
+    public void RecordRequestDuration(double durationSeconds, string endpoint, string method, string statusCode)
+    {
+        _requestDurationHistogram.Record(durationSeconds, new KeyValuePair<string, object>[]
+        {
+            new("endpoint", endpoint),
+            new("method", method),
+            new("status_code", statusCode)
+        });
+    }
+
+    public void RecordActiveUsers(long count)
+    {
+        _usuariosAtivosGauge.Add(count - GetCurrentActiveUsers());
+    }
+
+    public void RecordJwtValidation(string resultado, string motivo = null)
+    {
+        var tags = new List<KeyValuePair<string, object>> { new("resultado", resultado) };
+        if (motivo != null) tags.Add(new("motivo", motivo));
+        
+        _jwtValidacoesCounter.Add(1, tags);
+    }
+
+    public void RecordDbQueryDuration(double durationSeconds, string queryType, string database)
+    {
+        _dbQueryDurationHistogram.Record(durationSeconds, new KeyValuePair<string, object>[]
+        {
+            new("query_type", queryType),
+            new("database", database)
+        });
+    }
+
+    public void RecordCacheHit(string cacheName)
+    {
+        _cacheHitsCounter.Add(1, new KeyValuePair<string, object>[] { new("cache", cacheName) });
+    }
+
+    public void RecordCacheMiss(string cacheName)
+    {
+        _cacheMissesCounter.Add(1, new KeyValuePair<string, object>[] { new("cache", cacheName) });
+    }
+
+    public double GetCacheHitRatio(string cacheName)
+    {
+        // Implementar cálculo da taxa de acerto
+        return 0.95;
+    }
+
+    private long GetCurrentActiveUsers()
+    {
+        // Implementar lógica para obter usuários ativos
+        return 0;
+    }
+}
+
+```
+
+# 12. Terraform para Observabilidade
+
+```
+hcl
+
+# observability.tf - Configuração completa de observabilidade
+
+# Notification Channels
+resource "google_monitoring_notification_channel" "pagerduty" {
+  display_name = "PagerDuty - Critical Alerts"
+  type         = "pagerduty"
+  
+  labels = {
+    service_key = var.pagerduty_service_key
+  }
+}
+
+resource "google_monitoring_notification_channel" "slack" {
+  display_name = "Slack - Security Alerts"
+  type         = "slack"
+  
+  labels = {
+    channel_name = "#security-alerts"
+  }
+}
+
+resource "google_monitoring_notification_channel" "slack_ops" {
+  display_name = "Slack - Operations Alerts"
+  type         = "slack"
+  
+  labels = {
+    channel_name = "#ops-alerts"
+  }
+}
+
+resource "google_monitoring_notification_channel" "email" {
+  display_name = "Security Team Email"
+  type         = "email"
+  
+  labels = {
+    email_address = "security-team@fluxocaixa.com"
+  }
+}
+
+# Uptime Checks
+resource "google_monitoring_uptime_check_config" "api_uptime" {
+  display_name = "API Uptime Check"
+  timeout      = "10s"
+  period       = "60s"
+
+  http_check {
+    path         = "/health/live"
+    port         = 8080
+    request_method = "GET"
+    validate_ssl = true
+  }
+
+  monitored_resource {
+    type = "uptime_url"
+    labels = {
+      project_id = var.project_id
+      host       = "api.fluxocaixa.com"
+    }
+  }
+
+  content_matchers {
+    content = "Healthy"
+    matcher = "CONTAINS_STRING"
+  }
+}
+
+# Service Monitoring (SLO)
+resource "google_monitoring_slo" "api_availability" {
+  service = google_monitoring_service.api_service.service_id
+  slo_id  = "api-availability-slo"
+
+  basic_sli {
+    availability {
+      enabled = true
+    }
+  }
+
+  goal        = 0.999
+  rolling_period_days = 30
+}
+
+resource "google_monitoring_slo" "api_latency" {
+  service = google_monitoring_service.api_service.service_id
+  slo_id  = "api-latency-slo"
+
+  basic_sli {
+    latency {
+      threshold = "0.5s"
+    }
+  }
+
+  goal        = 0.95
+  rolling_period_days = 30
+}
+
+resource "google_monitoring_service" "api_service" {
+  service_id = "fluxo-caixa-api"
+  display_name = "Fluxo Caixa API"
+
+  basic_service {
+    service_labels = {
+      service_name = "fluxo-caixa-api"
+      namespace    = "fluxo-caixa"
+    }
+  }
+}
+
+
+```
+
+# 13. Tabela Resumo de Métricas por Serviço
+|Serviço|	Quantidade Métricas|	Quantidade Alertas|	Dashboard
+|--|--|--|--
+APIs (Auth,Lancamentos,Consolidacao,Relatorios)|	25|	8|	1
+|Workers (4 workers)| 20|	6|	1
+|Segurança|	18|	8|	1
+|PostgreSQL|	12|	4|	1
+|Redis|	10|	3|	1
+|MongoDB|	10|	3|	1
+|Kafka|	15|	4|	1
+|GKE Infraestrutura|	10|	3|	1
+|TOTAL|	120|	39|	8
+
+
+# Canais de Notificação por Severidade
+|Severidade|	Canais|	Tempo de Resposta
+|--|--|--
+|🔴 CRÍTICA|	PagerDuty+Slack+ SMS|	5 minutos
+|🟠 ALTA|	PagerDuty+Slack|	15| minutos
+|🟡 MÉDIA|	Slack+E-mail|	1| hora
+|🟢 BAIXA|	Log only|	24| horas
+
+
+# Ferramentas Utilizadas
+|Ferramenta	Propósito|	Métricas|	Logs|	Traces|	Alertas
+|--|--|--|--|--
+|Cloud Monitoring|	Métricas e Alertas|	✅|	❌|	❌|	✅
+|Cloud Logging|	Logs Centralizados|	✅|	✅|	❌|	✅
+|Cloud Trace|	Distributed Tracing	❌|	❌|	✅|	❌
+|Cloud Profiler|	Performance Analysis|	✅|	❌|	❌|	❌
+|Error Reporting|	Error Aggregation|	✅|	✅|	✅|	✅
+|Prometheus|	Métricas Customizadas|	✅|	❌|	❌|	✅
+|OpenTelemetry|	Instrumentação|	✅|	✅|	✅|	❌
 
 
 
